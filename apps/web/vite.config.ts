@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@yol/shared': path.resolve(__dirname, '../../packages/shared/src')
+      '@yol/shared': path.resolve(__dirname, 'src/shared')
     }
   },
   server: {
