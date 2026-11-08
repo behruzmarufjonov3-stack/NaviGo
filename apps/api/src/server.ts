@@ -101,7 +101,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(CONFIG.port, '0.0.0.0', () => {
     console.log(`[Yol Ma'lumoti API] Running on http://localhost:${CONFIG.port}`);
   });
