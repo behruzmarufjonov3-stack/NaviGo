@@ -371,10 +371,51 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setDestinationCoords({ lat: destLat, lon: destLon, name: destName || 'Manzil' });
       setOriginCoords({ lat: sLat, lon: sLon, name: sName });
 
-      const url = `/api/v1/map/route?startLat=${sLat}&startLon=${sLon}&endLat=${destLat}&endLon=${destLon}&mode=${mode}&destinationName=${encodeURIComponent(destName || '')}&originName=${encodeURIComponent(sName)}`;
-      const res = await fetch(url);
-      if (res.ok) {
-        const routeData: RouteResult = await res.json();
+      let routeData: RouteResult | null = null;
+      try {
+        const url = `/api/v1/map/route?startLat=${sLat}&startLon=${sLon}&endLat=${destLat}&endLon=${destLon}&mode=${mode}&destinationName=${encodeURIComponent(destName || '')}&originName=${encodeURIComponent(sName)}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          routeData = await res.json();
+        }
+      } catch (e) {
+        // backend unavailable, fallback
+      }
+
+      // If backend route failed or unavailable, fallback to global public OSRM router (works worldwide)
+      if (!routeData) {
+        try {
+          const osrmProfile = mode === 'walk' ? 'foot' : mode === 'bike' ? 'bicycle' : 'driving';
+          const osrmUrl = `https://router.project-osrm.org/route/v1/${osrmProfile}/${sLon},${sLat};${destLon},${destLat}?overview=full&geometries=geojson&steps=true`;
+          const osrmRes = await fetch(osrmUrl);
+          if (osrmRes.ok) {
+            const osrmJson = await osrmRes.json();
+            if (osrmJson.routes && osrmJson.routes.length > 0) {
+              const bestRoute = osrmJson.routes[0];
+              const steps = (bestRoute.legs?.[0]?.steps || []).map((st: any) => ({
+                instruction: st.maneuver?.type ? `${st.maneuver.type} ${st.name || ''}`.trim() : (st.name || 'Harakatni davom ettiring'),
+                distanceMeters: Math.round(st.distance || 0),
+                durationSeconds: Math.round(st.duration || 0),
+                maneuverType: st.maneuver?.type || 'straight'
+              }));
+              routeData = {
+                originName: sName,
+                destinationName: destName || 'Manzil',
+                distanceMeters: Math.round(bestRoute.distance),
+                durationMinutes: Math.max(1, Math.round(bestRoute.duration / 60)),
+                mode,
+                coordinates: bestRoute.geometry.coordinates,
+                steps: steps.length > 0 ? steps : [{ instruction: 'Manzil tomon harakatlaning', distanceMeters: Math.round(bestRoute.distance), durationSeconds: Math.round(bestRoute.duration), maneuverType: 'straight' }],
+                warnings: []
+              };
+            }
+          }
+        } catch (osrmErr) {
+          console.warn('OSRM global routing error:', osrmErr);
+        }
+      }
+
+      if (routeData) {
         routeData.originName = sName;
         routeData.destinationName = destName || 'Manzil';
         // Ensure route starts at origin coords and connects all the way to destination coords
@@ -391,6 +432,35 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             [destLon, destLat]
           ];
         }
+
+        // Fetch destination weather globally if not present
+        if (!routeData.destinationWeather) {
+          try {
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${destLat}&longitude=${destLon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m`);
+            if (wRes.ok) {
+              const wJson = await wRes.json();
+              const curr = wJson.current || {};
+              routeData.destinationWeather = {
+                city: destName || 'Manzil',
+                country: 'Global',
+                temperatureC: Math.round(curr.temperature_2m ?? 22),
+                apparentTemperatureC: Math.round(curr.temperature_2m ?? 22),
+                conditionCode: curr.weather_code ?? 0,
+                conditionText: curr.weather_code === 0 ? 'Clear sky' : curr.weather_code <= 3 ? 'Partly cloudy' : 'Rain showers',
+                weatherIcon: curr.weather_code === 0 ? 'sun' : curr.weather_code <= 3 ? 'cloud-sun' : 'cloud-rain',
+                windSpeedKmh: Math.round(curr.wind_speed_10m ?? 8),
+                humidityPercent: Math.round(curr.relative_humidity_2m ?? 50),
+                precipitationMm: 0,
+                lastUpdated: new Date().toISOString(),
+                source: 'Open-Meteo',
+                forecast: []
+              };
+            }
+          } catch {
+            // ignore
+          }
+        }
+
         setActiveRoute(routeData);
         setCurrentNavStep(0);
       } else {
@@ -545,6 +615,40 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (wRes.ok) {
         const wData = await wRes.json();
         setWeather(wData);
+      } else {
+        // Fallback to global Open-Meteo API for any location worldwide
+        try {
+          const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userCoords.lat}&longitude=${userCoords.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
+          if (omRes.ok) {
+            const omData = await omRes.json();
+            const curr = omData.current || {};
+            let cityName = 'Toshkent';
+            let countryName = 'O‘zbekiston';
+            try {
+              const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userCoords.lat}&longitude=${userCoords.lon}&localityLanguage=uz`);
+              if (geoRes.ok) {
+                const geoData = await geoRes.json();
+                cityName = geoData.city || geoData.locality || geoData.principalSubdivision || 'Shahar';
+                countryName = geoData.countryName || 'Global';
+              }
+            } catch {}
+            setWeather({
+              city: cityName,
+              country: countryName,
+              temperatureC: Math.round(curr.temperature_2m ?? 20),
+              apparentTemperatureC: Math.round(curr.apparent_temperature ?? curr.temperature_2m ?? 20),
+              conditionCode: curr.weather_code ?? 0,
+              humidityPercent: Math.round(curr.relative_humidity_2m ?? 50),
+              precipitationMm: 0,
+              lastUpdated: new Date().toISOString(),
+              source: 'Open-Meteo',
+              windSpeedKmh: Math.round(curr.wind_speed_10m ?? 10),
+              conditionText: curr.weather_code === 0 ? 'Ochiq havo' : curr.weather_code <= 3 ? 'Qisman bulutli' : 'Yog‘ingarchilik',
+              weatherIcon: curr.weather_code === 0 ? 'sun' : curr.weather_code <= 3 ? 'cloud-sun' : 'cloud-rain',
+              forecast: []
+            });
+          }
+        } catch {}
       }
       if (aqRes.ok) {
         const aqData = await aqRes.json();

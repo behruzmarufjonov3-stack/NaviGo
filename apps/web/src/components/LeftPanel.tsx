@@ -72,7 +72,19 @@ export const POPULAR_SUGGESTIONS: SuggestedPlace[] = [
   { id: 'nuk-center', name: 'Nukus shahri', city: 'Qoraqalpog\'iston', category: 'Shahar', lat: 42.4602, lon: 59.6166, tag: 'Savitskiy muzeyi' },
   { id: 'tash-chirchiq', name: 'Chirchiq shahri', city: 'Toshkent viloyati', category: 'Shahar', lat: 41.4689, lon: 69.5822, tag: 'Chirchiq daryosi' },
   { id: 'tash-angren', name: 'Angren shahri', city: 'Toshkent viloyati', category: 'Shahar', lat: 41.0167, lon: 70.1436, tag: 'A373 trassasi' },
-  { id: 'tash-ohangaron', name: 'Ohangaron shahri', city: 'Toshkent viloyati', category: 'Shahar', lat: 40.9064, lon: 69.6383, tag: 'Ohangaron' }
+  { id: 'tash-ohangaron', name: 'Ohangaron shahri', city: 'Toshkent viloyati', category: 'Shahar', lat: 40.9064, lon: 69.6383, tag: 'Ohangaron' },
+
+  // Xalqaro yo'nalishlar (UzHack Uzbekistan - Malaysia va global megapolislar)
+  { id: 'kl-twintowers', name: 'Petronas Twin Towers (KLCC)', city: 'Kuala-Lumpur (Malayziya)', category: 'Markaz', lat: 3.1578, lon: 101.7118, tag: 'Malayziya ramzi' },
+  { id: 'kl-batu', name: 'Batu g‘orlari (Batu Caves)', city: 'Kuala-Lumpur (Malayziya)', category: 'Tarixiy', lat: 3.2379, lon: 101.6840, tag: 'Malayziya madaniy merosi' },
+  { id: 'dxb-khalifa', name: 'Burj Khalifa & Dubai Mall', city: 'Dubay (BAA)', category: 'Markaz', lat: 25.1972, lon: 55.2744, tag: 'Megapolis' },
+  { id: 'ist-taksim', name: 'Taksim maydoni & Galata', city: 'Istanbul (Turkiya)', category: 'Markaz', lat: 41.0369, lon: 28.9850, tag: 'Tarixiy markaz' },
+  { id: 'alm-medeu', name: 'Medeu & Shymbulak', city: 'Almati (Qozog‘iston)', category: 'Dam olish', lat: 43.1575, lon: 77.0590, tag: 'Muz majmuasi' },
+  { id: 'ast-baiterek', name: 'Bayterek monumenti', city: 'Astana (Qozog‘iston)', category: 'Markaz', lat: 51.1283, lon: 71.4305, tag: 'Astana markazi' },
+  { id: 'bis-alatoo', name: 'Ala-Too maydoni', city: 'Bishkek (Qirg‘iziston)', category: 'Markaz', lat: 42.8765, lon: 74.6037, tag: 'Bishkek markazi' },
+  { id: 'lon-bigben', name: 'Big Ben & Vestminster', city: 'London (UK)', category: 'Tarixiy', lat: 51.5007, lon: -0.1246, tag: 'Buyuk Britaniya' },
+  { id: 'par-eiffel', name: 'Eyfel minorasi (Eiffel Tower)', city: 'Parij (Fransiya)', category: 'Tarixiy', lat: 48.8584, lon: 2.2945, tag: 'Fransiya' },
+  { id: 'nyc-times', name: 'Times Square & Broadway', city: 'Nyu-York (AQSH)', category: 'Markaz', lat: 40.7580, lon: -73.9855, tag: 'AQSH markazi' }
 ];
 
 function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -113,7 +125,17 @@ export function getLocalizedPlaceName(name: string, locale: string): string {
       'Nukus shahri': 'Город Нукус',
       'Chirchiq shahri': 'Город Чирчик',
       'Angren shahri': 'Город Ангрен',
-      'Ohangaron shahri': 'Город Ахангаран'
+      'Ohangaron shahri': 'Город Ахангаран',
+      'Petronas Twin Towers (KLCC)': 'Башни Петронас (Куала-Лумпур)',
+      'Batu g‘orlari (Batu Caves)': 'Пещеры Бату (Малайзия)',
+      'Burj Khalifa & Dubai Mall': 'Бурдж-Халифа и Дубай Молл',
+      'Taksim maydoni & Galata': 'Площадь Таксим и Галата (Стамбул)',
+      'Medeu & Shymbulak': 'Медеу и Шымбулак (Алматы)',
+      'Bayterek monumenti': 'Монумент Байтерек (Астана)',
+      'Ala-Too maydoni': 'Площадь Ала-Тоо (Бишкек)',
+      'Big Ben & Vestminster': 'Биг-Бен и Вестминстер (Лондон)',
+      'Eyfel minorasi (Eiffel Tower)': 'Эйфелева башня (Париж)',
+      'Times Square & Broadway': 'Таймс-сквер (Нью-Йорк)'
     };
     return ruMap[name] || name;
   }
@@ -140,7 +162,17 @@ export function getLocalizedPlaceName(name: string, locale: string): string {
       'Nukus shahri': 'Nukus City',
       'Chirchiq shahri': 'Chirchiq City',
       'Angren shahri': 'Angren City',
-      'Ohangaron shahri': 'Ohangaron City'
+      'Ohangaron shahri': 'Ohangaron City',
+      'Petronas Twin Towers (KLCC)': 'Petronas Twin Towers (KLCC)',
+      'Batu g‘orlari (Batu Caves)': 'Batu Caves (Malaysia)',
+      'Burj Khalifa & Dubai Mall': 'Burj Khalifa & Dubai Mall',
+      'Taksim maydoni & Galata': 'Taksim Square & Galata',
+      'Medeu & Shymbulak': 'Medeu & Shymbulak (Almaty)',
+      'Bayterek monumenti': 'Baiterek Monument (Astana)',
+      'Ala-Too maydoni': 'Ala-Too Square (Bishkek)',
+      'Big Ben & Vestminster': 'Big Ben & Westminster',
+      'Eyfel minorasi (Eiffel Tower)': 'Eiffel Tower (Paris)',
+      'Times Square & Broadway': 'Times Square (New York)'
     };
     return enMap[name] || name;
   }
@@ -262,6 +294,41 @@ export const LeftPanel: React.FC = () => {
   const baseRouteStatsRef = useRef<{ duration: number; distance: number } | null>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
+  // Sliding pill indicators for filter chips and travel modes
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [filterPill, setFilterPill] = useState({ left: 0, width: 0, opacity: 0 });
+
+  const modeRef = useRef<HTMLDivElement>(null);
+  const [modePill, setModePill] = useState({ left: 0, width: 0, opacity: 0 });
+
+  useEffect(() => {
+    if (!filterRef.current) return;
+    const activeEl = filterRef.current.querySelector<HTMLButtonElement>(`[data-filter-id="${activeFilter}"]`);
+    if (activeEl) {
+      const parentRect = filterRef.current.getBoundingClientRect();
+      const elRect = activeEl.getBoundingClientRect();
+      setFilterPill({
+        left: elRect.left - parentRect.left + filterRef.current.scrollLeft,
+        width: elRect.width,
+        opacity: 1
+      });
+    }
+  }, [activeFilter]);
+
+  useEffect(() => {
+    if (!modeRef.current) return;
+    const activeEl = modeRef.current.querySelector<HTMLButtonElement>(`[data-mode-id="${travelMode}"]`);
+    if (activeEl) {
+      const parentRect = modeRef.current.getBoundingClientRect();
+      const elRect = activeEl.getBoundingClientRect();
+      setModePill({
+        left: elRect.left - parentRect.left,
+        width: elRect.width,
+        opacity: 1
+      });
+    }
+  }, [travelMode, activeRoute]);
+
   // Sync base route when a new activeRoute arrives
   useEffect(() => {
     if (activeRoute && activeRoute.coordinates && activeRoute.coordinates.length > 0 && selectedRouteVariant === 'fastest') {
@@ -359,11 +426,58 @@ export const LeftPanel: React.FC = () => {
     if (!query.trim()) return;
     setIsSearching(true);
     try {
-      const res = await fetch(`/api/v1/map/geocode?q=${encodeURIComponent(query)}`);
-      if (res.ok) {
-        const places = await res.json();
-        setSearchResults(places);
+      // 1. Try local gazetteer suggestions (instant feedback)
+      const qLower = query.toLowerCase().trim();
+      const localMatches = POPULAR_SUGGESTIONS.filter(p =>
+        p.name.toLowerCase().includes(qLower) ||
+        p.city.toLowerCase().includes(qLower) ||
+        p.tag.toLowerCase().includes(qLower)
+      ).map(p => ({
+        id: p.id,
+        displayName: `${p.name}, ${p.city}`,
+        latitude: p.lat,
+        longitude: p.lon,
+        type: p.category
+      }));
+
+      let apiMatches: any[] = [];
+      try {
+        const res = await fetch(`/api/v1/map/geocode?q=${encodeURIComponent(query)}`);
+        if (res.ok) {
+          apiMatches = await res.json();
+        }
+      } catch (err) {
+        // backend unavailable, proceed to global fallback
       }
+
+      // 2. Global Nominatim fallback for any city or address in the world
+      if (apiMatches.length === 0) {
+        try {
+          const osmRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&accept-language=uz,en`);
+          if (osmRes.ok) {
+            const osmData = await osmRes.json();
+            apiMatches = osmData.map((item: any) => ({
+              id: item.place_id ? String(item.place_id) : String(Math.random()),
+              displayName: item.display_name,
+              latitude: parseFloat(item.lat),
+              longitude: parseFloat(item.lon),
+              type: item.type || 'place'
+            }));
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      // Merge unique places (local matches first for high relevance)
+      const combined = [...localMatches];
+      for (const item of apiMatches) {
+        if (!combined.some(c => Math.abs(c.latitude - item.latitude) < 0.001 && Math.abs(c.longitude - item.longitude) < 0.001)) {
+          combined.push(item);
+        }
+      }
+
+      setSearchResults(combined.slice(0, 8));
     } catch (e) {
       console.warn('Geocoding search failed:', e);
     } finally {
@@ -779,9 +893,18 @@ export const LeftPanel: React.FC = () => {
           </div>
         )}
 
-        {/* Filter Chips */}
+        {/* Filter Chips with Animated Sliding Pill */}
         {!activeRoute && (
-          <div className="flex items-center gap-1.5 pt-1 overflow-x-auto pb-1 no-scrollbar">
+          <div ref={filterRef} className="relative flex items-center gap-1.5 pt-1 overflow-x-auto pb-1 no-scrollbar">
+            {/* Sliding Pill Indicator */}
+            <div
+              className="sliding-pill-indicator absolute top-1 bottom-1 bg-blackPill rounded-full shadow-sm pointer-events-none"
+              style={{
+                transform: `translateX(${filterPill.left}px)`,
+                width: `${filterPill.width}px`,
+                opacity: filterPill.opacity
+              }}
+            />
             {[
               { id: 'all', label: t('roads.all') },
               { id: 'accidents', label: t('roads.accidents') },
@@ -791,10 +914,11 @@ export const LeftPanel: React.FC = () => {
             ].map((chip) => (
               <button
                 key={chip.id}
+                data-filter-id={chip.id}
                 onClick={() => setActiveFilter(chip.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors duration-200 spring-btn active:scale-90 ${
                   activeFilter === chip.id
-                    ? 'bg-blackPill text-white'
+                    ? 'text-white'
                     : 'bg-innerSoftArea dark:bg-gray-800 text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
                 }`}
               >
@@ -865,8 +989,17 @@ export const LeftPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* Mode Selector Tabs (Car, Bus/Transit, Bike, Walk) */}
-          <div className="grid grid-cols-4 gap-1.5 bg-innerSoftArea dark:bg-gray-800 p-1.5 rounded-2xl border border-yolBorder dark:border-gray-700">
+          {/* Mode Selector Tabs with Animated Sliding Pill */}
+          <div ref={modeRef} className="relative grid grid-cols-4 gap-1.5 bg-innerSoftArea dark:bg-gray-800 p-1.5 rounded-2xl border border-yolBorder dark:border-gray-700 overflow-hidden">
+            {/* Sliding Pill Indicator */}
+            <div
+              className="sliding-pill-indicator absolute top-1.5 bottom-1.5 bg-blackPill rounded-xl shadow-md pointer-events-none"
+              style={{
+                transform: `translateX(${modePill.left}px)`,
+                width: `${modePill.width}px`,
+                opacity: modePill.opacity
+              }}
+            />
             {[
               { id: 'car', icon: Car, label: t('navigation.modes.car') },
               { id: 'transit', icon: Bus, label: t('navigation.modes.transit') },
@@ -878,10 +1011,11 @@ export const LeftPanel: React.FC = () => {
               return (
                 <button
                   key={m.id}
+                  data-mode-id={m.id}
                   onClick={() => handleModeChange(m.id as TravelMode)}
-                  className={`flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl text-xs font-bold transition-all ${
+                  className={`relative z-10 flex flex-col items-center gap-1 py-2.5 px-1 rounded-xl text-xs font-bold transition-colors duration-200 spring-btn active:scale-90 ${
                     isSelected
-                      ? 'bg-blackPill text-white shadow-sm'
+                      ? 'text-white'
                       : 'text-textSecondary hover:text-textPrimary'
                   }`}
                 >

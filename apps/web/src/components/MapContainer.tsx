@@ -123,7 +123,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
   const [simulatedCoordIdx, setSimulatedCoordIdx] = useState(0);
   const [liveSpeedKmh, setLiveSpeedKmh] = useState(52);
   const [roadSpeedLimit, setRoadSpeedLimit] = useState(60);
-  const [clickedMapPoint, setClickedMapPoint] = useState<{ lat: number; lon: number } | null>(null);
+  const [clickedMapPoint, setClickedMapPoint] = useState<{ lat: number; lon: number; name?: string } | null>(null);
   const [featureVotes, setFeatureVotes] = useState<Record<string, 'up' | 'down'>>({});
   const [isQuickHazardOpen, setIsQuickHazardOpen] = useState(false);
   const [quickHazardToast, setQuickHazardToast] = useState<string | null>(null);
@@ -356,10 +356,19 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         if (target && target.closest('.maplibregl-marker')) {
           return;
         }
-        setClickedMapPoint({
-          lat: Number(e.lngLat.lat.toFixed(5)),
-          lon: Number(e.lngLat.lng.toFixed(5))
-        });
+        const lat = Number(e.lngLat.lat.toFixed(5));
+        const lon = Number(e.lngLat.lng.toFixed(5));
+        setClickedMapPoint({ lat, lon, name: `${lat.toFixed(4)}, ${lon.toFixed(4)}` });
+
+        // Global reverse geocoding to resolve street or city name
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`)
+          .then(res => res.json())
+          .then(data => {
+            const addr = data.address || {};
+            const placeTitle = addr.road || addr.suburb || addr.city || addr.town || addr.village || data.display_name?.split(',')?.[0] || 'Tanlangan manzil';
+            setClickedMapPoint(prev => (prev && prev.lat === lat && prev.lon === lon ? { ...prev, name: placeTitle } : prev));
+          })
+          .catch(() => {});
       });
     }
 
@@ -1310,12 +1319,17 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 2C. Yandex Maps / Waze Click-on-Map Quick Action Bar */}
       {clickedMapPoint && !isNavigating && variant !== 'bare' && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-fade-in">
-          <div className="flex items-center gap-1.5 pr-2 border-r border-slate-700">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-pop-in">
+          <div className="flex items-center gap-1.5 pr-2 border-r border-slate-700 max-w-[200px]">
             <MapPin className="w-4 h-4 text-accentOrange shrink-0" />
-            <span className="text-xs font-bold">
-              {clickedMapPoint.lat.toFixed(4)}, {clickedMapPoint.lon.toFixed(4)}
-            </span>
+            <div className="truncate">
+              <span className="text-xs font-bold block truncate">
+                {clickedMapPoint.name || `${clickedMapPoint.lat.toFixed(4)}, ${clickedMapPoint.lon.toFixed(4)}`}
+              </span>
+              <span className="text-[10px] text-slate-400 block font-mono">
+                {clickedMapPoint.lat.toFixed(4)}, {clickedMapPoint.lon.toFixed(4)}
+              </span>
+            </div>
           </div>
           <button
             onClick={() => {
@@ -1325,10 +1339,10 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                 pt.lat,
                 pt.lon,
                 travelMode,
-                locale === 'ru' ? 'Точка на карте' : locale === 'en' ? 'Pinned Location' : 'Xaritadagi nuqta'
+                pt.name || (locale === 'ru' ? 'Точка на карте' : locale === 'en' ? 'Pinned Location' : 'Xaritadagi nuqta')
               );
             }}
-            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all"
+            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all spring-btn active:scale-90"
           >
             <Flag className="w-3.5 h-3.5" />
             <span>{locale === 'ru' ? 'Сюда (Б)' : locale === 'en' ? 'Route Here (B)' : 'Bu yerga ketish (B)'}</span>
@@ -1337,20 +1351,20 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             onClick={() => {
               const pt = clickedMapPoint;
               setClickedMapPoint(null);
-              const originLabel = locale === 'ru' ? 'Точка А на карте' : locale === 'en' ? 'Point A on Map' : 'Xaritadagi A nuqta';
+              const originLabel = pt.name || (locale === 'ru' ? 'Точка А на карте' : locale === 'en' ? 'Point A on Map' : 'Xaritadagi A nuqta');
               setOriginCoords({ lat: pt.lat, lon: pt.lon, name: originLabel });
               if (destinationCoords) {
                 requestRoute(destinationCoords.lat, destinationCoords.lon, travelMode, destinationCoords.name, pt.lat, pt.lon, originLabel);
               }
             }}
-            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-600 transition-all flex items-center gap-1.5"
+            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-600 transition-all flex items-center gap-1.5 spring-btn active:scale-90"
           >
             <Navigation className="w-3.5 h-3.5 text-blue-400" />
             <span>{locale === 'ru' ? 'Отсюда (А)' : locale === 'en' ? 'Start Here (A)' : 'Shu yerdan (A)'}</span>
           </button>
           <button
             onClick={() => setClickedMapPoint(null)}
-            className="text-slate-400 hover:text-white px-1.5 text-xs font-bold"
+            className="text-slate-400 hover:text-white px-2 py-1 text-xs font-bold rounded-lg hover:bg-slate-800 spring-btn active:scale-90"
           >
             ✕
           </button>

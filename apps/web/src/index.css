@@ -89,3 +89,45 @@ body {
 button.touch-target, a.touch-target {
   min-height: 48px;
 }
+
+/* Fluid Spring Micro-Interactions & Tactile Button Animations (Inspired by modern map apps) */
+.spring-btn {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 150ms ease, color 150ms ease;
+  will-change: transform;
+}
+.spring-btn:hover {
+  transform: translateY(-1.5px);
+}
+.spring-btn:active {
+  transform: scale(0.95) translateY(0);
+}
+
+/* Sliding Pill Fluid Easing */
+.sliding-pill-indicator {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), width 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease;
+  will-change: transform, width;
+}
+
+/* Smooth Card & Modal Enter Animation */
+@keyframes fluidPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-pop-in {
+  animation: fluidPopIn 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle Shimmer for loading states */
+@keyframes softPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.99); }
+}
+.animate-soft-pulse {
+  animation: softPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

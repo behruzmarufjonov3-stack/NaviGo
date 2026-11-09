@@ -99,6 +99,32 @@ const REGIONAL_LOCATIONS: KnownLocation[] = [
   { name: 'To‘rtko‘l', country: 'Qoraqalpog‘iston', lat: 41.5500, lon: 61.0000, radiusKm: 25 }
 ];
 
+const GLOBAL_MAJOR_CITIES: KnownLocation[] = [
+  // Qo'shni davlatlar va xalqaro yirik megapolislar (UzHack O'zbekiston - Malayziya)
+  { name: 'Kuala-Lumpur', country: 'Malayziya', lat: 3.1390, lon: 101.6869, radiusKm: 45 },
+  { name: 'Chimkent', country: 'Qozog‘iston', lat: 42.3417, lon: 69.5901, radiusKm: 35 },
+  { name: 'Almati', country: 'Qozog‘iston', lat: 43.2389, lon: 76.8897, radiusKm: 45 },
+  { name: 'Astana', country: 'Qozog‘iston', lat: 51.1694, lon: 71.4491, radiusKm: 45 },
+  { name: 'Bishkek', country: 'Qirg‘iziston', lat: 42.8746, lon: 74.5698, radiusKm: 35 },
+  { name: 'O‘sh', country: 'Qirg‘iziston', lat: 40.5140, lon: 72.8161, radiusKm: 30 },
+  { name: 'Dushanbe', country: 'Tojikiston', lat: 38.5598, lon: 68.7870, radiusKm: 35 },
+  { name: 'Xo‘jand', country: 'Tojikiston', lat: 40.2826, lon: 69.6222, radiusKm: 30 },
+  { name: 'Ashxobod', country: 'Turkmaniston', lat: 37.9601, lon: 58.3261, radiusKm: 35 },
+  { name: 'Boku', country: 'Ozarbayjon', lat: 40.4093, lon: 49.8671, radiusKm: 40 },
+  { name: 'Dubay', country: 'BAA', lat: 25.2048, lon: 55.2708, radiusKm: 45 },
+  { name: 'Istanbul', country: 'Turkiya', lat: 41.0082, lon: 28.9784, radiusKm: 50 },
+  { name: 'Moskva', country: 'Rossiya', lat: 55.7558, lon: 37.6173, radiusKm: 60 },
+  { name: 'Sankt-Peterburg', country: 'Rossiya', lat: 59.9343, lon: 30.3351, radiusKm: 50 },
+  { name: 'London', country: 'Buyuk Britaniya', lat: 51.5074, lon: -0.1278, radiusKm: 50 },
+  { name: 'Parij', country: 'Fransiya', lat: 48.8566, lon: 2.3522, radiusKm: 45 },
+  { name: 'Berlin', country: 'Germaniya', lat: 52.5200, lon: 13.4050, radiusKm: 45 },
+  { name: 'Rim', country: 'Italiya', lat: 41.9028, lon: 12.4964, radiusKm: 45 },
+  { name: 'Seul', country: 'Janubiy Koreya', lat: 37.5665, lon: 126.9780, radiusKm: 45 },
+  { name: 'Tokio', country: 'Yaponiya', lat: 35.6762, lon: 139.6503, radiusKm: 50 },
+  { name: 'Singapur', country: 'Singapur', lat: 1.3521, lon: 103.8198, radiusKm: 35 },
+  { name: 'Nyu-York', country: 'AQSH', lat: 40.7128, lon: -74.0060, radiusKm: 50 }
+];
+
 function calculateHaversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -124,11 +150,12 @@ export async function resolveLocationName(
     };
   }
 
-  // 1. Find closest city in Uzbekistan regional gazetteer
+  // 1. Find closest city in Uzbekistan regional gazetteer or Global major cities
   let nearestCity: KnownLocation | null = null;
   let minDistance = Infinity;
 
-  for (const loc of REGIONAL_LOCATIONS) {
+  const allLocations = [...REGIONAL_LOCATIONS, ...GLOBAL_MAJOR_CITIES];
+  for (const loc of allLocations) {
     const dist = calculateHaversineKm(lat, lon, loc.lat, loc.lon);
     if (dist < minDistance) {
       minDistance = dist;
@@ -140,10 +167,10 @@ export async function resolveLocationName(
     return { city: nearestCity.name, country: nearestCity.country };
   }
 
-  // 2. Try online reverse geocoding (OpenStreetMap Nominatim) with 1.2s timeout
+  // 2. Try online reverse geocoding (OpenStreetMap Nominatim) with 1.5s timeout
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1200);
+    const timeout = setTimeout(() => controller.abort(), 1500);
     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=uz,en`, {
       headers: { 'User-Agent': 'NaviGo/1.0 (+https://github.com/behruzmarufjonov3-stack/NaviGo)' },
       signal: controller.signal
@@ -154,7 +181,7 @@ export async function resolveLocationName(
       const data = await res.json();
       const addr = data.address || {};
       const cityName = addr.city || addr.town || addr.village || addr.county || addr.state_district || addr.state;
-      const countryName = addr.country || 'O‘zbekiston';
+      const countryName = addr.country || (lat >= 37 && lat <= 46 && lon >= 56 && lon <= 74 ? 'O‘zbekiston' : 'Xalqaro');
       if (cityName) {
         return { city: cityName, country: countryName };
       }
@@ -163,14 +190,15 @@ export async function resolveLocationName(
     // ignore network timeout
   }
 
-  // 3. Fallback: return nearest city if within 80km, or generic coordinates
-  if (nearestCity && minDistance <= 80) {
+  // 3. Fallback: return nearest city if within 120km, or generic coordinates
+  if (nearestCity && minDistance <= 120) {
     return { city: nearestCity.name, country: nearestCity.country };
   }
 
+  const isUzbekistan = lat >= 37 && lat <= 46 && lon >= 56 && lon <= 74;
   return {
     city: `${lat.toFixed(3)}, ${lon.toFixed(3)}`,
-    country: preferredCountry || 'O‘zbekiston'
+    country: preferredCountry || (isUzbekistan ? 'O‘zbekiston' : 'Global')
   };
 }
 

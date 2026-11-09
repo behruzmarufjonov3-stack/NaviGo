@@ -367,13 +367,16 @@ export const AmbulanceApp: React.FC = () => {
                 window.location.hash = '';
                 window.dispatchEvent(new HashChangeEvent('hashchange'));
               }}
-              className="flex items-center gap-2 bg-innerSoftArea dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full text-xs font-bold text-textPrimary dark:text-darkText transition-all border border-yolBorder dark:border-gray-700 shadow-sm cursor-pointer group"
+              className="flex items-center gap-2 bg-innerSoftArea dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full text-xs font-bold text-textPrimary dark:text-darkText transition-all border border-yolBorder dark:border-gray-700 shadow-sm cursor-pointer group spring-btn active:scale-95"
               title={t('brand')}
             >
               <ArrowLeft className="w-4 h-4 text-accentOrange group-hover:-translate-x-0.5 transition-transform" />
               <NaviGoLogo className="w-5 h-5 shrink-0" />
               <span className="font-extrabold text-xs hidden sm:inline">Navi<span className="text-accentOrange">Go</span></span>
             </a>
+            <span className="hidden xl:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 text-[10px] font-black border border-red-200 dark:border-red-900 shrink-0">
+              🇺🇿 Faqat O‘zbekiston hududi (Milliy Tezkor 103, 102, 101, 104, 1050)
+            </span>
           </div>
 
           {/* Center: 4 Emergency Services Switcher Bar */}
