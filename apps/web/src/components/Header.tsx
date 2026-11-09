@@ -23,6 +23,7 @@ export const Header: React.FC = () => {
     setActiveTab, 
     user, 
     setIsAuthOpen,
+    setIsProfileModalOpen,
     setIsNotificationsOpen,
     notifications
   } = useApp();
@@ -245,7 +246,14 @@ export const Header: React.FC = () => {
 
         {/* Account / Sign In Button */}
         <button
-          onClick={() => setIsAuthOpen(true)}
+          onClick={() => {
+            if (user) {
+              setIsProfileModalOpen(true);
+            } else {
+              setIsAuthOpen(true);
+            }
+          }}
+          title={user ? "Profil va ma'lumotlarimni ko'rish / tahrirlash" : t('topBar.login')}
           className="flex items-center gap-1.5 md:gap-2 bg-white dark:bg-darkCard px-3 py-1.5 md:px-3.5 md:py-2 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText shrink-0 max-w-[150px] md:max-w-[200px]"
         >
           <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec shrink-0">

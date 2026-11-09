@@ -3,8 +3,12 @@ export type GasType = 'metan' | 'propan' | 'petrol';
 export interface GasStationPrices {
   metan?: number; // UZS per m3 (e.g. 3800)
   propan?: number; // UZS per liter (e.g. 5200)
-  petrolAi92?: number; // UZS per liter (e.g. 10500)
-  ai92?: number;
+  ai80?: number; // UZS per liter (e.g. 8500)
+  ai92?: number; // UZS per liter (e.g. 9800)
+  ai95?: number; // UZS per liter (e.g. 12500)
+  ai98?: number; // UZS per liter (e.g. 14800)
+  diesel?: number; // UZS per liter (e.g. 11500)
+  petrolAi92?: number;
 }
 
 export interface GasStationCommunityVotes {

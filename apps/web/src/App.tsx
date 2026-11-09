@@ -17,6 +17,8 @@ import { SettingsModal } from './components/SettingsModal';
 import { ListAlternativeModal } from './components/ListAlternativeModal';
 import { NotificationsModal } from './components/NotificationsModal';
 import { AmbulanceApp } from './ambulance/AmbulanceApp';
+import { FuelSelectorModal } from './components/FuelSelectorModal';
+import { UserProfileModal } from './components/UserProfileModal';
 
 export const MainLayout: React.FC = () => {
   return (
@@ -55,6 +57,8 @@ export const MainLayout: React.FC = () => {
         <SettingsModal />
         <ListAlternativeModal />
         <NotificationsModal />
+        <FuelSelectorModal />
+        <UserProfileModal />
       </div>
     </div>
   );

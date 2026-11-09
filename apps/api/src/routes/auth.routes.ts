@@ -91,3 +91,60 @@ authRouter.get('/me', requireAuth, (req: AuthenticatedRequest, res: Response) =>
   const { passwordHash: _, ...safeUser } = req.user;
   return res.json({ user: safeUser });
 });
+
+const UpdateProfileSchema = z.object({
+  name: z.string().min(2).optional(),
+  phone: z.string().optional(),
+  vehicleModel: z.string().optional(),
+  vehiclePlate: z.string().optional()
+});
+
+const ChangePasswordSchema = z.object({
+  oldPassword: z.string().min(1),
+  newPassword: z.string().min(8, 'New password must be at least 8 characters long')
+});
+
+authRouter.put('/profile', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+    const parsed = UpdateProfileSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
+    }
+
+    const updated = dbStore.updateUser(req.user.id, parsed.data);
+    if (!updated) return res.status(404).json({ error: 'User not found' });
+
+    const { passwordHash: _, ...safeUser } = updated;
+    return res.json({ user: safeUser, message: 'Profile updated successfully' });
+  } catch (err: any) {
+    return res.status(500).json({ error: 'Profile update failed', message: err.message });
+  }
+});
+
+authRouter.post('/change-password', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+    const parsed = ChangePasswordSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
+    }
+
+    const { oldPassword, newPassword } = parsed.data;
+    const user = dbStore.getUserById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const matches = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!matches) {
+      return res.status(400).json({ error: "Eski parol noto'g'ri kiritildi" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const newHash = await bcrypt.hash(newPassword, salt);
+    dbStore.updateUser(user.id, { passwordHash: newHash });
+
+    return res.json({ success: true, message: "Parol muvaffaqiyatli o'zgartirildi" });
+  } catch (err: any) {
+    return res.status(500).json({ error: 'Password change failed', message: err.message });
+  }
+});

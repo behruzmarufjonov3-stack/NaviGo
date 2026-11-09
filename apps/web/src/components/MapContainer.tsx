@@ -251,12 +251,11 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // High-performance global CDN tile servers (CartoDB Voyager + OSM with fast edge caching <35ms)
+    // Official, reliable, 100% free OpenStreetMap global CDN tile servers (No API key required, zero watermarks)
     const osmTiles = [
-      'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-      'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-      'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-      'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
+      'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
     ];
 
     const map = new maplibregl.Map({

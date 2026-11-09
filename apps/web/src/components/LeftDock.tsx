@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Sun, Moon, HelpCircle, LogOut, ZoomIn, ZoomOut, Eye, Truck, ShieldAlert } from 'lucide-react';
+import { Sun, Moon, HelpCircle, LogOut, ZoomIn, ZoomOut, Eye, Truck, ShieldAlert, Fuel } from 'lucide-react';
 
 export const LeftDock: React.FC = () => {
   const { 
@@ -12,6 +12,7 @@ export const LeftDock: React.FC = () => {
     user, 
     logout, 
     setIsAuthOpen,
+    setIsFuelModalOpen,
     t
   } = useApp();
 
@@ -49,6 +50,20 @@ export const LeftDock: React.FC = () => {
             SOS
           </span>
         </a>
+
+        {/* Yoqilg'i & Gaz Shoxobchalari (Metan bosimi, Benzin navlari va narxlari, Propan) - directly under SOS */}
+        <button
+          onClick={() => setIsFuelModalOpen(true)}
+          title="Yoqilg'i & Zapravkalar (Metan bosimi, Benzin navlari va narxlari, Propan)"
+          className="flex flex-col items-center gap-1 group transition-transform active:scale-95"
+        >
+          <div className="w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md group-hover:bg-emerald-700 transition-colors spring-btn">
+            <Fuel className="w-5 h-5 text-white" />
+          </div>
+          <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-tight text-center leading-tight">
+            Zapravka
+          </span>
+        </button>
 
         <button
           onClick={toggleTheme}

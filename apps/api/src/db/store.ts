@@ -412,6 +412,14 @@ class ResilientDataStore {
     return user;
   }
 
+  public updateUser(userId: string, updates: Partial<UserEntity>): UserEntity | undefined {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    const updated = { ...user, ...updates };
+    this.users.set(userId, updated);
+    return updated;
+  }
+
   public getAllUsers(): User[] {
     return Array.from(this.users.values()).map(({ passwordHash, ...user }) => user);
   }
