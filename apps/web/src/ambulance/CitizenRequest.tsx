@@ -26,26 +26,12 @@ import { EmergencyRequest, EmergencySeverity, Hospital, AmbulanceUnit, Emergency
 import { ambulanceApi } from './ambulanceApi';
 import { useApp } from '../context/AppContext';
 
-function calcDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return Math.round(R * c * 10) / 10;
-}
-
 interface CitizenRequestProps {
   serviceType: EmergencyServiceType;
   activeRequest?: EmergencyRequest | null;
   assignedAmbulance?: AmbulanceUnit | null;
   hospitals: Hospital[];
-  ambulances?: AmbulanceUnit[];
   onRefresh: () => void;
-  onSwitchToDispatcher?: () => void;
 }
 
 export const CitizenRequest: React.FC<CitizenRequestProps> = ({
@@ -53,9 +39,7 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
   activeRequest,
   assignedAmbulance,
   hospitals,
-  ambulances = [],
-  onRefresh,
-  onSwitchToDispatcher
+  onRefresh
 }) => {
   const { user, userCoords, locale, t, features, setSelectedFeature, setFocusedLocation } = useApp();
 
@@ -219,41 +203,6 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
       setIsCancelling(false);
     }
   };
-
-  const handleQuickDispatch = async () => {
-    if (!activeRequest) return;
-    try {
-      setIsDispatching(true);
-      const freeUnits = (ambulances || []).filter(a => a.status === 'free');
-      const targetUnitId = freeUnits[0]?.id || (ambulances || [])[0]?.id;
-      const accepted = await ambulanceApi.acceptRequest(
-        activeRequest.id,
-        activeRequest.targetHospitalId,
-        targetUnitId,
-        serviceType
-      );
-      const ambId = targetUnitId || accepted.assignedAmbulanceId;
-      await ambulanceApi.driverGo(activeRequest.id, ambId, serviceType);
-      onRefresh();
-    } catch (err: any) {
-      alert(err.message || 'Dispetcher yo\'naltirishida xatolik');
-    } finally {
-      setIsDispatching(false);
-    }
-  };
-
-  const [isDispatching, setIsDispatching] = useState(false);
-
-  const nearestFreeAmbulance = (() => {
-    const free = (ambulances || []).filter(a => a.status === 'free');
-    if (free.length === 0) return ambulances[0] || null;
-    if (!activeRequest) return free[0];
-    return [...free].sort((a, b) => {
-      const distA = calcDistanceKm(a.lat, a.lon, activeRequest.lat, activeRequest.lon);
-      const distB = calcDistanceKm(b.lat, b.lon, activeRequest.lat, activeRequest.lon);
-      return distA - distB;
-    })[0];
-  })();
 
   const assignedHospital = hospitals.find(
     h => h.id === activeRequest?.assignedHospitalId || h.id === activeRequest?.targetHospitalId
@@ -494,47 +443,12 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
                 </div>
               </div>
 
-              {/* Interactive Dispatcher Action Box */}
-              <div className="p-3.5 rounded-xl bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-800 flex flex-col gap-2.5 shadow-sm">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
-                    <Building2 className="w-4 h-4 text-blue-600" />
-                    <span>Navbatchi dispetcher qabul xizmati:</span>
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                    Ekipaj kutishda (Bo'sh)
-                  </span>
-                </div>
-
-                <div className="text-xs text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 p-2.5 rounded-lg flex items-center justify-between">
-                  <span>Tavsiya etilgan eng yaqin bo'sh ekipaj:</span>
-                  <strong className="text-gray-900 dark:text-gray-100 font-mono">
-                    {nearestFreeAmbulance?.plateNumber || (serviceType === '102' ? '01 102 PPA' : serviceType === '101' ? '01 101 FVV' : serviceType === '104' ? '01 104 GAZ' : serviceType === '1050' ? '01 1050 FVV' : '01 103 TAA')} ({nearestFreeAmbulance ? `~${calcDistanceKm(nearestFreeAmbulance.lat, nearestFreeAmbulance.lon, activeRequest.lat, activeRequest.lon)} km` : "1.8 km"})
-                  </strong>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={handleQuickDispatch}
-                    disabled={isDispatching}
-                    className="flex-1 py-2.5 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-50"
-                  >
-                    <Truck className="w-4 h-4" />
-                    <span>{isDispatching ? "Ekipaj yo'naltirilmoqda..." : "Dispetcher sifatida: Ekipajni yo'naltirish (Dispatch)"}</span>
-                  </button>
-
-                  {onSwitchToDispatcher && (
-                    <button
-                      type="button"
-                      onClick={onSwitchToDispatcher}
-                      className="py-2.5 px-4 rounded-full bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <Building2 className="w-3.5 h-3.5" />
-                      <span>Dispetcher stoliga o'tish</span>
-                    </button>
-                  )}
-                </div>
+              {/* Waiting status indicator */}
+              <div className="px-3.5 py-2.5 rounded-xl bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-800 flex items-center justify-between text-xs font-bold text-amber-800 dark:text-amber-200">
+                <span className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+                  <span>Navbatchi dispetcher ko'rib chiqishi va ekipaj biriktirishi kutilmoqda...</span>
+                </span>
               </div>
             </div>
           )}

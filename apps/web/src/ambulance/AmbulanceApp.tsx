@@ -138,10 +138,8 @@ export const AmbulanceApp: React.FC = () => {
     };
   }, [user, activeService]);
 
-  const [roleOverride, setRoleOverride] = useState<'CITIZEN' | 'DISPATCHER' | 'DRIVER' | null>(null);
-
-  // Determine active view mode based purely on authenticated user role or interactive override
-  const effectiveRole = roleOverride || (() => {
+  // Determine active view mode based purely on authenticated user role
+  const effectiveRole = (() => {
     if (user) {
       if (user.role === 'ADMIN') return 'ADMIN';
       if (user.email?.toLowerCase().includes('disp') || state?.binding?.staffRole === 'DISPATCHER') return 'DISPATCHER';
@@ -503,55 +501,6 @@ export const AmbulanceApp: React.FC = () => {
               </span>
             </div>
 
-            {/* Interactive Role Switcher Pill Bar (Fuqaro / Dispetcher / Ekipaj) */}
-            <div className="px-3 pt-2.5 pb-2 bg-innerSoftArea/30 dark:bg-gray-800/30 border-b border-yolBorder dark:border-darkBorder">
-              <div className="flex items-center gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-                <button
-                  type="button"
-                  onClick={() => setRoleOverride('CITIZEN')}
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1 ${
-                    effectiveRole === 'CITIZEN'
-                      ? 'bg-white dark:bg-gray-900 text-gray-950 dark:text-gray-50 shadow-sm border border-gray-200 dark:border-gray-700'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                  }`}
-                >
-                  <UserIcon className="w-3.5 h-3.5" />
-                  <span>Fuqaro</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setRoleOverride('DISPATCHER')}
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1 ${
-                    effectiveRole === 'DISPATCHER'
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                  }`}
-                >
-                  <Building2 className="w-3.5 h-3.5" />
-                  <span>Dispetcher</span>
-                  {effectivePendingRequests.length > 0 && (
-                    <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[9px] font-black flex items-center justify-center animate-pulse">
-                      {effectivePendingRequests.length}
-                    </span>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setRoleOverride('DRIVER')}
-                  className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1 ${
-                    effectiveRole === 'DRIVER'
-                      ? 'bg-emerald-600 text-white shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                  }`}
-                >
-                  <Truck className="w-3.5 h-3.5" />
-                  <span>Ekipaj</span>
-                </button>
-              </div>
-            </div>
-
             {/* Scrollable Role Content */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
               {effectiveRole === 'CITIZEN' && (
@@ -563,9 +512,7 @@ export const AmbulanceApp: React.FC = () => {
                     (state?.activeRequest?.status !== 'pending' ? state?.ambulances?.[0] : null)
                   }
                   hospitals={state?.hospitals || []}
-                  ambulances={state?.ambulances || []}
                   onRefresh={fetchState}
-                  onSwitchToDispatcher={() => setRoleOverride('DISPATCHER')}
                 />
               )}
 
