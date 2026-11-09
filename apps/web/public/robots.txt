@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://navigo.uz/sitemap.xml

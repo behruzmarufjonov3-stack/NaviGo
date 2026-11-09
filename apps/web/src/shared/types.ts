@@ -5,6 +5,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  avatarUrl?: string;
   vehicleModel?: string;
   vehiclePlate?: string;
   role: UserRole;

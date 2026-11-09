@@ -374,8 +374,9 @@ export const AmbulanceApp: React.FC = () => {
               <NaviGoLogo className="w-5 h-5 shrink-0" />
               <span className="font-extrabold text-xs hidden sm:inline">Navi<span className="text-accentOrange">Go</span></span>
             </a>
-            <span className="hidden xl:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 text-[10px] font-black border border-red-200 dark:border-red-900 shrink-0">
-              🇺🇿 Faqat O‘zbekiston hududi (Milliy Tezkor 103, 102, 101, 104, 1050)
+            <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 text-[10px] font-black border border-red-200 dark:border-red-900 shrink-0">
+              <ShieldAlert className="w-3.5 h-3.5 text-red-600" />
+              <span>Faqat O‘zbekiston hududi (Milliy Tezkor 103, 102, 101, 104, 1050)</span>
             </span>
           </div>
 

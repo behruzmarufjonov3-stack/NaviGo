@@ -11,7 +11,14 @@ import {
   Check, 
   ShieldAlert,
   Search,
-  Navigation
+  Navigation,
+  Wrench,
+  Ban,
+  Cone,
+  Signpost,
+  Bus,
+  Map,
+  HelpCircle
 } from 'lucide-react';
 import { ReportCategory, ReportSeverity } from '@yol/shared';
 
@@ -84,8 +91,8 @@ export const ReportModal: React.FC = () => {
 
       // Create a draggable red pin marker
       const el = document.createElement('div');
-      el.className = 'cursor-grab active:cursor-grabbing text-3xl select-none';
-      el.innerHTML = '📍';
+      el.className = 'w-7 h-7 rounded-full bg-accentOrange border-2 border-white shadow-md flex items-center justify-center text-white cursor-grab active:cursor-grabbing';
+      el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
 
       const marker = new maplibregl.Marker({ element: el, draggable: true })
         .setLngLat([selectedCoords.lon, selectedCoords.lat])
@@ -121,15 +128,15 @@ export const ReportModal: React.FC = () => {
 
   if (!isReportingOpen) return null;
 
-  const categories: { id: ReportCategory; label: string; icon: string }[] = [
-    { id: 'damage', label: t('report.categories.damage'), icon: '🕳️' },
-    { id: 'closure', label: t('report.categories.closure'), icon: '⛔' },
-    { id: 'construction', label: t('report.categories.construction'), icon: '🚧' },
-    { id: 'hazard', label: t('report.categories.hazard'), icon: '⚠️' },
-    { id: 'signage', label: t('report.categories.signage'), icon: '🚸' },
-    { id: 'transit', label: t('report.categories.transit'), icon: '🚌' },
-    { id: 'map_error', label: t('report.categories.map_error'), icon: '🗺️' },
-    { id: 'other', label: t('report.categories.other'), icon: '📍' }
+  const categories: { id: ReportCategory; label: string; icon: React.FC<{ className?: string }> }[] = [
+    { id: 'damage', label: t('report.categories.damage'), icon: Wrench },
+    { id: 'closure', label: t('report.categories.closure'), icon: Ban },
+    { id: 'construction', label: t('report.categories.construction'), icon: Cone },
+    { id: 'hazard', label: t('report.categories.hazard'), icon: AlertTriangle },
+    { id: 'signage', label: t('report.categories.signage'), icon: Signpost },
+    { id: 'transit', label: t('report.categories.transit'), icon: Bus },
+    { id: 'map_error', label: t('report.categories.map_error'), icon: Map },
+    { id: 'other', label: t('report.categories.other'), icon: HelpCircle }
   ];
 
   const handleSearchAddress = async (e: React.FormEvent) => {
@@ -290,23 +297,28 @@ export const ReportModal: React.FC = () => {
             {/* Step 1: Category Selection */}
             {step === 1 && (
               <div className="grid grid-cols-2 gap-3 py-2 flex-1 overflow-y-auto">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setCategory(cat.id);
-                      setStep(2);
-                    }}
-                    className={`flex items-center gap-3 p-4 rounded-2xl border text-left transition-all ${
-                      category === cat.id
-                        ? 'border-accentOrange bg-orangeTint/20 font-bold shadow-sm'
-                        : 'border-yolBorder dark:border-darkBorder bg-innerSoftArea dark:bg-gray-800 hover:border-gray-400'
-                    }`}
-                  >
-                    <span className="text-2xl">{cat.icon}</span>
-                    <span className="text-sm text-textPrimary dark:text-darkText">{cat.label}</span>
-                  </button>
-                ))}
+                {categories.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setCategory(cat.id);
+                        setStep(2);
+                      }}
+                      className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all ${
+                        category === cat.id
+                          ? 'border-accentOrange bg-orangeTint/20 font-bold shadow-sm'
+                          : 'border-yolBorder dark:border-darkBorder bg-innerSoftArea dark:bg-gray-800 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-accentOrange/10 text-accentOrange flex items-center justify-center shrink-0">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-semibold text-textPrimary dark:text-darkText">{cat.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
 

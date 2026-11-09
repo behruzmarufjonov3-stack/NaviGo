@@ -19,8 +19,18 @@ import { NotificationsModal } from './components/NotificationsModal';
 import { AmbulanceApp } from './ambulance/AmbulanceApp';
 import { FuelSelectorModal } from './components/FuelSelectorModal';
 import { UserProfileModal } from './components/UserProfileModal';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
+import { LegalModal } from './components/LegalModal';
 
 export const MainLayout: React.FC = () => {
+  const [legalModalState, setLegalModalState] = React.useState<{ isOpen: boolean; tab: 'privacy' | 'terms' | 'steps' }>({
+    isOpen: false,
+    tab: 'privacy'
+  });
+
+  const handleOpenLegalModal = (tab: 'privacy' | 'terms' | 'steps' = 'privacy') => {
+    setLegalModalState({ isOpen: true, tab });
+  };
   return (
     <div className="w-screen h-screen overflow-hidden flex flex-col bg-outerBg dark:bg-darkOuter p-2 sm:p-4">
       {/* Outer App Panel Container with 32px radius (Part 4.1) */}
@@ -58,7 +68,13 @@ export const MainLayout: React.FC = () => {
         <ListAlternativeModal />
         <NotificationsModal />
         <FuelSelectorModal />
-        <UserProfileModal />
+        <UserProfileModal onOpenLegalModal={handleOpenLegalModal} />
+        <CookieConsentBanner onOpenLegalModal={handleOpenLegalModal} />
+        <LegalModal 
+          isOpen={legalModalState.isOpen} 
+          onClose={() => setLegalModalState(prev => ({ ...prev, isOpen: false }))} 
+          defaultTab={legalModalState.tab} 
+        />
       </div>
     </div>
   );

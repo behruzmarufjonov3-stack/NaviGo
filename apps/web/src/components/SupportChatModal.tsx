@@ -26,29 +26,29 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('police')
   ) {
     if (locale === 'ru') {
-      return "🚨 Экстренные службы Республики Узбекистан:\n\n" +
-        "• 🚑 103 — Скорая медицинская помощь\n" +
-        "• 👮 102 — Безопасность дорожного движения и органы МВД\n" +
-        "• 🚒 101 — Пожарно-спасательная служба\n" +
-        "• 🔥 104 — Аварийная газовая служба\n" +
-        "• 🛟 1050 — Служба спасения МЧС\n\n" +
+      return "Экстренные службы Республики Узбекистан:\n\n" +
+        "• 103 — Скорая медицинская помощь\n" +
+        "• 102 — Безопасность дорожного движения и органы МВД\n" +
+        "• 101 — Пожарно-спасательная служба\n" +
+        "• 104 — Аварийная газовая служба\n" +
+        "• 1050 — Служба спасения МЧС\n\n" +
         "Для прямого перехода в режим экстренной диспетчеризации нажмите кнопку «103 Tez Yordam» вверху экрана или перейдите по ссылке #/ambulance (сервис действует на территории Узбекистана).";
     }
     if (locale === 'en') {
-      return "🚨 Emergency Numbers (Uzbekistan National Services):\n\n" +
-        "• 🚑 103 — Ambulance Medical Emergency\n" +
-        "• 👮 102 — Traffic Safety & Police\n" +
-        "• 🚒 101 — Fire & Rescue Service\n" +
-        "• 🔥 104 — Emergency Gas Service\n" +
-        "• 🛟 1050 — Emergency Ministry (MES) Rescue\n\n" +
+      return "Emergency Numbers (Uzbekistan National Services):\n\n" +
+        "• 103 — Ambulance Medical Emergency\n" +
+        "• 102 — Traffic Safety & Police\n" +
+        "• 101 — Fire & Rescue Service\n" +
+        "• 104 — Emergency Gas Service\n" +
+        "• 1050 — Emergency Ministry (MES) Rescue\n\n" +
         "To access the emergency dispatcher mode, click the '103 Tez Yordam' button in the top bar or navigate to #/ambulance (dedicated strictly to Uzbekistan).";
     }
-    return "🚨 O‘zbekiston Respublikasi Favqulodda Shoshilinch Xizmatlari:\n\n" +
-      "• 🚑 103 — Tez tibbiy yordam\n" +
-      "• 👮 102 — Yo‘l harakati xavfsizligi va Ichki ishlar\n" +
-      "• 🚒 101 — Yong‘in-qutqaruv xizmati\n" +
-      "• 🔥 104 — Favqulodda gaz xizmati\n" +
-      "• 🛟 1050 — FVV Qutqaruv xizmati\n\n" +
+    return "O‘zbekiston Respublikasi Favqulodda Shoshilinch Xizmatlari:\n\n" +
+      "• 103 — Tez tibbiy yordam\n" +
+      "• 102 — Yo‘l harakati xavfsizligi va Ichki ishlar\n" +
+      "• 101 — Yong‘in-qutqaruv xizmati\n" +
+      "• 104 — Favqulodda gaz xizmati\n" +
+      "• 1050 — FVV Qutqaruv xizmati\n\n" +
       "Tezkor dispetcherlik tizimiga o‘tish uchun ekranning yuqori qismidagi '103 Tez Yordam' tugmasini bosing yoki #/ambulance sahifasiga o‘ting (ushbu tizim faqat O‘zbekiston hududi uchun ishlaydi).";
   }
 
@@ -63,7 +63,7 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('limit')
   ) {
     if (locale === 'ru') {
-      return "🚗 Ограничения скорости по ПДД Узбекистана:\n\n" +
+      return "Ограничения скорости по ПДД Узбекистана:\n\n" +
         "• В городах и населенных пунктах: максимум 60 км/ч.\n" +
         "• В жилых зонах и дворовых территориях: 20 км/ч.\n" +
         "• Возле школ и детских садов: 30 км/ч.\n" +
@@ -71,14 +71,14 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
         "Стационарные и мобильные радары отмечены на карте круглыми оранжевыми значками. При приближении к камере NaviGo предупредит вас звуковым сигналом и покажет допустимую скорость.";
     }
     if (locale === 'en') {
-      return "🚗 Speed Limits in Uzbekistan:\n\n" +
+      return "Speed Limits in Uzbekistan:\n\n" +
         "• Within cities & urban areas: 60 km/h.\n" +
         "• In residential zones: 20 km/h.\n" +
         "• Near schools & kindergartens: 30 km/h.\n" +
         "• On intercity highways: 100 km/h.\n\n" +
         "Radars and speed cameras are marked on the map with orange circular badges. NaviGo provides proactive alerts as you approach monitored zones.";
     }
-    return "🚗 O‘zbekiston Yo‘l Harakati Qoidalariga ko‘ra ruxsat etilgan tezlik me’yorlari:\n\n" +
+    return "O‘zbekiston Yo‘l Harakati Qoidalariga ko‘ra ruxsat etilgan tezlik me’yorlari:\n\n" +
       "• Shaharlar va aholi punktlarida: maksimal 60 km/soat.\n" +
       "• Turar joy zonalari va hovlilarda: 20 km/soat.\n" +
       "• Maktablar va bolalar bog‘chalari atrofida: 30 km/soat.\n" +
@@ -99,26 +99,26 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('navigate')
   ) {
     if (locale === 'ru') {
-      return "📍 Как построить маршрут в NaviGo:\n\n" +
+      return "Как построить маршрут в NaviGo:\n\n" +
         "1. В поле поиска слева введите название любого места, улицы или города.\n" +
         "2. Или просто нажмите на любую точку на карте и выберите «Сюда (Б)».\n" +
-        "3. Выберите вид транспорта: 🚗 Автомобиль, 🚌 Общественный транспорт, 🚴 Велосипед или 🚶 Пешком.\n" +
+        "3. Выберите вид транспорта: Автомобиль, Общественный транспорт, Велосипед или Пешком.\n" +
         "4. Система рассчитает оптимальный путь, покажет пробки и предложит объездные маршруты.\n" +
         "5. Нажмите «Начать навигацию» для пошагового голосового ведения в реальном времени.";
     }
     if (locale === 'en') {
-      return "📍 How to plan a route with NaviGo:\n\n" +
+      return "How to plan a route with NaviGo:\n\n" +
         "1. In the search box on the left, type any address, landmark, or city.\n" +
         "2. Or simply click any location directly on the map and choose 'Route Here (B)'.\n" +
-        "3. Select your travel mode: 🚗 Driving, 🚌 Transit, 🚴 Cycling, or 🚶 Walking.\n" +
+        "3. Select your travel mode: Driving, Transit, Cycling, or Walking.\n" +
         "4. NaviGo computes the fastest route with live turn-by-turn guidance and traffic avoidance.";
     }
-    return "📍 NaviGo orqali marshrut tuzish tartibi:\n\n" +
+    return "NaviGo orqali marshrut tuzish tartibi:\n\n" +
       "1. Chap paneldagi qidiruv maydoniga istalgan manzil, ko‘cha yoki shaharni yozing.\n" +
       "2. Yoki to‘g‘ridan-to‘g‘ri xaritadagi xohlagan nuqtani bosing va 'Bu yerga ketish (B)' tugmasini tanlang.\n" +
-      "3. Transport turini tanlang: 🚗 Mashina, 🚌 Jamoat transporti, 🚴 Velosiped yoki 🚶 Piyoda.\n" +
+      "3. Transport turini tanlang: Avtomobil, Jamoat transporti, Velosiped yoki Piyoda.\n" +
       "4. Tizim sizga 'Eng tez yo‘l' hamda tirbandlikdan qochuvchi muqobil yo‘llarni hisoblab beradi.\n" +
-      "5. 'Navigatsiyani boshlash' tugmasini bossangiz, Waze/Yandex kabi ovozli burilish yo‘riqnomasi boshlanadi.";
+      "5. 'Navigatsiyani boshlash' tugmasini bossangiz, ovozli burilish yo‘riqnomasi boshlanadi.";
   }
 
   // 4. Gas / Methane / Propane
@@ -134,24 +134,24 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('petrol')
   ) {
     if (locale === 'ru') {
-      return "⛽ Телеметрия метановых (АГНКС) и пропановых станций:\n\n" +
-        "• 🟢 Давление 200–240 бар: Отличное давление, быстрая заправка.\n" +
-        "• 🟡 Давление 180–200 бар: Среднее рабочее давление.\n" +
-        "• 🔴 Давление ниже 180 бар: Низкое давление или высокая очередь.\n\n" +
-        "Нажмите фильтр «Metan/Propan» на панели слева, чтобы увидеть ближайшие открытые заправки с актуальным давлением и расчетным временем ожидания в очереди.";
+      return "Телеметрия АЗС, метановых (АГНКС) и пропановых станций:\n\n" +
+        "• Давление 200–240 бар: Отличное давление, быстрая заправка.\n" +
+        "• Давление 180–200 бар: Среднее рабочее давление.\n" +
+        "• Давление ниже 180 бар: Низкое давление или высокая очередь.\n\n" +
+        "Нажмите кнопку «Zapravka» под кнопкой SOS слева, чтобы увидеть открытые заправки, актуальные цены на бензин (AI-80, 92, 95, 98), давление метана и пропан.";
     }
     if (locale === 'en') {
-      return "⛽ Methane (CNG) & Propane (LPG) Station Telemetry:\n\n" +
-        "• 🟢 200–240 bar: Excellent pressure, fast fill.\n" +
-        "• 🟡 180–200 bar: Moderate pressure.\n" +
-        "• 🔴 Below 180 bar: Low pressure or long queues.\n\n" +
-        "Activate the 'Metan/Propan' filter on the left to locate the nearest open fueling stations with live pressure telemetry and queue time estimates.";
+      return "Fuel, Methane (CNG) & Propane (LPG) Station Telemetry:\n\n" +
+        "• 200–240 bar: Excellent pressure, fast fill.\n" +
+        "• 180–200 bar: Moderate pressure.\n" +
+        "• Below 180 bar: Low pressure or long queues.\n\n" +
+        "Click the 'Zapravka' button under SOS on the left dock to inspect live fuel grades (AI-80, 92, 95, 98, Diesel), CNG pressure, and LPG stations.";
     }
-    return "⛽ Metan (AGNKSh) va Propan zapravkalari bo‘yicha ma’lumot:\n\n" +
-      "• 🟢 Bosim 200–240 bar: A’lo darajadagi bosim, mashina tez to‘ladi.\n" +
-      "• 🟡 Bosim 180–200 bar: O‘rtacha bosim.\n" +
-      "• 🔴 Bosim <180 bar: Past bosim yoki navbat ko‘p.\n\n" +
-      "Chap tarafdagi 'Metan/Propan' filtr tugmasini bosib, sizga eng yaqin ochiq shoxobchalarni, real bosimni va navbat kutish vaqtini ko‘rishingiz mumkin.";
+    return "Yoqilg'i (AQS), Metan (AGNKSh) va Propan shoxobchalari ma'lumoti:\n\n" +
+      "• Bosim 200–240 bar: A’lo darajadagi bosim, tez to‘ldirish.\n" +
+      "• Bosim 180–200 bar: O‘rtacha bosim.\n" +
+      "• Bosim <180 bar: Past bosim yoki katta navbat.\n\n" +
+      "Chap paneldagi SOS tugmasi ostida joylashgan 'Zapravka' tugmasini bosing. Sizga barcha benzin navlari (AI-80, 92, 95, 98, Dizel), metan bosimi va propan narxlari real vaqtda ko'rsatiladi.";
   }
 
   // 5. Weather & Air Quality
@@ -168,23 +168,23 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('air')
   ) {
     if (locale === 'ru') {
-      return "🌤️ Погода и качество воздуха (AQI):\n\n" +
-        "• 🟢 AQI 0–50: Отличное качество воздуха (Good).\n" +
-        "• 🟡 AQI 51–100: Умеренное (Moderate).\n" +
-        "• 🔴 AQI 101+: Неблагоприятное (Unhealthy).\n\n" +
+      return "Погода и качество воздуха (AQI):\n\n" +
+        "• AQI 0–50: Отличное качество воздуха (Good).\n" +
+        "• AQI 51–100: Умеренное (Moderate).\n" +
+        "• AQI 101+: Неблагоприятное (Unhealthy).\n\n" +
         "Данные обновляются в реальном времени через Open-Meteo European AQI. Во время дождя или тумана соблюдайте увеличенную в 2 раза дистанцию и включайте ближний свет/противотуманные фары.";
     }
     if (locale === 'en') {
-      return "🌤️ Weather & Air Quality (AQI) Telemetry:\n\n" +
-        "• 🟢 AQI 0–50: Good air quality.\n" +
-        "• 🟡 AQI 51–100: Moderate air quality.\n" +
-        "• 🔴 AQI 101+: Unhealthy.\n\n" +
+      return "Weather & Air Quality (AQI) Telemetry:\n\n" +
+        "• AQI 0–50: Good air quality.\n" +
+        "• AQI 51–100: Moderate air quality.\n" +
+        "• AQI 101+: Unhealthy.\n\n" +
         "Real-time forecasts and European AQI metrics are tracked automatically for your exact coordinates. During rain or fog, always maintain double following distance.";
     }
-    return "🌤️ Ob-havo va Havo sifati (AQI) ko‘rsatkichlari:\n\n" +
-      "• 🟢 AQI 0–50: Yaxshi / Toza havo (Good).\n" +
-      "• 🟡 AQI 51–100: O‘rtacha qoniqarli (Moderate).\n" +
-      "• 🔴 AQI 101+: Noqulay / Ifloslangan (Unhealthy).\n\n" +
+    return "Ob-havo va Havo sifati (AQI) ko‘rsatkichlari:\n\n" +
+      "• AQI 0–50: Yaxshi / Toza havo (Good).\n" +
+      "• AQI 51–100: O‘rtacha qoniqarli (Moderate).\n" +
+      "• AQI 101+: Noqulay / Ifloslangan (Unhealthy).\n\n" +
       "Xaritadagi har bir shahar va tuman uchun harorat va shamol tezligi Open-Meteo orqali yangilanadi. Yomg‘ir, qor yoki tuman bo‘lganda avtomobillar oralig‘idagi masofani 2 barobarga oshirish tavsiya etiladi.";
   }
 
@@ -201,20 +201,20 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('soobshit')
   ) {
     if (locale === 'ru') {
-      return "📢 Как сообщить о дорожной проблеме или ДТП:\n\n" +
+      return "Как сообщить о дорожной проблеме или ДТП:\n\n" +
         "1. Нажмите кнопку «+ Сообщить о проблеме» в правом нижнем углу карты.\n" +
         "2. Выберите категорию: ДТП, Яма, Дорожные работы, Пробка или Радар.\n" +
         "3. Укажите местоположение и нажмите «Отправить».\n" +
         "Ваша отметка сразу отобразится у всех водителей, помогая предотвратить заторы!";
     }
     if (locale === 'en') {
-      return "📢 How to submit a road hazard or incident report:\n\n" +
+      return "How to submit a road hazard or incident report:\n\n" +
         "1. Click the floating '+ Report a problem' button on the map.\n" +
         "2. Choose the hazard type: Accident, Pothole, Roadworks, Traffic Jam, or Speed Camera.\n" +
         "3. Confirm the location and tap 'Submit'.\n" +
         "Your report instantly alerts fellow motorists across NaviGo!";
     }
-    return "📢 Yo‘ldagi nosozlik, chuqur yoki avariya haqida xabar berish:\n\n" +
+    return "Yo‘ldagi nosozlik, chuqur yoki avariya haqida xabar berish:\n\n" +
       "1. Xaritaning o‘ng pastki qismidagi '+ Muammo haqida xabar berish' tugmasini bosing.\n" +
       "2. Muammo turini tanlang: Avtohalokat, Chuqur, Yo‘l ta’miri, Tirbandlik yoki Radar.\n" +
       "3. Joylashuvni tasdiqlang va 'Xabar berish' tugmasini bosing.\n" +
@@ -233,18 +233,18 @@ function getIntelligentAiResponse(userText: string, locale: string): string {
     lower.includes('sozlamalar')
   ) {
     if (locale === 'ru') {
-      return "🌓 Переключение темы и настройки оформления:\n\n" +
+      return "Переключение темы и настройки оформления:\n\n" +
         "• В верхнем меню перейдите в «Sozlamalar» (Настройки) или используйте переключатель темы.\n" +
         "• Темная тема оптимизирована для ночной езды и снижает нагрузку на глаза.\n" +
         "• Переключение темы происходит мгновенно без перезагрузки карты и без потери меток.";
     }
     if (locale === 'en') {
-      return "🌓 Dark/Light Mode & Settings:\n\n" +
+      return "Dark/Light Mode & Settings:\n\n" +
         "• Go to 'Settings' in the top navigation or toggle the theme switch.\n" +
         "• Dark mode reduces glare during nighttime driving.\n" +
         "• Theme transitions are instant and preserve all active routes, markers, and incident layers.";
     }
-    return "🌓 Tungi va Kunduzgi rejim (Sozlamalar):\n\n" +
+    return "Tungi va Kunduzgi rejim (Sozlamalar):\n\n" +
       "• Yuqori menyudagi 'Sozlamalar' bo‘limidan yoki mavzu tugmasidan foydalanib tungi rejimni yoqishingiz mumkin.\n" +
       "• Tungi rejim haydovchining ko‘zini toliqtirmaydi va batareya quvvatini tejaydi.\n" +
       "• Rejim almashganda xaritadagi barcha yo‘llar, radarlar va ob-havo belgilari bir zumda saqlanadi.";

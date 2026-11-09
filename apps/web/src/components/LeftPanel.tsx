@@ -28,6 +28,13 @@ import {
   ArrowRightLeft,
   LocateFixed,
   CloudSun,
+  Sun,
+  Cloud,
+  CloudFog,
+  CloudDrizzle,
+  CloudRain,
+  Snowflake,
+  CloudLightning,
   Zap,
   Fuel,
   Gauge,
@@ -1324,15 +1331,16 @@ export const LeftPanel: React.FC = () => {
                   {weather ? weather.conditionText : 'Clear sky'}
                 </p>
               </div>
-              <div className="w-16 h-16 rounded-full bg-orangeTint dark:bg-opacity-20 flex items-center justify-center text-3xl select-none">
-                {weather?.weatherIcon === 'sun' ? '☀️' :
-                 weather?.weatherIcon === 'cloud-sun' ? '⛅' :
-                 weather?.weatherIcon === 'cloud' ? '☁️' :
-                 weather?.weatherIcon === 'cloud-fog' ? '🌫️' :
-                 weather?.weatherIcon === 'cloud-drizzle' ? '🌦️' :
-                 weather?.weatherIcon === 'cloud-rain' ? '🌧️' :
-                 weather?.weatherIcon === 'snowflake' ? '❄️' :
-                 weather?.weatherIcon === 'cloud-lightning' ? '⛈️' : '☀️'}
+              <div className="w-16 h-16 rounded-full bg-orangeTint dark:bg-opacity-20 flex items-center justify-center text-accentOrange shadow-inner">
+                {weather?.weatherIcon === 'sun' ? <Sun className="w-8 h-8 text-amber-500" /> :
+                 weather?.weatherIcon === 'cloud-sun' ? <CloudSun className="w-8 h-8 text-amber-500" /> :
+                 weather?.weatherIcon === 'cloud' ? <Cloud className="w-8 h-8 text-slate-500" /> :
+                 weather?.weatherIcon === 'cloud-fog' ? <CloudFog className="w-8 h-8 text-slate-400" /> :
+                 weather?.weatherIcon === 'cloud-drizzle' ? <CloudDrizzle className="w-8 h-8 text-blue-400" /> :
+                 weather?.weatherIcon === 'cloud-rain' ? <CloudRain className="w-8 h-8 text-blue-500" /> :
+                 weather?.weatherIcon === 'snowflake' ? <Snowflake className="w-8 h-8 text-cyan-400" /> :
+                 weather?.weatherIcon === 'cloud-lightning' ? <CloudLightning className="w-8 h-8 text-amber-600" /> : 
+                 <Sun className="w-8 h-8 text-amber-500" />}
               </div>
             </div>
 

@@ -5,8 +5,33 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="theme-color" content="#0F172A" />
-    <meta name="description" content="NaviGo — Smart road navigation and emergency response platform for Uzbekistan" />
+    <meta name="description" content="NaviGo — Smart road navigation, live fuel telemetry and emergency response platform for Uzbekistan" />
+    <meta property="og:title" content="NaviGo — Smart Navigation & Emergency Response" />
+    <meta property="og:description" content="O'zbekiston bo'ylab aqlli yo'l navigatsiyasi, jonli AQS benzin/metan narxlari va tezkor yordam tizimi" />
+    <meta property="og:type" content="website" />
     <title>NaviGo — Smart Navigation & Emergency Response</title>
+    <!-- Google Consent Mode v2 Initialization -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+      try {
+        var savedConsent = localStorage.getItem('navigo_cookie_consent_v2');
+        if (savedConsent === 'granted') {
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted'
+          });
+        }
+      } catch (e) {}
+    </script>
     <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

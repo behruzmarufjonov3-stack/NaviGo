@@ -244,30 +244,42 @@ export const Header: React.FC = () => {
           </button>
         </div>
 
-        {/* Account / Sign In Button */}
-        <button
-          onClick={() => {
-            if (user) {
-              setIsProfileModalOpen(true);
-            } else {
-              setIsAuthOpen(true);
-            }
-          }}
-          title={user ? "Profil va ma'lumotlarimni ko'rish / tahrirlash" : t('topBar.login')}
-          className="flex items-center gap-1.5 md:gap-2 bg-white dark:bg-darkCard px-3 py-1.5 md:px-3.5 md:py-2 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText shrink-0 max-w-[150px] md:max-w-[200px]"
-        >
-          <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec shrink-0">
-            <UserIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-          </div>
-          <span className="font-semibold text-xs md:text-sm truncate max-w-[70px] md:max-w-[100px]">
-            {user ? user.name.split(' ')[0] : t('topBar.login')}
-          </span>
-          {user && (
-            <span className="text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-orangeTint text-accentOrange uppercase shrink-0">
-              {user.role}
-            </span>
-          )}
-        </button>
+        {/* User Account: Circular Avatar Button or Sign-in button */}
+        {user ? (
+          <button
+            onClick={() => setIsProfileModalOpen(true)}
+            title={`Foydalanuvchi profili: ${user.name} (${user.role})`}
+            aria-label={`Foydalanuvchi profili: ${user.name}`}
+            className="w-9 h-9 md:w-10 md:h-10 rounded-full p-0.5 bg-white dark:bg-darkCard border-2 border-accentOrange shadow-soft flex items-center justify-center spring-btn relative shrink-0 overflow-hidden active:scale-90 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accentOrange/50"
+          >
+            {user.avatarUrl ? (
+              <img 
+                src={user.avatarUrl} 
+                alt={user.name} 
+                className="w-full h-full rounded-full object-cover" 
+              />
+            ) : (
+              <div className="w-full h-full rounded-full bg-gradient-to-tr from-accentOrange to-orange-400 text-white font-black text-xs md:text-sm flex items-center justify-center uppercase shadow-inner">
+                {user.name.split(' ').map(n => n[0]).join('').slice(0, 2) || 'U'}
+              </div>
+            )}
+            <span 
+              className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-darkCard rounded-full shadow-xs" 
+              title="Online"
+            />
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            title={t('topBar.login')}
+            className="flex items-center gap-1.5 md:gap-2 bg-white dark:bg-darkCard px-3 py-1.5 md:px-3.5 md:py-2 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText shrink-0 text-xs md:text-sm font-semibold hover:border-accentOrange"
+          >
+            <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-accentOrange shrink-0">
+              <UserIcon className="w-3.5 h-3.5" />
+            </div>
+            <span>{t('topBar.login')}</span>
+          </button>
+        )}
       </div>
     </header>
   );

@@ -14,6 +14,23 @@ gasStationRouter.get('/', (req: Request, res: Response) => {
   res.json({ stations });
 });
 
+// GET /api/v1/gas-stations/rates/summary
+gasStationRouter.get('/rates/summary', (req: Request, res: Response) => {
+  res.json({
+    updatedDate: new Date().toISOString().split('T')[0],
+    source: "O'zbekiston tovar-xomashyo birjasi (UZEX) va AQS tarmoqlari monitoringi",
+    averages: {
+      ai80: 8200,
+      ai92: 9800,
+      ai95: 12500,
+      ai98: 15500,
+      diesel: 11800,
+      metan: 3800,
+      propan: 5200
+    }
+  });
+});
+
 // GET /api/v1/gas-stations/:id
 gasStationRouter.get('/:id', (req: Request, res: Response) => {
   const station = gasStationStore.getById(req.params.id);

@@ -1438,8 +1438,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                     <span>•</span>
                     <span>{activeRoute.durationMinutes} min ({(activeRoute.distanceMeters / 1000).toFixed(1)} km)</span>
                     <span>•</span>
-                    <span className="text-emerald-400">
-                      🏁 {new Date(Date.now() + activeRoute.durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <span className="text-emerald-400 flex items-center gap-1">
+                      <Flag className="w-3.5 h-3.5" />
+                      <span>{new Date(Date.now() + activeRoute.durationMinutes * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </span>
                   </div>
                 </div>
@@ -1840,8 +1841,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-purple-400 animate-fade-in">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-lg">
-                📍
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                <MapPin className="w-5 h-5" />
               </div>
               <div>
                 <span className="text-[10px] font-bold text-purple-600 uppercase">
