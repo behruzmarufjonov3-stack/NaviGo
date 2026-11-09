@@ -629,6 +629,21 @@ export const ambulanceApi = {
   },
 
   async cancelRequest(id: string, serviceType: EmergencyServiceType = '103'): Promise<EmergencyRequest> {
+    const freeAssignedUnits = () => {
+      const ambs = loadStoredUnits(serviceType);
+      ambs.forEach(a => {
+        if (a.currentRequestId === id || a.status === 'enroute' || a.status === 'assigned') {
+          a.status = 'free';
+          a.currentRequestId = undefined;
+          if (a.baseLat && a.baseLon) {
+            a.lat = a.baseLat;
+            a.lon = a.baseLon;
+          }
+        }
+      });
+      saveStoredUnits(serviceType, ambs);
+    };
+
     try {
       const res = await fetch(`${API_BASE}/requests/${id}/cancel`, {
         method: 'POST',
@@ -638,6 +653,7 @@ export const ambulanceApi = {
         const stored = loadStoredPending(serviceType).filter(r => r.id !== id);
         saveStoredPending(serviceType, stored);
         saveStoredActive(serviceType, null);
+        freeAssignedUnits();
         return await res.json();
       }
     } catch {}
@@ -645,6 +661,7 @@ export const ambulanceApi = {
     const stored = loadStoredPending(serviceType).filter(r => r.id !== id);
     saveStoredPending(serviceType, stored);
     saveStoredActive(serviceType, null);
+    freeAssignedUnits();
     return {} as EmergencyRequest;
   },
 

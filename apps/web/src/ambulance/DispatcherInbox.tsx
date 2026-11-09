@@ -124,10 +124,12 @@ export const DispatcherInbox: React.FC<DispatcherInboxProps> = ({
   }, [pendingRequests]);
 
   const handleSendToDriver = async (requestId: string, defaultAmbId?: string) => {
-    const chosenAmbulanceId = selectedAmbulanceByReq[requestId] || defaultAmbId || ambulances.find(a => a.status === 'free')?.id;
+    const chosenAmbulanceId = selectedAmbulanceByReq[requestId] || defaultAmbId || freeAmbulances[0]?.id || ambulances.find(a => a.status === 'free')?.id;
     try {
       setProcessingId(requestId);
-      await ambulanceApi.acceptRequest(requestId, binding?.hospitalId, chosenAmbulanceId, serviceType);
+      const accepted = await ambulanceApi.acceptRequest(requestId, binding?.hospitalId, chosenAmbulanceId, serviceType);
+      const ambIdToUse = chosenAmbulanceId || accepted.assignedAmbulanceId;
+      await ambulanceApi.driverGo(requestId, ambIdToUse, serviceType);
       onRefresh();
     } catch (err: any) {
       alert(err.message || 'Haydovchiga yuborishda xatolik');

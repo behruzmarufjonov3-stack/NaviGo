@@ -423,32 +423,9 @@ class AmbulanceService {
       this.handleAcceptTimeout(id);
     }, timeoutMs);
 
-    // Demo automated dispatch simulation:
-    // 1. Dispatcher automatically accepts after 2 seconds
-    // 2. Driver automatically starts journey ("GO") after 1.5 seconds
-    // 3. Ambulance moves along real road route to the patient
-    if (data.autoDispatchDemo) {
-      const autoAcceptTimer = setTimeout(async () => {
-        try {
-          const reqCheck = ambulanceStore.getRequest(id);
-          if (reqCheck && reqCheck.status === 'pending') {
-            const accepted = await this.acceptEmergencyRequest(id, nearest.hospital.id, 'usr-disp-1');
-            if (accepted && accepted.assignedAmbulanceId) {
-              const autoGoTimer = setTimeout(() => {
-                try {
-                  const reqCheck2 = ambulanceStore.getRequest(id);
-                  if (reqCheck2 && reqCheck2.status === 'assigned') {
-                    this.driverGo(id, accepted.assignedAmbulanceId!, 'usr-driver-1');
-                  }
-                } catch (e) {}
-              }, 1500);
-              if (autoGoTimer && typeof autoGoTimer.unref === 'function') autoGoTimer.unref();
-            }
-          }
-        } catch (e) {}
-      }, 2000);
-      if (autoAcceptTimer && typeof autoAcceptTimer.unref === 'function') autoAcceptTimer.unref();
-    }
+    // Automated dispatch disabled: Calls stay strictly pending until dispatcher
+    // reviews incoming queue, chooses nearest free unit, and dispatches via /requests/:id/accept.
+    // (autoDispatchDemo removed per real-world emergency workflow requirement)
 
     dbStore.appendAudit({
       id: uuidv4(),

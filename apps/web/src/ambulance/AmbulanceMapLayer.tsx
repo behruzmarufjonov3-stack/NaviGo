@@ -178,7 +178,8 @@ export const AmbulanceMapLayer: React.FC<AmbulanceMapLayerProps> = ({
       const source = map.getSource('ambulance-route-source') as maplibregl.GeoJSONSource;
       if (!source) return;
 
-      const currentGeom = activeRequest?.routeGeometry || [];
+      const isRouteActive = activeRequest && ['assigned', 'enroute', 'onscene'].includes(activeRequest.status);
+      const currentGeom = isRouteActive ? (activeRequest?.routeGeometry || []) : [];
       const geomStr = JSON.stringify(currentGeom);
 
       if (currentGeom.length > 0) {
@@ -195,18 +196,17 @@ export const AmbulanceMapLayer: React.FC<AmbulanceMapLayerProps> = ({
         }
 
         if (
-          ['pending', 'assigned', 'enroute'].includes(activeRequest?.status || '') &&
-          lastFittedReqIdRef.current !== activeRequest?.id
+          ['assigned', 'enroute'].includes(activeRequest?.status || '') &&
+          lastFittedReqIdRef.current !== `${activeRequest?.id}_enroute`
         ) {
-          lastFittedReqIdRef.current = activeRequest?.id || null;
+          lastFittedReqIdRef.current = `${activeRequest?.id}_enroute`;
           const bounds = new maplibregl.LngLatBounds();
           currentGeom.forEach(coord => bounds.extend(coord));
-          map.fitBounds(bounds, { padding: 90, maxZoom: 15, duration: 0 });
+          map.fitBounds(bounds, { padding: 90, maxZoom: 15, duration: 600 });
         }
       } else {
         if (lastRouteGeometryStrRef.current !== '') {
           lastRouteGeometryStrRef.current = '';
-          lastFittedReqIdRef.current = null;
           source.setData({
             type: 'Feature',
             properties: {},
@@ -215,6 +215,12 @@ export const AmbulanceMapLayer: React.FC<AmbulanceMapLayerProps> = ({
               coordinates: []
             }
           });
+        }
+
+        // When pending, focus on citizen waiting location
+        if (activeRequest?.status === 'pending' && lastFittedReqIdRef.current !== `${activeRequest?.id}_pending`) {
+          lastFittedReqIdRef.current = `${activeRequest?.id}_pending`;
+          map.flyTo({ center: [activeRequest.lon, activeRequest.lat], zoom: 14, duration: 600 });
         }
       }
     } catch {}
@@ -228,6 +234,12 @@ export const AmbulanceMapLayer: React.FC<AmbulanceMapLayerProps> = ({
     const isActive = activeRequest && ['pending', 'assigned', 'enroute', 'onscene'].includes(activeRequest.status);
 
     if (isActive) {
+      const isPending = activeRequest.status === 'pending';
+      const badgeBg = isPending ? 'bg-amber-500' : 'bg-red-600';
+      const badgeText = isPending 
+        ? `Chaqiruv #${activeRequest.id.slice(-6).toUpperCase()} (Dispetcher ko'rmoqda)`
+        : `Chaqiruv #${activeRequest.id.slice(-6).toUpperCase()} (Ekipaj yo'lda)`;
+
       const lastCoord = lastRequestMarkerCoordRef.current;
       const coordChanged = !lastCoord || 
         Math.abs(lastCoord.lon - activeRequest.lon) > 0.000005 || 
@@ -238,16 +250,22 @@ export const AmbulanceMapLayer: React.FC<AmbulanceMapLayerProps> = ({
           requestMarkerRef.current.setLngLat([activeRequest.lon, activeRequest.lat]);
           lastRequestMarkerCoordRef.current = { lon: activeRequest.lon, lat: activeRequest.lat };
         }
+        const textSpan = requestMarkerRef.current.getElement().querySelector('.req-label-text');
+        if (textSpan) textSpan.textContent = badgeText;
+        const pillDiv = requestMarkerRef.current.getElement().querySelector('.req-marker-pill');
+        if (pillDiv) {
+          pillDiv.className = `req-marker-pill flex items-center gap-1.5 ${badgeBg} text-white px-2.5 py-1 rounded-full shadow-lg border-2 border-white text-xs font-black whitespace-nowrap`;
+        }
       } else {
         const el = document.createElement('div');
         el.className = 'cursor-pointer select-none';
         el.innerHTML = `
           <div class="relative flex flex-col items-center">
-            <div class="flex items-center gap-1.5 bg-red-600 text-white px-2.5 py-1 rounded-full shadow-lg border-2 border-white text-xs font-black whitespace-nowrap">
-              <span class="w-2 h-2 rounded-full bg-white"></span>
-              <span>Chaqiruv #${activeRequest.id.slice(-6).toUpperCase()}</span>
+            <div class="req-marker-pill flex items-center gap-1.5 ${badgeBg} text-white px-2.5 py-1 rounded-full shadow-lg border-2 border-white text-xs font-black whitespace-nowrap">
+              <span class="w-2 h-2 rounded-full bg-white ${isPending ? 'animate-ping' : ''}"></span>
+              <span class="req-label-text">${badgeText}</span>
             </div>
-            <div class="w-2.5 h-2.5 bg-red-600 rotate-45 -mt-1 border-r border-b border-white"></div>
+            <div class="w-2.5 h-2.5 ${badgeBg} rotate-45 -mt-1 border-r border-b border-white"></div>
           </div>
         `;
 
