@@ -18,7 +18,9 @@ import {
   Shield,
   Flame,
   LifeBuoy,
-  User as UserIcon
+  User as UserIcon,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { 
   AmbulanceStatePayload, 
@@ -90,6 +92,8 @@ export const AmbulanceApp: React.FC = () => {
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -816,15 +820,25 @@ export const AmbulanceApp: React.FC = () => {
                         <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">
                           {t('auth.password')}
                         </label>
-                        <input
-                          type="password"
-                          required
-                          minLength={6}
-                          value={regPassword}
-                          onChange={(e) => setRegPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                        />
+                        <div className="relative">
+                          <input
+                            type={showRegPassword ? 'text' : 'password'}
+                            required
+                            minLength={6}
+                            value={regPassword}
+                            onChange={(e) => setRegPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowRegPassword(!showRegPassword)}
+                            className="absolute right-3.5 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+                            title={showRegPassword ? 'Parolni yashirish' : 'Parolni ko‘rsatish'}
+                          >
+                            {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
                       </div>
                       <button
                         type="submit"
@@ -856,14 +870,24 @@ export const AmbulanceApp: React.FC = () => {
                           <label className="text-xs font-bold text-gray-700 dark:text-gray-300 block mb-1">
                             {t('auth.password')}
                           </label>
-                          <input
-                            type="password"
-                            required
-                            value={loginPassword}
-                            onChange={(e) => setLoginPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="w-full px-3.5 py-2.5 rounded-xl border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                          />
+                          <div className="relative">
+                            <input
+                              type={showLoginPassword ? 'text' : 'password'}
+                              required
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              placeholder="••••••••"
+                              className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border-2 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm font-bold text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowLoginPassword(!showLoginPassword)}
+                              className="absolute right-3.5 top-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none"
+                              title={showLoginPassword ? 'Parolni yashirish' : 'Parolni ko‘rsatish'}
+                            >
+                              {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
                         </div>
                         <button
                           type="submit"

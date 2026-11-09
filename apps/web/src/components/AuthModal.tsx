@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Lock, Mail, User as UserIcon, Shield, Check } from 'lucide-react';
+import { X, Lock, Mail, User as UserIcon, Shield, Check, Eye, EyeOff } from 'lucide-react';
 import { UserRole } from '@yol/shared';
 
 export const AuthModal: React.FC = () => {
@@ -9,6 +9,7 @@ export const AuthModal: React.FC = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -177,13 +178,22 @@ export const AuthModal: React.FC = () => {
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-textSecondary" />
                   <input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-sm text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-accentOrange"
+                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-sm text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-accentOrange"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-3 text-textSecondary hover:text-textPrimary dark:hover:text-darkText transition-colors focus:outline-none"
+                    aria-label={showPassword ? 'Parolni yashirish' : 'Parolni ko‘rsatish'}
+                    title={showPassword ? 'Parolni yashirish' : 'Parolni ko‘rsatish'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
