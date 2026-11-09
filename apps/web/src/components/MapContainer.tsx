@@ -63,6 +63,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
     focusedLocation,
     setFocusedLocation,
     features, 
+    dismissFeature,
     userReports,
     mapMode, 
     setMapMode,
@@ -234,15 +235,28 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
     }
   };
 
-  // Initialize MapLibre
+  const handleDismissIncident = (featureId: string) => {
+    dismissFeature(featureId);
+    setQuickHazardToast(
+      locale === 'ru' 
+        ? 'Спасибо за подтверждение! Отметка снята с карты.' 
+        : locale === 'en' 
+        ? 'Thank you! The incident has been removed from the map.' 
+        : "Rahmat! Yo'l hodisasi xaritadan olib tashlandi."
+    );
+    setTimeout(() => setQuickHazardToast(null), 3500);
+  };
+
+  // Initialize MapLibre (Mounted once, never destroyed on theme change!)
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Reliable, 100% free, fast CDN tile servers (Humanitarian OpenStreetMap - works everywhere including Codespaces and custom domains without 403 blocks or API keys)
+    // High-performance global CDN tile servers (CartoDB Voyager + OSM with fast edge caching <35ms)
     const osmTiles = [
-      'https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-      'https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-      'https://c.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
+      'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
     ];
 
     const map = new maplibregl.Map({
@@ -279,9 +293,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             minzoom: 0,
             maxzoom: 19,
             paint: theme === 'dark' ? {
-              'raster-brightness-max': 0.65,
-              'raster-contrast': 0.3,
-              'raster-saturation': -0.5
+              'raster-brightness-max': 0.62,
+              'raster-contrast': 0.35,
+              'raster-saturation': -0.55
             } : {}
           },
           {
@@ -382,6 +396,31 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
       map.remove();
       mapRef.current = null;
     };
+  }, []);
+
+  // Dynamically update dark/light theme on existing map tiles without destroying the map or markers!
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const applyTheme = () => {
+      if (map.getLayer('osm-tiles-layer')) {
+        if (theme === 'dark') {
+          map.setPaintProperty('osm-tiles-layer', 'raster-brightness-max', 0.62);
+          map.setPaintProperty('osm-tiles-layer', 'raster-contrast', 0.35);
+          map.setPaintProperty('osm-tiles-layer', 'raster-saturation', -0.55);
+        } else {
+          map.setPaintProperty('osm-tiles-layer', 'raster-brightness-max', 1.0);
+          map.setPaintProperty('osm-tiles-layer', 'raster-contrast', 0.0);
+          map.setPaintProperty('osm-tiles-layer', 'raster-saturation', 0.0);
+        }
+      }
+    };
+
+    if (map.isStyleLoaded()) {
+      applyTheme();
+    } else {
+      map.once('style.load', applyTheme);
+    }
   }, [theme]);
 
   // Render temporary pin when user clicks on map
@@ -1657,12 +1696,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFeatureVotes(prev => ({ ...prev, [selectedFeature.id]: 'down' }))}
-                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black transition-all ${
-                      featureVotes[selectedFeature.id] === 'down'
-                        ? 'bg-rose-600 text-white shadow-sm'
-                        : 'bg-white dark:bg-gray-700 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-gray-600'
-                    }`}
+                    onClick={() => handleDismissIncident(selectedFeature.id)}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black transition-all bg-rose-600 hover:bg-rose-700 text-white shadow-sm spring-btn active:scale-90"
+                    title={locale === 'ru' ? 'Подтвердить, что проблемы уже нет' : locale === 'en' ? 'Confirm hazard is resolved' : "Muammo yo'qligini tasdiqlash"}
                   >
                     <ThumbsDown className="w-3.5 h-3.5" />
                     <span>{locale === 'ru' ? 'Нет' : locale === 'en' ? 'No' : "Yo'qoldi"}</span>

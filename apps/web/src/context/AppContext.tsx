@@ -77,6 +77,7 @@ interface AppContextType {
   markNotificationAsRead: (id: string) => void;
   markAllNotificationsAsRead: () => void;
   features: MapFeature[];
+  dismissFeature: (featureId: string) => void;
   selectedFeature: MapFeature | null;
   setSelectedFeature: (f: MapFeature | null) => void;
   userReports: Report[];
@@ -178,6 +179,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const [features, setFeatures] = useState<MapFeature[]>([]);
   const [selectedFeature, setSelectedFeature] = useState<MapFeature | null>(null);
+  const [dismissedFeatureIds, setDismissedFeatureIds] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem('navigo_dismissed_features');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const dismissFeature = (featureId: string) => {
+    setDismissedFeatureIds(prev => {
+      const next = new Set(prev);
+      next.add(featureId);
+      try {
+        localStorage.setItem('navigo_dismissed_features', JSON.stringify(Array.from(next)));
+      } catch {}
+      return next;
+    });
+
+    setFeatures(prev => prev.filter(f => f.id !== featureId));
+    if (selectedFeature?.id === featureId) {
+      setSelectedFeature(null);
+    }
+
+    // Call backend downvote/resolve asynchronously
+    fetch(`/api/v1/map/features/${featureId}/downvote`, { method: 'POST' }).catch(() => {});
+  };
   const [userReports, setUserReports] = useState<Report[]>([]);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
@@ -610,7 +638,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       if (featRes.ok) {
         const featData = await featRes.json();
-        setFeatures(featData.features || []);
+        const rawList: MapFeature[] = featData.features || [];
+        setFeatures(rawList.filter(f => !dismissedFeatureIds.has(f.id)));
       }
       if (wRes.ok) {
         const wData = await wRes.json();
@@ -711,6 +740,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         markNotificationAsRead,
         markAllNotificationsAsRead,
         features,
+        dismissFeature,
         selectedFeature,
         setSelectedFeature,
         userReports,
