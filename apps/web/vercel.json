@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://navigo-api.onrender.com/api/$1"
+      "destination": "https://navigo-p6lh.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
