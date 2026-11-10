@@ -166,24 +166,24 @@ export const FuelSelectorModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
       <div 
         role="dialog"
         aria-modal="true"
         aria-labelledby="fuel-modal-title"
-        className="w-full max-w-3xl bg-white dark:bg-darkCard rounded-panel shadow-float border border-yolBorder dark:border-darkBorder p-4 sm:p-6 max-h-[92vh] flex flex-col overflow-hidden"
+        className="w-full max-w-3xl bg-white dark:bg-darkCard rounded-3xl shadow-float border border-yolBorder dark:border-darkBorder p-3.5 sm:p-5 max-h-[85vh] flex flex-col overflow-hidden my-auto"
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-yolBorder dark:border-darkBorder shrink-0">
+        <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-yolBorder dark:border-darkBorder shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md">
-              <Fuel className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
+              <Fuel className="w-5 h-5" />
             </div>
             <div>
-              <h2 id="fuel-modal-title" className="text-lg sm:text-xl font-black text-textPrimary dark:text-darkText tracking-tight">
+              <h2 id="fuel-modal-title" className="text-base sm:text-lg font-black text-textPrimary dark:text-darkText tracking-tight">
                 {locale === 'ru' ? 'АЗС и Газовые заправки' : locale === 'en' ? 'Fuel & Gas Stations' : "Yoqilg'i & Gaz Shoxobchalari"}
               </h2>
-              <span className="text-xs text-textSecondary dark:text-darkTextSec flex items-center gap-1.5 mt-0.5 font-medium">
+              <span className="text-[11px] text-textSecondary dark:text-darkTextSec flex items-center gap-1.5 mt-0.5 font-medium">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>Onlayn monitoring: Metan bosimi, Benzin navlari va amaldagi narxlar</span>
               </span>
@@ -192,14 +192,14 @@ export const FuelSelectorModal: React.FC = () => {
           <button
             onClick={() => setIsFuelModalOpen(false)}
             aria-label={t('common.close')}
-            className="w-10 h-10 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec hover:text-textPrimary spring-btn active:scale-90"
+            className="w-9 h-9 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec hover:text-textPrimary spring-btn active:scale-90"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Live Daily Online Sync Bar with Verified External Sources */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 my-2.5 rounded-xl bg-innerSoftArea dark:bg-gray-800/80 border border-yolBorder dark:border-gray-700 text-xs shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 my-2 rounded-xl bg-innerSoftArea dark:bg-gray-800/80 border border-yolBorder dark:border-gray-700 text-xs shrink-0">
           <div className="flex flex-col gap-1 text-textSecondary dark:text-darkTextSec">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -645,15 +645,15 @@ export const FuelSelectorModal: React.FC = () => {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="pt-3 border-t border-yolBorder dark:border-darkBorder flex items-center justify-between shrink-0">
+        {/* Footer with guaranteed full visibility */}
+        <div className="pt-3 pb-0.5 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between shrink-0">
           <span className="text-[11px] text-textSecondary dark:text-darkTextSec font-medium">
             NaviGo Yoqilg'i Telemetriyasi • UZEX Birjasi va Haydovchilar hamkorligida
           </span>
           <button
             type="button"
             onClick={() => setIsFuelModalOpen(false)}
-            className="px-4 py-2 rounded-full bg-blackPill text-white text-xs font-bold spring-btn active:scale-95"
+            className="px-5 py-2 rounded-full bg-gray-900 hover:bg-black text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 text-xs font-black shadow-md spring-btn active:scale-95 transition-all shrink-0 cursor-pointer"
           >
             Yopish
           </button>
