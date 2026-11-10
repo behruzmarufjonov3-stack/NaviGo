@@ -20,7 +20,9 @@ import {
   Image as ImageIcon,
   Video as VideoIcon,
   Send,
-  Radio
+  Radio,
+  Lock,
+  LogIn
 } from 'lucide-react';
 import { EmergencyRequest, EmergencySeverity, Hospital, AmbulanceUnit, EmergencyServiceType } from '@yol/shared';
 import { ambulanceApi } from './ambulanceApi';
@@ -32,6 +34,7 @@ interface CitizenRequestProps {
   assignedAmbulance?: AmbulanceUnit | null;
   hospitals: Hospital[];
   onRefresh: () => void;
+  onRequestLogin?: () => void;
 }
 
 export const CitizenRequest: React.FC<CitizenRequestProps> = ({
@@ -39,9 +42,18 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
   activeRequest,
   assignedAmbulance,
   hospitals,
-  onRefresh
+  onRefresh,
+  onRequestLogin
 }) => {
-  const { user, userCoords, locale, t, features, setSelectedFeature, setFocusedLocation } = useApp();
+  const { user, userCoords, locale, t, features, setSelectedFeature, setFocusedLocation, setIsAuthOpen } = useApp();
+
+  const handleOpenLogin = () => {
+    if (onRequestLogin) {
+      onRequestLogin();
+    } else {
+      setIsAuthOpen(true);
+    }
+  };
 
   // Initial values per service
   const getDefaultDescription = (type: EmergencyServiceType, loc: string) => {
@@ -135,6 +147,20 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // SOS rejimida chaqiruv amalga oshirish uchun tizimga kirish talab etiladi
+    if (!user) {
+      setErrorMsg(
+        locale === 'ru'
+          ? 'Для оформления экстренного вызова необходимо войти в систему!'
+          : locale === 'en'
+          ? 'Sign in is required to make an emergency call!'
+          : 'Favqulodda chaqiruv amalga oshirish uchun avval tizimga kirishingiz shart!'
+      );
+      handleOpenLogin();
+      return;
+    }
+
     if (serviceType !== '101' && description.trim().length < 3) {
       setErrorMsg('Iltimos holatni qisqacha tavsiflang (kamida 3 ta belgi).');
       return;
@@ -715,11 +741,11 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
             </p>
           </div>
 
-          {/* Citizen Account Identity Status */}
+          {/* Citizen Account Identity Status (Login Mandatory for SOS) */}
           {user ? (
-            <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 flex items-center justify-between">
+            <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-400 dark:border-emerald-700 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-xs shrink-0">
+                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0">
@@ -727,27 +753,49 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
                     <span className="text-xs font-black text-gray-900 dark:text-gray-100 truncate">
                       {user.name}
                     </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200">
                       {t('auth.roles.citizen')}
                     </span>
                   </div>
-                  <span className="text-[10px] text-gray-500 font-mono block truncate">
+                  <span className="text-[10px] text-gray-600 dark:text-gray-400 font-mono block truncate">
                     {user.email}
                   </span>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-white dark:bg-emerald-900/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 shrink-0">
+              <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-200 bg-white dark:bg-emerald-900 px-2.5 py-1 rounded-full border border-emerald-300 dark:border-emerald-700 shrink-0 shadow-2xs">
                 ✓ {t('emergency.labels.activeAccount')}
               </span>
             </div>
           ) : (
-            <div className="p-2.5 rounded-2xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs">
-              <span className="text-textSecondary text-[11px]">
-                {t('emergency.labels.anonymousCall')}
-              </span>
-              <span className="text-[10px] font-bold text-accentOrange">
-                {t('emergency.labels.canConnectAccount')}
-              </span>
+            <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 dark:border-amber-700 flex flex-col gap-2.5 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-amber-900 dark:text-amber-100 font-black text-xs sm:text-sm">
+                  <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>
+                    {locale === 'ru' ? 'Требуется авторизация' : locale === 'en' ? 'Sign In Required' : "Tizimga kirish talab etiladi"}
+                  </span>
+                </div>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100">
+                  {locale === 'ru' ? 'Обязательно' : locale === 'en' ? 'Mandatory' : 'Majburiy'}
+                </span>
+              </div>
+              <p className="text-xs text-amber-900 dark:text-amber-200 font-medium leading-relaxed">
+                {locale === 'ru'
+                  ? 'Для оформления экстренного вызова служб (103, 102, 101, 104, 1050) и предотвращения ложных звонков необходимо войти в свой аккаунт.'
+                  : locale === 'en'
+                  ? 'To place an emergency call (103, 102, 101, 104, 1050) and prevent false alarms, you must sign in to your account.'
+                  : "Favqulodda xizmatlar (103, 102, 101, 104, 1050) chaqiruvlarini yo'llash va soxta murojaatlarning oldini olish uchun tizimga kirishingiz shart."}
+              </p>
+              <button
+                type="button"
+                onClick={handleOpenLogin}
+                className="w-full py-2.5 px-4 rounded-xl bg-gray-900 hover:bg-black text-white dark:bg-white dark:text-gray-950 font-black text-xs flex items-center justify-center gap-2 shadow-xs spring-btn active:scale-95 transition-all cursor-pointer"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>
+                  {locale === 'ru' ? 'Войти или зарегистрироваться' : locale === 'en' ? 'Sign In / Register' : "Tizimga kirish / Ro'yxatdan o'tish"}
+                </span>
+              </button>
             </div>
           )}
 
@@ -1048,21 +1096,38 @@ export const CitizenRequest: React.FC<CitizenRequestProps> = ({
             </span>
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full py-3.5 rounded-full ${serviceMeta.buttonBg} active:scale-98 text-white font-black text-sm shadow-float transition-all flex items-center justify-center gap-2 disabled:opacity-50`}
-          >
-            <ServiceIcon className="w-5 h-5" />
-            <span>
-              {isSubmitting
-                ? (locale === 'ru' ? 'Отправка...' : locale === 'en' ? 'Sending...' : 'Yuborilmoqda...')
-                : serviceType === '101'
-                ? (locale === 'ru' ? "ВЫЗОВ ПОЖАРНОЙ СЛУЖБЫ 101 (SOS)" : locale === 'en' ? "CALL FIRE SERVICE 101 (SOS)" : "101 YONG'IN XAVFSIZLIGINI CHAQIRISH (SOS)")
-                : (locale === 'ru' ? `Вызвать ${serviceMeta.title} (SOS)` : locale === 'en' ? `Emergency Call ${serviceMeta.title} (SOS)` : `${serviceMeta.title}ni chaqirish (SOS)`)}
-            </span>
-          </button>
+          {/* Submit Button (Requires Login in SOS mode) */}
+          {user ? (
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full py-3.5 rounded-full ${serviceMeta.buttonBg} active:scale-98 text-white font-black text-sm shadow-float transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer`}
+            >
+              <ServiceIcon className="w-5 h-5" />
+              <span>
+                {isSubmitting
+                  ? (locale === 'ru' ? 'Отправка...' : locale === 'en' ? 'Sending...' : 'Yuborilmoqda...')
+                  : serviceType === '101'
+                  ? (locale === 'ru' ? "ВЫЗОВ ПОЖАРНОЙ СЛУЖБЫ 101 (SOS)" : locale === 'en' ? "CALL FIRE SERVICE 101 (SOS)" : "101 YONG'IN XAVFSIZLIGINI CHAQIRISH (SOS)")
+                  : (locale === 'ru' ? `Вызвать ${serviceMeta.title} (SOS)` : locale === 'en' ? `Emergency Call ${serviceMeta.title} (SOS)` : `${serviceMeta.title}ni chaqirish (SOS)`)}
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleOpenLogin}
+              className="w-full py-3.5 rounded-full bg-gray-900 hover:bg-black text-white dark:bg-white dark:text-gray-950 font-black text-sm shadow-float transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+            >
+              <Lock className="w-4 h-4 text-amber-400 dark:text-amber-600" />
+              <span>
+                {locale === 'ru'
+                  ? 'Войдите в систему для вызова (SOS)'
+                  : locale === 'en'
+                  ? 'Sign in to make emergency call (SOS)'
+                  : "Chaqiruv yuborish uchun tizimga kiring (SOS)"}
+              </span>
+            </button>
+          )}
 
           {/* Live Road Problems Near Caller */}
           {features.length > 0 && (

@@ -513,6 +513,7 @@ export const AmbulanceApp: React.FC = () => {
                   }
                   hospitals={state?.hospitals || []}
                   onRefresh={fetchState}
+                  onRequestLogin={() => setIsLoginModalOpen(true)}
                 />
               )}
 
