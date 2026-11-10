@@ -4,7 +4,11 @@
 
 :root {
   --text-scale: 1;
-  --font-base: 18px;
+  --font-base: 16px;
+}
+
+html {
+  font-size: calc(var(--font-base) * var(--text-scale));
 }
 
 body {
@@ -17,6 +21,13 @@ body {
   color: #151218;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Scalable font sizing for hardcoded arbitrary classes */
+[class*="text-[8px]"] { font-size: calc(8px * var(--text-scale)) !important; }
+[class*="text-[9px]"] { font-size: calc(9px * var(--text-scale)) !important; }
+[class*="text-[10px]"] { font-size: calc(10px * var(--text-scale)) !important; }
+[class*="text-[11px]"] { font-size: calc(11px * var(--text-scale)) !important; }
+[class*="text-[12px]"] { font-size: calc(12px * var(--text-scale)) !important; }
 
 /* Dark Mode Overrides */
 .dark body {

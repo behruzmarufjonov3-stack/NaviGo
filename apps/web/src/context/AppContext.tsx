@@ -301,6 +301,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     document.documentElement.style.setProperty('--text-scale', textScale.toString());
+    document.documentElement.style.fontSize = `calc(16px * ${textScale})`;
     localStorage.setItem('yol_text_scale', textScale.toString());
   }, [textScale]);
 

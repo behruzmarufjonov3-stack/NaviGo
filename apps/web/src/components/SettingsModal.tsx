@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Settings as SettingsIcon, Sun, Moon, Eye, Type, Shield, Trash2, Download } from 'lucide-react';
+import { X, Settings as SettingsIcon, Sun, Moon, Eye, Type, Shield, Trash2, Download, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 
 export const SettingsModal: React.FC = () => {
   const { 
@@ -49,29 +49,96 @@ export const SettingsModal: React.FC = () => {
         </div>
 
         <div className="mt-5 space-y-6">
-          {/* 1. Text Size Scaling Slider */}
+          {/* 1. Text & UI Scaling Controls */}
           <div className="p-4 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <label className="text-sm font-bold text-textPrimary dark:text-darkText flex items-center gap-2">
                 <Type className="w-4 h-4 text-accentOrange" />
-                <span>{t('accessibility.textSize')}</span>
+                <span>Interfeys va Matn o'lchami (Kattalashtirish)</span>
               </label>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blackPill text-white">
-                {Math.round(textScale * 100)}%
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black px-2.5 py-0.5 rounded-full bg-accentOrange text-white shadow-xs">
+                  {Math.round(textScale * 100)}%
+                </span>
+                {textScale !== 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setTextScale(1)}
+                    title="100% standartga qaytarish"
+                    className="p-1 rounded-lg text-textSecondary hover:text-textPrimary hover:bg-white dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
             </div>
-            <input
-              type="range"
-              min="0.9"
-              max="1.4"
-              step="0.05"
-              value={textScale}
-              onChange={(e) => setTextScale(parseFloat(e.target.value))}
-              className="w-full accent-accentOrange cursor-pointer"
-            />
-            <div className="flex justify-between text-[11px] text-textSecondary mt-1">
-              <span>{t('accessibility.textSizeStandard')}</span>
-              <span>{t('accessibility.textSizeSenior')}</span>
+
+            {/* Slider with [-] and [+] step buttons */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setTextScale(Math.max(0.85, Math.round((textScale - 0.05) * 100) / 100))}
+                title="Kichraytirish (-5%)"
+                disabled={textScale <= 0.85}
+                className="w-8 h-8 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-textPrimary dark:text-darkText hover:border-accentOrange disabled:opacity-40 transition-colors shrink-0 spring-btn active:scale-90"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+
+              <input
+                type="range"
+                min="0.85"
+                max="1.40"
+                step="0.05"
+                value={textScale}
+                onChange={(e) => setTextScale(parseFloat(e.target.value))}
+                className="w-full accent-accentOrange cursor-pointer h-2 bg-gray-200 dark:bg-gray-700 rounded-lg"
+              />
+
+              <button
+                type="button"
+                onClick={() => setTextScale(Math.min(1.40, Math.round((textScale + 0.05) * 100) / 100))}
+                title="Kattalashtirish (+5%)"
+                disabled={textScale >= 1.40}
+                className="w-8 h-8 rounded-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-textPrimary dark:text-darkText hover:border-accentOrange disabled:opacity-40 transition-colors shrink-0 spring-btn active:scale-90"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Quick preset buttons */}
+            <div className="flex flex-wrap items-center gap-1.5 mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <span className="text-[11px] font-semibold text-textSecondary mr-1">O'lchamlar:</span>
+              {[
+                { label: '90%', val: 0.90 },
+                { label: '100% (Standart)', val: 1.00 },
+                { label: '115%', val: 1.15 },
+                { label: '130%', val: 1.30 },
+                { label: '140% (Katta)', val: 1.40 }
+              ].map(preset => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => setTextScale(preset.val)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                    Math.abs(textScale - preset.val) < 0.02
+                      ? 'bg-accentOrange text-white shadow-xs'
+                      : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-textSecondary hover:text-textPrimary'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Live Visual Preview */}
+            <div className="mt-3 p-2.5 rounded-xl bg-white dark:bg-gray-900/60 border border-dashed border-gray-200 dark:border-gray-700 text-center">
+              <span className="text-xs font-medium text-textSecondary dark:text-darkTextSec block">
+                Namuna matn ko'rinishi:
+              </span>
+              <p className="font-bold text-textPrimary dark:text-darkText mt-0.5">
+                NaviGo • Toshkent xaritasi va marshrut ko'rinishi
+              </p>
             </div>
           </div>
 
