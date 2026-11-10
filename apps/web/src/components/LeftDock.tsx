@@ -238,7 +238,7 @@ const POPULAR_PLACES: PopularPlace[] = [
   }
 ];
 
-// Mashhur tezkor variantlar (Toshkent bo'yicha)
+// Formal Tezkor variantlar (Toshkent bo'yicha)
 const HOME_PRESETS = [
   { label: "Chilonzor 9-mavze", address: "Chilonzor tumani, 9-mavze, 24-uy", lat: 41.2721, lon: 69.2045 },
   { label: "Yunusobod 19-mavze", address: "Yunusobod tumani, 19-mavze, 12-uy", lat: 41.3654, lon: 69.2912 },
@@ -249,10 +249,10 @@ const HOME_PRESETS = [
 
 const WORK_PRESETS = [
   { label: "Tashkent City Biznes Markaz", address: "Tashkent City Xalqaro Biznes Markazi, Botir Zokirov 7", lat: 41.3145, lon: 69.2510 },
-  { label: "Amir Temur Shohi (Markaz)", address: "Amir Temur shoh ko'chasi, 107B", lat: 41.3380, lon: 69.2840 },
+  { label: "Amir Temur Shohi", address: "Amir Temur shoh ko'chasi, 107B", lat: 41.3380, lon: 69.2840 },
   { label: "Afrosiyob Biznes Markazi", address: "Mirobod tumani, Oybek ko'chasi, 38", lat: 41.2995, lon: 69.2785 },
   { label: "IT Park Uzbekistan", address: "Mirzo Ulug'bek tumani, Tepamasjid ko'chasi, 4", lat: 41.3412, lon: 69.3354 },
-  { label: "Navoiy ko'chasi (Vazirliklar)", address: "Shayxontohur tumani, Alisher Navoiy ko'chasi, 30", lat: 41.3210, lon: 69.2450 }
+  { label: "Navoiy ko'chasi", address: "Shayxontohur tumani, Alisher Navoiy ko'chasi, 30", lat: 41.3210, lon: 69.2450 }
 ];
 
 export const LeftDock: React.FC = () => {
@@ -261,7 +261,7 @@ export const LeftDock: React.FC = () => {
     setTheme, 
     user, 
     logout, 
-    setIsAuthOpen,
+    setIsAuthOpen, 
     setIsFuelModalOpen,
     requestRoute,
     setDestinationCoords,
@@ -495,19 +495,20 @@ export const LeftDock: React.FC = () => {
 
   return (
     <>
+      {/* Formal, Modern, Clean Left Navigation Dock */}
       <aside 
         aria-label="Navigation Dock"
-        className="hidden xl:flex flex-col items-center justify-between py-4 px-2 w-16 bg-white dark:bg-darkCard rounded-full shadow-soft border border-yolBorder dark:border-darkBorder my-2 ml-4 z-20 max-h-[calc(100vh-2rem)] overflow-y-auto no-scrollbar"
+        className="hidden xl:flex flex-col items-center justify-between py-4 px-2 w-[72px] bg-white dark:bg-darkCard rounded-3xl shadow-soft border border-gray-200/90 dark:border-darkBorder my-2 ml-4 z-20 max-h-[calc(100vh-2rem)] overflow-y-auto no-scrollbar"
       >
         {/* Top Dock Items */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-3 w-full">
           {/* Favqulodda Xizmatlar (103, 102, 101, 104, 1050) Navigation Pill */}
           <a
             href="#/ambulance"
             title="Favqulodda Xizmatlar (103, 102, 101, 104, 1050)"
             className="flex flex-col items-center gap-1 group transition-transform active:scale-95"
           >
-            <div className="w-11 h-11 rounded-full bg-red-600 text-white flex items-center justify-center shadow-md group-hover:bg-red-700 transition-colors">
+            <div className="w-11 h-11 rounded-2xl bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xs transition-colors">
               <Truck className="w-5 h-5 text-white" />
             </div>
             <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-tight">
@@ -515,147 +516,138 @@ export const LeftDock: React.FC = () => {
             </span>
           </a>
 
-          {/* Yoqilg'i & Gaz Shoxobchalari */}
+          {/* Yoqilg'i & Gaz Shoxobchalari (Formal Sleek Style) */}
           <button
             onClick={() => setIsFuelModalOpen(true)}
             title="Yoqilg'i & Zapravkalar (Metan bosimi, Benzin navlari va narxlari, Propan)"
             className="flex flex-col items-center gap-1 group transition-transform active:scale-95"
           >
-            <div className="w-11 h-11 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md group-hover:bg-emerald-700 transition-colors spring-btn">
-              <Fuel className="w-5 h-5 text-white" />
+            <div className="w-11 h-11 rounded-2xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-center shadow-2xs transition-colors spring-btn">
+              <Fuel className="w-5 h-5 text-gray-800 dark:text-gray-200" />
             </div>
-            <span className="text-[9px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-tight text-center leading-tight">
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight text-center leading-tight">
               Zapravka
             </span>
           </button>
 
-          {/* UY (Home) Manzili Tugmasi */}
+          {/* UY (Home) Manzili Tugmasi (Formal Sleek Style) */}
           <button
             onClick={() => handleOpenAddressModal('home')}
             title={savedPlaces.home ? `Uy manzili: ${savedPlaces.home.address}` : "Uy manzilini kiritish / Marshrut"}
-            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-90 ${activeAddressType === 'home' ? 'scale-105' : ''}`}
+            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeAddressType === 'home' ? 'scale-105' : ''}`}
           >
-            <div className={`relative w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5 ${
+            <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
               activeAddressType === 'home'
-                ? 'bg-gradient-to-tr from-teal-600 to-emerald-600 ring-2 ring-emerald-400 shadow-emerald-500/50'
-                : 'bg-gradient-to-tr from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700'
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 ring-2 ring-gray-400 dark:ring-gray-500 shadow-sm'
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
-              <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              {savedPlaces.home ? (
-                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-300 border-2 border-white dark:border-darkCard"></span>
-              ) : (
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400 border border-white dark:border-darkCard animate-pulse"></span>
+              <Home className="w-5 h-5" />
+              {savedPlaces.home && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
-            <span className="text-[10px] font-black text-teal-700 dark:text-teal-400 uppercase tracking-tight">
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight">
               Uy
             </span>
           </button>
 
-          {/* ISH (Work) Manzili Tugmasi */}
+          {/* ISH (Work) Manzili Tugmasi (Formal Sleek Style) */}
           <button
             onClick={() => handleOpenAddressModal('work')}
             title={savedPlaces.work ? `Ishxona manzili: ${savedPlaces.work.address}` : "Ishxona manzilini kiritish / Marshrut"}
-            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-90 ${activeAddressType === 'work' ? 'scale-105' : ''}`}
+            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeAddressType === 'work' ? 'scale-105' : ''}`}
           >
-            <div className={`relative w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-0.5 ${
+            <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
               activeAddressType === 'work'
-                ? 'bg-gradient-to-tr from-indigo-600 to-violet-600 ring-2 ring-violet-400 shadow-violet-500/50'
-                : 'bg-gradient-to-tr from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700'
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 ring-2 ring-gray-400 dark:ring-gray-500 shadow-sm'
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
-              <Briefcase className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              {savedPlaces.work ? (
-                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-violet-300 border-2 border-white dark:border-darkCard"></span>
-              ) : (
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400 border border-white dark:border-darkCard animate-pulse"></span>
+              <Briefcase className="w-5 h-5" />
+              {savedPlaces.work && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
-            <span className="text-[10px] font-black text-indigo-700 dark:text-indigo-400 uppercase tracking-tight">
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight">
               Ish
             </span>
           </button>
 
           {/* Divider */}
-          <div className="w-8 h-px bg-yolBorder dark:bg-gray-700 my-0.5"></div>
+          <div className="w-8 h-px bg-gray-200 dark:bg-gray-700 my-0.5"></div>
 
-          {/* 1. RESTORAN & KAFELAR (Animated) */}
+          {/* 1. RESTORAN & KAFELAR (Formal Sleek Style) */}
           <button
             onClick={() => handleToggleCategory('restaurant')}
             title="Ko'p boriladigan Restoran & Kafelar"
-            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-90 ${activeCategory === 'restaurant' ? 'scale-105' : ''}`}
+            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeCategory === 'restaurant' ? 'scale-105' : ''}`}
           >
-            <div className={`relative w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${
+            <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
               activeCategory === 'restaurant' 
-                ? 'bg-gradient-to-tr from-amber-600 to-orange-500 ring-2 ring-orange-400 shadow-orange-500/50' 
-                : 'bg-gradient-to-tr from-amber-500 to-orange-500 group-hover:shadow-orange-500/40'
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 ring-2 ring-gray-400 dark:ring-gray-500 shadow-sm' 
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
-              <UtensilsCrossed className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-              {/* Animated pulse badge */}
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-300 border-2 border-white dark:border-darkCard animate-ping"></span>
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white dark:border-darkCard"></span>
+              <UtensilsCrossed className="w-5 h-5" />
             </div>
-            <span className="text-[9px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-tight text-center leading-tight">
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight text-center leading-tight">
               Restoran
             </span>
           </button>
 
-          {/* 2. DO'KONLAR & BOZOR (Animated) */}
+          {/* 2. DO'KONLAR & BOZOR (Formal Sleek Style) */}
           <button
             onClick={() => handleToggleCategory('shop')}
             title="Do'konlar, Bozorlar va Supermarketlar"
-            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-90 ${activeCategory === 'shop' ? 'scale-105' : ''}`}
+            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeCategory === 'shop' ? 'scale-105' : ''}`}
           >
-            <div className={`relative w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${
+            <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
               activeCategory === 'shop' 
-                ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 ring-2 ring-blue-400 shadow-blue-500/50' 
-                : 'bg-gradient-to-tr from-blue-500 to-indigo-600 group-hover:shadow-blue-500/40'
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 ring-2 ring-gray-400 dark:ring-gray-500 shadow-sm' 
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
-              <ShoppingBag className="w-5 h-5 group-hover:-rotate-12 transition-transform duration-300" />
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-blue-300 border-2 border-white dark:border-darkCard animate-pulse"></span>
+              <ShoppingBag className="w-5 h-5" />
             </div>
-            <span className="text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tight text-center leading-tight">
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight text-center leading-tight">
               Do'kon
             </span>
           </button>
 
-          {/* 3. SHIFOXONA & TIBBIYOT (Animated Heartbeat) */}
+          {/* 3. SHIFOXONA & TIBBIYOT (Formal Sleek Style) */}
           <button
             onClick={() => handleToggleCategory('hospital')}
             title="Shifoxonalar, Klinikalar va Dorixonalar"
-            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-90 ${activeCategory === 'hospital' ? 'scale-105' : ''}`}
+            className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeCategory === 'hospital' ? 'scale-105' : ''}`}
           >
-            <div className={`relative w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${
+            <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
               activeCategory === 'hospital' 
-                ? 'bg-gradient-to-tr from-rose-600 to-red-600 ring-2 ring-rose-400 shadow-rose-500/50' 
-                : 'bg-gradient-to-tr from-rose-500 to-red-600 group-hover:shadow-rose-500/40'
+                ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 ring-2 ring-gray-400 dark:ring-gray-500 shadow-sm' 
+                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
-              <HeartPulse className="w-5 h-5 animate-pulse" />
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-rose-300 border-2 border-white dark:border-darkCard animate-ping"></span>
+              <HeartPulse className="w-5 h-5" />
             </div>
-            <span className="text-[9px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-tight text-center leading-tight">
-              Shifoxona
+            <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight text-center leading-tight">
+              Tibbiyot
             </span>
           </button>
         </div>
 
-        {/* Bottom Dock Items */}
-        <div className="flex flex-col items-center gap-3 pt-2">
+        {/* Bottom Dock Items (Formal Sleek Style) */}
+        <div className="flex flex-col items-center gap-3 pt-2 w-full">
           {/* Theme / Contrast Toggle (Moved to very bottom as requested) */}
           <button
             onClick={toggleTheme}
             title={`Yorug'lik / Kontrast: ${theme}`}
-            className="flex flex-col items-center gap-1 group text-textSecondary dark:text-darkTextSec hover:text-accentOrange transition-colors"
+            className="flex flex-col items-center gap-1 group text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
           >
-            <div className="w-11 h-11 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center group-hover:bg-orangeTint transition-colors spring-btn active:scale-90 shadow-xs border border-gray-200 dark:border-gray-700">
+            <div className="w-11 h-11 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-colors spring-btn active:scale-90 shadow-2xs">
               {theme === 'light' ? (
-                <Sun className="w-5 h-5 text-accentOrange" />
+                <Sun className="w-5 h-5 text-gray-800 dark:text-gray-200" />
               ) : theme === 'dark' ? (
                 <Moon className="w-5 h-5 text-yellow-400" />
               ) : (
                 <Eye className="w-5 h-5 text-yellow-500" />
               )}
             </div>
-            <span className="text-[9px] font-black tracking-tight uppercase">
+            <span className="text-[9px] font-bold tracking-tight uppercase text-gray-600 dark:text-gray-400">
               {theme === 'light' ? t('dock.day') : theme === 'dark' ? t('dock.night') : t('dock.contrast')}
             </span>
           </button>
@@ -665,46 +657,46 @@ export const LeftDock: React.FC = () => {
             <button
               onClick={logout}
               title={t('dock.exit')}
-              className="flex flex-col items-center gap-1 group text-textSecondary dark:text-darkTextSec hover:text-statusDanger transition-colors"
+              className="flex flex-col items-center gap-1 group text-gray-600 dark:text-gray-400 hover:text-rose-600 transition-colors"
             >
-              <div className="w-11 h-11 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center group-hover:bg-statusDangerBg transition-colors spring-btn active:scale-90">
-                <LogOut className="w-5 h-5 text-statusDanger" />
+              <div className="w-11 h-11 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-colors spring-btn active:scale-90">
+                <LogOut className="w-5 h-5 text-rose-600" />
               </div>
-              <span className="text-[10px] font-semibold text-statusDanger">{t('dock.exit')}</span>
+              <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400">{t('dock.exit')}</span>
             </button>
           ) : (
             <button
               onClick={() => setIsAuthOpen(true)}
               title={t('dock.login')}
-              className="flex flex-col items-center gap-1 group text-textSecondary dark:text-darkTextSec hover:text-accentOrange transition-colors"
+              className="flex flex-col items-center gap-1 group text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
             >
-              <div className="w-11 h-11 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center group-hover:bg-orangeTint transition-colors spring-btn active:scale-90">
-                <LogOut className="w-5 h-5 rotate-180 text-accentOrange" />
+              <div className="w-11 h-11 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-colors spring-btn active:scale-90">
+                <LogOut className="w-5 h-5 rotate-180 text-gray-800 dark:text-gray-200" />
               </div>
-              <span className="text-[10px] font-semibold">{t('dock.login')}</span>
+              <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300">{t('dock.login')}</span>
             </button>
           )}
         </div>
       </aside>
 
-      {/* UY VA ISH MANZILI FLOATING POPOUT MODAL */}
+      {/* UY VA ISH MANZILI FLOATING POPOUT MODAL (Clear, High-Contrast Text) */}
       {activeAddressType && (
         <div 
           ref={addressPopoutRef}
           role="dialog"
           aria-label={activeAddressType === 'home' ? "Uy manzili" : "Ishxona manzili"}
-          className="fixed left-24 top-16 sm:top-20 z-50 w-84 sm:w-96 bg-white dark:bg-darkCard rounded-3xl shadow-float border border-yolBorder dark:border-darkBorder p-4 sm:p-5 flex flex-col max-h-[85vh] overflow-hidden animate-scale-up backdrop-blur-md"
+          className="fixed left-24 top-16 sm:top-20 z-50 w-84 sm:w-96 bg-white dark:bg-gray-900 rounded-3xl shadow-float border border-gray-200 dark:border-gray-750 p-4 sm:p-5 flex flex-col max-h-[85vh] overflow-hidden animate-scale-up backdrop-blur-md"
         >
           {/* Header & Tabs */}
-          <div className="flex items-center justify-between pb-3 border-b border-yolBorder dark:border-gray-700">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => handleOpenAddressModal('home')}
-                className={`px-3 py-1.5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all ${
                   activeAddressType === 'home'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'bg-innerSoftArea dark:bg-gray-800 text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 shadow-xs'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 <Home className="w-3.5 h-3.5" />
@@ -713,10 +705,10 @@ export const LeftDock: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleOpenAddressModal('work')}
-                className={`px-3 py-1.5 rounded-xl font-black text-xs flex items-center gap-1.5 transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all ${
                   activeAddressType === 'work'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'bg-innerSoftArea dark:bg-gray-800 text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
+                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-950 shadow-xs'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
                 }`}
               >
                 <Briefcase className="w-3.5 h-3.5" />
@@ -725,7 +717,7 @@ export const LeftDock: React.FC = () => {
             </div>
             <button
               onClick={() => setActiveAddressType(null)}
-              className="w-8 h-8 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec hover:text-textPrimary spring-btn active:scale-90"
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white spring-btn active:scale-90"
             >
               <X className="w-4 h-4" />
             </button>
@@ -733,7 +725,7 @@ export const LeftDock: React.FC = () => {
 
           {/* Success Toast Banner */}
           {saveSuccessMsg && (
-            <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-2 animate-scale-up">
+            <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center gap-2 animate-scale-up">
               <Check className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>
                 {activeAddressType === 'home' ? 'Uy manzili' : 'Ishxona manzili'} muvaffaqiyatli saqlandi!
@@ -745,29 +737,25 @@ export const LeftDock: React.FC = () => {
           {!isEditingAddress && savedPlaces[activeAddressType] ? (
             <div className="flex-1 overflow-y-auto space-y-4 my-3 pr-1">
               {/* Saved Address Info Card */}
-              <div className="p-4 rounded-2xl bg-innerSoftArea dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 flex flex-col gap-3">
+              <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 flex flex-col gap-3">
                 <div className="flex items-start gap-3">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-xs ${
-                    activeAddressType === 'home'
-                      ? 'bg-gradient-to-tr from-teal-500 to-emerald-600'
-                      : 'bg-gradient-to-tr from-indigo-500 to-violet-600'
-                  }`}>
+                  <div className="w-10 h-10 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-gray-950 flex items-center justify-center shrink-0 shadow-xs">
                     {activeAddressType === 'home' ? <Home className="w-5 h-5" /> : <Briefcase className="w-5 h-5" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-textSecondary dark:text-darkTextSec">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                       {activeAddressType === 'home' ? 'Saqlangan Uy manzili' : 'Saqlangan Ishxona manzili'}
                     </span>
-                    <h4 className="font-extrabold text-sm text-textPrimary dark:text-darkText leading-tight mt-0.5 break-words">
+                    <h4 className="font-extrabold text-sm text-gray-950 dark:text-white leading-tight mt-0.5 break-words">
                       {savedPlaces[activeAddressType]?.address}
                     </h4>
-                    <div className="flex items-center gap-2 mt-2 text-[10px] text-textSecondary dark:text-darkTextSec font-medium">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 font-mono">
+                    <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-600 dark:text-gray-300 font-medium">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-mono font-bold">
                         <MapPin className="w-2.5 h-2.5" />
                         {savedPlaces[activeAddressType]?.lat.toFixed(4)}, {savedPlaces[activeAddressType]?.lon.toFixed(4)}
                       </span>
                       {savedPlaces[activeAddressType]?.updatedAt && (
-                        <span>So'nggi yangilanish: {savedPlaces[activeAddressType]?.updatedAt}</span>
+                        <span>Yangilandi: {savedPlaces[activeAddressType]?.updatedAt}</span>
                       )}
                     </div>
                   </div>
@@ -777,11 +765,7 @@ export const LeftDock: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleRouteToSavedPlace(activeAddressType)}
-                  className={`w-full py-2.5 px-4 rounded-2xl text-white font-black text-xs flex items-center justify-center gap-2 shadow-md spring-btn active:scale-95 transition-all ${
-                    activeAddressType === 'home'
-                      ? 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-emerald-500/30'
-                      : 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-violet-500/30'
-                  }`}
+                  className="w-full py-2.5 px-4 rounded-xl bg-gray-900 hover:bg-black text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 font-black text-xs flex items-center justify-center gap-2 shadow-xs spring-btn active:scale-95 transition-all"
                 >
                   <Navigation className="w-4 h-4" />
                   <span>
@@ -794,9 +778,9 @@ export const LeftDock: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleViewSavedOnMap(activeAddressType)}
-                    className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-textPrimary dark:text-darkText font-bold text-[11px] hover:border-accentOrange spring-btn active:scale-95 flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-xl bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-bold text-[11px] hover:border-gray-400 spring-btn active:scale-95 flex items-center gap-1.5"
                   >
-                    <MapPin className="w-3.5 h-3.5 text-accentOrange" />
+                    <MapPin className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
                     <span>Xaritada</span>
                   </button>
 
@@ -804,16 +788,16 @@ export const LeftDock: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setIsEditingAddress(true)}
-                      className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-textPrimary dark:text-darkText font-bold text-[11px] hover:bg-gray-200 dark:hover:bg-gray-600 spring-btn active:scale-95 flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-bold text-[11px] hover:bg-gray-200 dark:hover:bg-gray-600 spring-btn active:scale-95 flex items-center gap-1 border border-gray-200 dark:border-gray-600"
                     >
-                      <Edit3 className="w-3 h-3 text-textSecondary" />
+                      <Edit3 className="w-3 h-3 text-gray-600 dark:text-gray-300" />
                       <span>Tahrirlash</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteAddress(activeAddressType)}
                       title="Manzilni o'chirish"
-                      className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 spring-btn active:scale-90"
+                      className="p-1.5 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 spring-btn active:scale-90 border border-transparent hover:border-rose-200"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -822,22 +806,22 @@ export const LeftDock: React.FC = () => {
               </div>
             </div>
           ) : (
-            /* EDIT / INPUT MODE: Enter address */
+            /* EDIT / INPUT MODE: Enter address (Clear, High-Contrast) */
             <div className="flex-1 overflow-y-auto space-y-3.5 my-3 pr-1">
               <div>
-                <label className="block text-xs font-black text-textPrimary dark:text-darkText mb-1.5">
+                <label className="block text-xs font-black text-gray-950 dark:text-white mb-1.5">
                   {activeAddressType === 'home' 
                     ? "Uy manzilingizni kiriting:" 
                     : "Ishxona manzilingizni kiriting:"}
                 </label>
                 <div className="relative flex items-center">
-                  <Search className="w-4 h-4 text-textSecondary absolute left-3 pointer-events-none" />
+                  <Search className="w-4 h-4 text-gray-500 absolute left-3 pointer-events-none" />
                   <input
                     type="text"
                     value={addressInput}
                     onChange={(e) => setAddressInput(e.target.value)}
                     placeholder={activeAddressType === 'home' ? "Masalan: Chilonzor 9-mavze, 24-uy" : "Masalan: Tashkent City, 7-bino"}
-                    className="w-full pl-9 pr-8 py-2.5 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-semibold text-textPrimary dark:text-darkText focus:outline-hidden focus:ring-2 focus:ring-accentOrange transition-all"
+                    className="w-full pl-9 pr-8 py-2.5 rounded-2xl bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-xs font-bold text-gray-950 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-hidden focus:border-gray-900 dark:focus:border-white transition-all shadow-2xs"
                   />
                   {addressInput && (
                     <button
@@ -847,7 +831,7 @@ export const LeftDock: React.FC = () => {
                         setAddressCoords(null);
                         setSearchResults([]);
                       }}
-                      className="absolute right-2.5 p-1 rounded-full text-textSecondary hover:text-textPrimary"
+                      className="absolute right-2.5 p-1 rounded-full text-gray-500 hover:text-black dark:hover:text-white"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -855,30 +839,31 @@ export const LeftDock: React.FC = () => {
                 </div>
               </div>
 
-              {/* Use current GPS button */}
+              {/* Use current GPS button (Formal Styling) */}
               <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="w-full py-2 px-3 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-accentOrange font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors spring-btn active:scale-95"
+                className="w-full py-2.5 px-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 font-bold text-xs flex items-center justify-center gap-2 transition-colors spring-btn active:scale-95 shadow-2xs"
               >
-                <Crosshair className="w-3.5 h-3.5" />
+                <Crosshair className="w-4 h-4 text-gray-700 dark:text-gray-300" />
                 <span>Mening hozirgi joylashuvimni belgilash</span>
               </button>
 
               {/* Live Search Results */}
               {isSearching && (
-                <div className="py-2 text-center text-xs text-textSecondary flex items-center justify-center gap-2">
-                  <div className="w-3 h-3 border-2 border-accentOrange border-t-transparent rounded-full animate-spin"></div>
+                <div className="py-2 text-center text-xs text-gray-700 dark:text-gray-300 font-medium flex items-center justify-center gap-2">
+                  <div className="w-3.5 h-3.5 border-2 border-gray-900 dark:border-white border-t-transparent rounded-full animate-spin"></div>
                   <span>Manzillar qidirilmoqda...</span>
                 </div>
               )}
 
+              {/* Topilgan Manzillar - High-Contrast and Crystal Clear Text */}
               {searchResults.length > 0 && (
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-bold uppercase text-textSecondary dark:text-darkTextSec">
+                  <span className="text-xs font-black uppercase text-gray-900 dark:text-white tracking-wider block">
                     Topilgan manzillar:
                   </span>
-                  <div className="max-h-40 overflow-y-auto space-y-1">
+                  <div className="max-h-48 overflow-y-auto space-y-1.5 pr-0.5">
                     {searchResults.map((item, idx) => (
                       <button
                         key={idx}
@@ -888,21 +873,23 @@ export const LeftDock: React.FC = () => {
                           setAddressCoords({ lat: item.lat, lon: item.lon });
                           setSearchResults([]);
                         }}
-                        className="w-full p-2 text-left rounded-xl bg-innerSoftArea dark:bg-gray-800 hover:bg-orange-50 dark:hover:bg-gray-700 border border-transparent hover:border-accentOrange transition-all text-xs font-semibold flex items-center gap-2"
+                        className="w-full p-2.5 text-left rounded-xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all flex items-start gap-2.5 group shadow-2xs"
                       >
-                        <MapPin className="w-3.5 h-3.5 text-accentOrange shrink-0" />
-                        <span className="truncate">{item.address}</span>
+                        <MapPin className="w-4 h-4 text-gray-700 dark:text-gray-300 shrink-0 mt-0.5 group-hover:text-black dark:group-hover:text-white" />
+                        <span className="text-xs font-bold text-gray-950 dark:text-white leading-snug break-words">
+                          {item.address}
+                        </span>
                       </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Quick Presets */}
+              {/* Quick Presets (Formal, High-Contrast) */}
               {searchResults.length === 0 && (
                 <div className="space-y-1.5 pt-1">
-                  <span className="text-[10px] font-bold uppercase text-textSecondary dark:text-darkTextSec flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-amber-500" />
+                  <span className="text-xs font-black uppercase text-gray-900 dark:text-white tracking-wider flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-gray-700 dark:text-gray-300" />
                     <span>Tezkor tanlovlar (Toshkent):</span>
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -914,7 +901,7 @@ export const LeftDock: React.FC = () => {
                           setAddressInput(p.address);
                           setAddressCoords({ lat: p.lat, lon: p.lon });
                         }}
-                        className="px-2.5 py-1 rounded-lg bg-innerSoftArea dark:bg-gray-800 hover:bg-orange-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-[11px] font-semibold text-textPrimary dark:text-darkText transition-colors"
+                        className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-700 text-xs font-bold text-gray-900 dark:text-gray-100 transition-colors shadow-2xs"
                       >
                         {p.label}
                       </button>
@@ -923,8 +910,8 @@ export const LeftDock: React.FC = () => {
                 </div>
               )}
 
-              {/* Action Buttons: Save & Cancel */}
-              <div className="flex items-center gap-2 pt-2 border-t border-yolBorder dark:border-gray-700">
+              {/* Action Buttons: Save & Cancel (Formal Sleek Style) */}
+              <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-800">
                 {savedPlaces[activeAddressType] && (
                   <button
                     type="button"
@@ -932,7 +919,7 @@ export const LeftDock: React.FC = () => {
                       setIsEditingAddress(false);
                       setAddressInput(savedPlaces[activeAddressType]?.address || '');
                     }}
-                    className="flex-1 py-2 px-3 rounded-xl bg-gray-100 dark:bg-gray-700 text-textSecondary dark:text-darkTextSec font-bold text-xs hover:text-textPrimary transition-colors"
+                    className="flex-1 py-2.5 px-3 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs transition-colors border border-gray-200 dark:border-gray-700"
                   >
                     Bekor qilish
                   </button>
@@ -941,12 +928,10 @@ export const LeftDock: React.FC = () => {
                   type="button"
                   onClick={handleSaveAddress}
                   disabled={!addressInput.trim()}
-                  className={`flex-1 py-2.5 px-4 rounded-xl text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all ${
+                  className={`flex-1 py-2.5 px-4 rounded-xl font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all ${
                     addressInput.trim()
-                      ? activeAddressType === 'home'
-                        ? 'bg-teal-600 hover:bg-teal-700 spring-btn active:scale-95'
-                        : 'bg-indigo-600 hover:bg-indigo-700 spring-btn active:scale-95'
-                      : 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed text-gray-500'
+                      ? 'bg-gray-900 hover:bg-black text-white dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 spring-btn active:scale-95'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
                   }`}
                 >
                   <Check className="w-4 h-4" />
@@ -957,11 +942,11 @@ export const LeftDock: React.FC = () => {
           )}
 
           {/* Footer Note */}
-          <div className="pt-2 border-t border-yolBorder dark:border-gray-700 flex items-center justify-between text-[10px] text-textSecondary dark:text-darkTextSec">
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between text-[11px] text-gray-600 dark:text-gray-400 font-medium">
             <span>NaviGo Shaxsiy Manzillar</span>
             <button
               onClick={() => setActiveAddressType(null)}
-              className="font-bold hover:underline"
+              className="font-bold text-gray-900 dark:text-white hover:underline"
             >
               Yopish
             </button>
@@ -969,42 +954,36 @@ export const LeftDock: React.FC = () => {
         </div>
       )}
 
-      {/* POPULAR LOCATIONS FLOATING POPOUT CARD */}
+      {/* POPULAR LOCATIONS FLOATING POPOUT CARD (Formal Sleek Style) */}
       {activeCategory && (
         <div 
           ref={popoutRef}
           role="dialog"
           aria-label="Popular Places"
-          className="fixed left-24 top-20 sm:top-24 z-50 w-80 sm:w-96 bg-white dark:bg-darkCard rounded-3xl shadow-float border border-yolBorder dark:border-darkBorder p-4 sm:p-5 flex flex-col max-h-[82vh] overflow-hidden animate-scale-up backdrop-blur-md"
+          className="fixed left-24 top-20 sm:top-24 z-50 w-80 sm:w-96 bg-white dark:bg-gray-900 rounded-3xl shadow-float border border-gray-200 dark:border-gray-750 p-4 sm:p-5 flex flex-col max-h-[82vh] overflow-hidden animate-scale-up backdrop-blur-md"
         >
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-yolBorder dark:border-gray-700">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
             <div className="flex items-center gap-2.5">
-              <div className={`w-9 h-9 rounded-2xl flex items-center justify-center text-white shadow-xs ${
-                activeCategory === 'restaurant'
-                  ? 'bg-gradient-to-tr from-amber-500 to-orange-500'
-                  : activeCategory === 'shop'
-                  ? 'bg-gradient-to-tr from-blue-500 to-indigo-600'
-                  : 'bg-gradient-to-tr from-rose-500 to-red-600'
-              }`}>
+              <div className="w-9 h-9 rounded-2xl bg-gray-900 text-white dark:bg-white dark:text-gray-950 flex items-center justify-center shadow-xs">
                 {activeCategory === 'restaurant' && <UtensilsCrossed className="w-4 h-4" />}
                 {activeCategory === 'shop' && <ShoppingBag className="w-4 h-4" />}
                 {activeCategory === 'hospital' && <HeartPulse className="w-4 h-4" />}
               </div>
               <div>
-                <h3 className="font-black text-sm text-textPrimary dark:text-darkText leading-tight">
+                <h3 className="font-extrabold text-sm text-gray-950 dark:text-white leading-tight">
                   {activeCategory === 'restaurant' && "Ommabop Restoran & Kafelar"}
                   {activeCategory === 'shop' && "Do'konlar, Bozorlar & Savdo"}
                   {activeCategory === 'hospital' && "Shifoxona & Tibbiyot Markazlari"}
                 </h3>
-                <span className="text-[10px] text-textSecondary dark:text-darkTextSec font-medium">
+                <span className="text-[11px] text-gray-600 dark:text-gray-400 font-medium">
                   Toshkent bo'yicha eng ko'p tashrif buyuriladigan joylar
                 </span>
               </div>
             </div>
             <button
               onClick={() => setActiveCategory(null)}
-              className="w-8 h-8 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-textSecondary dark:text-darkTextSec hover:text-textPrimary spring-btn active:scale-90"
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white spring-btn active:scale-90"
             >
               <X className="w-4 h-4" />
             </button>
@@ -1015,34 +994,34 @@ export const LeftDock: React.FC = () => {
             {filteredPlaces.map(place => (
               <div 
                 key={place.id}
-                className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 hover:border-accentOrange transition-all flex flex-col gap-2"
+                className="p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/80 hover:border-gray-400 transition-all flex flex-col gap-2"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h4 className="font-bold text-xs sm:text-sm text-textPrimary dark:text-darkText">
+                    <h4 className="font-extrabold text-xs sm:text-sm text-gray-950 dark:text-white">
                       {place.name}
                     </h4>
-                    <span className="text-[11px] text-textSecondary dark:text-darkTextSec flex items-center gap-1 mt-0.5">
+                    <span className="text-[11px] text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3 h-3 shrink-0" />
                       <span className="truncate">{place.address}</span>
                     </span>
-                    <p className="text-[10px] text-accentOrange font-medium mt-1">
+                    <p className="text-[11px] text-gray-700 dark:text-gray-300 font-semibold mt-1">
                       {place.highlight}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 font-black text-[10px]">
-                      <Star className="w-2.5 h-2.5 fill-current" />
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-black text-[10px]">
+                      <Star className="w-2.5 h-2.5 fill-current text-amber-500" />
                       <span>{place.rating}</span>
                     </span>
-                    <span className="text-[10px] font-bold text-textSecondary block mt-1">
+                    <span className="text-[10px] font-bold text-gray-500 block mt-1">
                       ~{place.approxKm} km
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700 text-xs">
-                  <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     <span>{place.status}</span>
                   </span>
@@ -1051,14 +1030,14 @@ export const LeftDock: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleViewOnMap(place)}
-                      className="px-2.5 py-1 rounded-xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-textPrimary dark:text-darkText font-bold text-[11px] hover:border-accentOrange spring-btn active:scale-95"
+                      className="px-2.5 py-1 rounded-xl bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-bold text-[11px] hover:border-gray-400 spring-btn active:scale-95"
                     >
                       Xaritada
                     </button>
                     <button
                       type="button"
                       onClick={() => handleRouteToPlace(place)}
-                      className="px-3 py-1 rounded-xl bg-accentOrange hover:bg-orange-600 text-white font-black text-[11px] flex items-center gap-1 shadow-xs spring-btn active:scale-95"
+                      className="px-3 py-1 rounded-xl bg-gray-900 hover:bg-black text-white dark:bg-white dark:text-gray-950 font-black text-[11px] flex items-center gap-1 shadow-xs spring-btn active:scale-95"
                     >
                       <Navigation className="w-3 h-3" />
                       <span>Marshrut</span>
@@ -1070,11 +1049,11 @@ export const LeftDock: React.FC = () => {
           </div>
 
           {/* Footer note */}
-          <div className="pt-2 border-t border-yolBorder dark:border-gray-700 flex items-center justify-between text-[10px] text-textSecondary dark:text-darkTextSec">
+          <div className="pt-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between text-[11px] text-gray-600 dark:text-gray-400 font-medium">
             <span>NaviGo GPS Yo'naltirgichi</span>
             <button
               onClick={() => setActiveCategory(null)}
-              className="font-bold hover:underline"
+              className="font-bold text-gray-900 dark:text-white hover:underline"
             >
               Yopish
             </button>
