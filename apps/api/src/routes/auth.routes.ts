@@ -94,6 +94,7 @@ authRouter.get('/me', requireAuth, (req: AuthenticatedRequest, res: Response) =>
 
 const UpdateProfileSchema = z.object({
   name: z.string().min(2).optional(),
+  email: z.string().email().optional(),
   phone: z.string().optional(),
   avatarUrl: z.string().optional(),
   vehicleModel: z.string().optional(),

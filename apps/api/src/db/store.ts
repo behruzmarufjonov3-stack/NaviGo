@@ -1,3 +1,6 @@
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -56,8 +59,38 @@ class ResilientDataStore {
   private supportMessages: Map<string, SupportMessage[]> = new Map();
   private providerHealthStatus: Map<string, ProviderHealth> = new Map();
 
+  private usersFilePath: string = path.join(os.tmpdir(), 'navigo_users_v1.json');
+
   constructor() {
     this.seedInitialData();
+    this.loadPersistedUsers();
+  }
+
+  private loadPersistedUsers() {
+    try {
+      if (fs.existsSync(this.usersFilePath)) {
+        const raw = fs.readFileSync(this.usersFilePath, 'utf-8');
+        const list: UserEntity[] = JSON.parse(raw);
+        if (Array.isArray(list)) {
+          list.forEach(u => {
+            if (u && u.id) {
+              this.users.set(u.id, u);
+            }
+          });
+        }
+      }
+    } catch {
+      // ignore read errors
+    }
+  }
+
+  private savePersistedUsers() {
+    try {
+      const list = Array.from(this.users.values());
+      fs.writeFileSync(this.usersFilePath, JSON.stringify(list), 'utf-8');
+    } catch {
+      // ignore write errors
+    }
   }
 
   private seedInitialData() {
@@ -401,6 +434,7 @@ class ResilientDataStore {
       passwordHash: userData.passwordHash
     };
     this.users.set(newUser.id, newUser);
+    this.savePersistedUsers();
     return newUser;
   }
 
@@ -409,6 +443,7 @@ class ResilientDataStore {
     if (!user) return undefined;
     user.role = newRole;
     this.users.set(userId, user);
+    this.savePersistedUsers();
     return user;
   }
 
@@ -417,6 +452,13 @@ class ResilientDataStore {
     if (!user) return undefined;
     const updated = { ...user, ...updates };
     this.users.set(userId, updated);
+    // Also synchronize any duplicate session entries with the same email
+    for (const [k, existing] of this.users.entries()) {
+      if (k !== userId && existing.email.toLowerCase() === user.email.toLowerCase()) {
+        this.users.set(k, { ...existing, ...updates });
+      }
+    }
+    this.savePersistedUsers();
     return updated;
   }
 

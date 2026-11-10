@@ -1082,65 +1082,211 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     fetchGasStations();
   }, [gasFilter, userCoords.lat, userCoords.lon]);
 
+  const mapCodeToCondition = (code: number): { text: string; icon: string } => {
+    if (code === 0) return { text: 'Clear sky', icon: 'sun' };
+    if (code === 1 || code === 2) return { text: 'Partly cloudy', icon: 'cloud-sun' };
+    if (code === 3) return { text: 'Overcast', icon: 'cloud' };
+    if (code === 45 || code === 48) return { text: 'Foggy conditions', icon: 'cloud-fog' };
+    if (code >= 51 && code <= 55) return { text: 'Light drizzle', icon: 'cloud-drizzle' };
+    if (code >= 61 && code <= 65) return { text: 'Rain', icon: 'cloud-rain' };
+    if (code >= 71 && code <= 77) return { text: 'Snowfall', icon: 'snowflake' };
+    if (code >= 80 && code <= 82) return { text: 'Rain showers', icon: 'cloud-rain' };
+    if (code >= 95) return { text: 'Thunderstorm', icon: 'cloud-lightning' };
+    return { text: 'Mild weather', icon: 'sun' };
+  };
+
+  // Real-time cross-device profile synchronization (Phone <-> Laptop)
+  const syncUserProfile = async () => {
+    const activeToken = token || localStorage.getItem('yol_token');
+    if (!activeToken) return;
+    try {
+      const res = await fetch('/api/v1/auth/me', {
+        headers: { Authorization: `Bearer ${activeToken}` }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const serverUser: User | undefined = data?.user;
+      if (!serverUser) return;
+
+      const localRaw = localStorage.getItem('yol_user');
+      const localUser: User | null = localRaw ? JSON.parse(localRaw) : user;
+
+      // If this device has local edits (e.g. avatarUrl or custom phone/vehicle) not yet on the server, push them up
+      const localHasUnpushedEdits =
+        localUser &&
+        ((localUser.avatarUrl && !serverUser.avatarUrl) ||
+          (localUser.phone && !serverUser.phone) ||
+          (localUser.vehicleModel && !serverUser.vehicleModel) ||
+          (localUser.vehiclePlate && !serverUser.vehiclePlate));
+
+      if (localHasUnpushedEdits && localUser) {
+        const pushRes = await fetch('/api/v1/auth/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${activeToken}`
+          },
+          body: JSON.stringify({
+            name: localUser.name,
+            email: localUser.email,
+            phone: localUser.phone,
+            vehicleModel: localUser.vehicleModel,
+            vehiclePlate: localUser.vehiclePlate,
+            avatarUrl: localUser.avatarUrl
+          })
+        });
+        if (pushRes.ok) {
+          const pushData = await pushRes.json();
+          if (pushData?.user) {
+            setUser(pushData.user);
+            localStorage.setItem('yol_user', JSON.stringify(pushData.user));
+            return;
+          }
+        }
+      }
+
+      // Update local user state if server profile changed (e.g. edited from another device)
+      setUser(prev => {
+        const merged = { ...(prev || {}), ...serverUser } as User;
+        const prevJson = prev ? JSON.stringify(prev) : '';
+        const nextJson = JSON.stringify(merged);
+        if (prevJson !== nextJson) {
+          localStorage.setItem('yol_user', nextJson);
+          return merged;
+        }
+        return prev;
+      });
+    } catch {
+      // ignore offline sync errors
+    }
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    syncUserProfile();
+    const interval = setInterval(syncUserProfile, 10000);
+    const onFocus = () => syncUserProfile();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') syncUserProfile();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [token]);
+
   const refreshData = async () => {
     try {
-      const [featRes, wRes, aqRes, distRes] = await Promise.all([
-        fetch('/api/v1/map/features'),
-        fetch(`/api/v1/map/weather?lat=${userCoords.lat}&lon=${userCoords.lon}`),
-        fetch(`/api/v1/map/air-quality?lat=${userCoords.lat}&lon=${userCoords.lon}`),
-        fetch('/api/v1/map/districts-weather')
+      const openMeteoWeatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${userCoords.lat}&longitude=${userCoords.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
+      const openMeteoAqUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${userCoords.lat}&longitude=${userCoords.lon}&current=european_aqi,pm10,pm2_5&timezone=auto`;
+
+      const [featRes, wRes, aqRes, distRes, directOmRes, directAqRes] = await Promise.all([
+        fetch('/api/v1/map/features').catch(() => null),
+        fetch(`/api/v1/map/weather?lat=${userCoords.lat}&lon=${userCoords.lon}`).catch(() => null),
+        fetch(`/api/v1/map/air-quality?lat=${userCoords.lat}&lon=${userCoords.lon}`).catch(() => null),
+        fetch('/api/v1/map/districts-weather').catch(() => null),
+        fetch(openMeteoWeatherUrl).catch(() => null),
+        fetch(openMeteoAqUrl).catch(() => null)
       ]);
 
-      if (featRes.ok) {
+      if (featRes && featRes.ok) {
         const featData = await featRes.json();
         const rawList: MapFeature[] = featData.features || [];
         setFeatures(rawList.filter(f => !dismissedFeatureIds.has(f.id)));
       }
-      if (wRes.ok) {
-        const wData = await wRes.json();
-        setWeather(wData);
-      } else {
-        // Fallback to global Open-Meteo API for any location worldwide
-        try {
-          const omRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${userCoords.lat}&longitude=${userCoords.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`);
-          if (omRes.ok) {
-            const omData = await omRes.json();
-            const curr = omData.current || {};
-            let cityName = 'Toshkent';
-            let countryName = 'O‘zbekiston';
-            try {
-              const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${userCoords.lat}&longitude=${userCoords.lon}&localityLanguage=uz`);
-              if (geoRes.ok) {
-                const geoData = await geoRes.json();
-                cityName = geoData.city || geoData.locality || geoData.principalSubdivision || 'Shahar';
-                countryName = geoData.countryName || 'Global';
-              }
-            } catch {}
-            setWeather({
-              city: cityName,
-              country: countryName,
-              temperatureC: Math.round(curr.temperature_2m ?? 20),
-              apparentTemperatureC: Math.round(curr.apparent_temperature ?? curr.temperature_2m ?? 20),
-              conditionCode: curr.weather_code ?? 0,
-              humidityPercent: Math.round(curr.relative_humidity_2m ?? 50),
-              precipitationMm: 0,
-              lastUpdated: new Date().toISOString(),
-              source: 'Open-Meteo',
-              windSpeedKmh: Math.round(curr.wind_speed_10m ?? 10),
-              conditionText: curr.weather_code === 0 ? 'Ochiq havo' : curr.weather_code <= 3 ? 'Qisman bulutli' : 'Yog‘ingarchilik',
-              weatherIcon: curr.weather_code === 0 ? 'sun' : curr.weather_code <= 3 ? 'cloud-sun' : 'cloud-rain',
-              forecast: []
-            });
-          }
-        } catch {}
+
+      let resolvedCity = 'Toshkent';
+      let resolvedCountry = 'O‘zbekiston';
+      let backendWeather: WeatherData | null = null;
+
+      if (wRes && wRes.ok) {
+        backendWeather = await wRes.json();
+        if (backendWeather?.city) resolvedCity = backendWeather.city;
+        if (backendWeather?.country) resolvedCountry = backendWeather.country;
       }
-      if (aqRes.ok) {
+
+      let liveTempForDistricts: number | null = null;
+
+      if (directOmRes && directOmRes.ok) {
+        const omData = await directOmRes.json();
+        const curr = omData.current || {};
+        const daily = omData.daily || {};
+        const cond = mapCodeToCondition(curr.weather_code ?? 0);
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const forecast = (daily.time || []).slice(0, 5).map((dateStr: string, idx: number) => {
+          const d = new Date(dateStr);
+          const code = daily.weather_code?.[idx] ?? 0;
+          return {
+            date: dateStr,
+            dayName: daysOfWeek[d.getDay()],
+            maxTempC: Math.round(daily.temperature_2m_max?.[idx] ?? curr.temperature_2m ?? 16),
+            minTempC: Math.round(daily.temperature_2m_min?.[idx] ?? (curr.temperature_2m ?? 16) - 6),
+            conditionText: mapCodeToCondition(code).text
+          };
+        });
+        const liveTemp = Math.round(curr.temperature_2m ?? backendWeather?.temperatureC ?? 16);
+        liveTempForDistricts = liveTemp;
+        setWeather({
+          city: resolvedCity,
+          country: resolvedCountry,
+          temperatureC: liveTemp,
+          apparentTemperatureC: Math.round(curr.apparent_temperature ?? liveTemp),
+          conditionCode: curr.weather_code ?? 0,
+          conditionText: cond.text,
+          weatherIcon: cond.icon,
+          windSpeedKmh: Math.round(curr.wind_speed_10m ?? 10),
+          humidityPercent: Math.round(curr.relative_humidity_2m ?? 50),
+          precipitationMm: curr.precipitation ?? 0,
+          lastUpdated: new Date().toISOString(),
+          source: 'Open-Meteo (CC BY 4.0)',
+          forecast: forecast.length > 0 ? forecast : (backendWeather?.forecast || [])
+        });
+      } else if (backendWeather) {
+        liveTempForDistricts = backendWeather.temperatureC;
+        setWeather(backendWeather);
+      }
+
+      if (directAqRes && directAqRes.ok) {
+        const aqJson = await directAqRes.json();
+        const currAq = aqJson.current || {};
+        const aqiVal = Math.round(currAq.european_aqi || 32);
+        const aqiLevel = aqiVal <= 20 ? 'Good' : aqiVal <= 40 ? 'Moderate' : aqiVal <= 60 ? 'Unhealthy for Sensitive' : 'Unhealthy';
+        setAirQuality({
+          aqi: aqiVal,
+          aqiLevel,
+          methodology: 'European Air Quality Index (EAQI)',
+          pm2_5: Math.round(currAq.pm2_5 || 12),
+          pm10: Math.round(currAq.pm10 || 24),
+          advice: aqiVal <= 20
+            ? 'Air quality is excellent. Ideal for walking, outdoor recreation, and opening windows.'
+            : aqiVal <= 40
+            ? 'Air quality is acceptable. Sensitive individuals should monitor respiratory comfort.'
+            : 'Sensitive individuals should limit prolonged outdoor exertion.',
+          lastUpdated: new Date().toISOString(),
+          source: 'Open-Meteo Air Quality'
+        });
+      } else if (aqRes && aqRes.ok) {
         const aqData = await aqRes.json();
         setAirQuality(aqData);
       }
-      if (distRes.ok) {
+
+      if (distRes && distRes.ok) {
         const distData = await distRes.json();
-        setDistrictsWeather(distData.districts || []);
+        const rawDistricts: DistrictWeather[] = distData.districts || [];
+        if (liveTempForDistricts !== null) {
+          const offsets = [-1, 0, -1, 0, 1, 0, 0];
+          setDistrictsWeather(
+            rawDistricts.map((d, idx) => ({
+              ...d,
+              temp: liveTempForDistricts! + (offsets[idx % offsets.length] || 0)
+            }))
+          );
+        } else {
+          setDistrictsWeather(rawDistricts);
+        }
       }
 
       if (token) {
@@ -1153,7 +1299,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     refreshData();
-  }, [userCoords, token]);
+    const interval = setInterval(refreshData, 60000);
+    return () => clearInterval(interval);
+  }, [userCoords.lat, userCoords.lon, token]);
 
   return (
     <AppContext.Provider

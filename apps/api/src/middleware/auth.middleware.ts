@@ -27,6 +27,9 @@ export function authMiddleware(
       name?: string 
     };
     let user = dbStore.getUserById(payload.userId);
+    if (!user && payload.email) {
+      user = dbStore.getUserByEmail(payload.email);
+    }
     if (!user && payload.userId) {
       // Re-hydrate session from cryptographically valid JWT signature across restarts
       user = {

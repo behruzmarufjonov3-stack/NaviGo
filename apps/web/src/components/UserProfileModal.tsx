@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
   X, 
@@ -30,6 +30,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
     isProfileModalOpen, 
     setIsProfileModalOpen, 
     user, 
+    token,
     updateUserProfile, 
     logout, 
     locale, 
@@ -47,6 +48,18 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
   const [vehiclePlate, setVehiclePlate] = useState(user?.vehiclePlate || '01 A 777 AA');
   const [avatarPreview, setAvatarPreview] = useState<string | undefined>(user?.avatarUrl);
 
+  // Sync local form state whenever user or modal open state changes
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setPhone(user.phone || '+998 90 123 45 67');
+      setVehicleModel(user.vehicleModel || 'Chevrolet Cobalt');
+      setVehiclePlate(user.vehiclePlate || '01 A 777 AA');
+      setAvatarPreview(user.avatarUrl);
+    }
+  }, [user, isProfileModalOpen]);
+
   // Password Change fields
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -61,7 +74,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
 
   if (!isProfileModalOpen || !user) return null;
 
-  // Handle local image file upload
+  const getAuthHeaders = (): Record<string, string> => {
+    const activeToken = token || localStorage.getItem('yol_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(activeToken ? { Authorization: `Bearer ${activeToken}` } : {})
+    };
+  };
+
+  // Handle local image file upload with smart compression for instant cross-device sync
   const handleAvatarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -74,32 +95,71 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       setStatusMessage({ 
         type: 'error', 
-        text: locale === 'ru' ? 'Размер файла не должен превышать 5 МБ' : locale === 'en' ? 'File size must not exceed 5MB' : "Rasm hajmi 5 MB dan oshmasligi kerak" 
+        text: locale === 'ru' ? 'Размер файла не должен превышать 10 МБ' : locale === 'en' ? 'File size must not exceed 10MB' : "Rasm hajmi 10 MB dan oshmasligi kerak" 
       });
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
-      const result = reader.result as string;
-      setAvatarPreview(result);
-      updateUserProfile({ avatarUrl: result });
+      const rawDataUrl = reader.result as string;
+      const img = new Image();
+      img.onload = () => {
+        let finalDataUrl = rawDataUrl;
+        try {
+          const canvas = document.createElement('canvas');
+          const maxDim = 256;
+          let w = img.width;
+          let h = img.height;
+          if (w > h) {
+            if (w > maxDim) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            }
+          } else {
+            if (h > maxDim) {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, w, h);
+            finalDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          }
+        } catch {
+          // fallback to rawDataUrl
+        }
 
-      // Save to backend asynchronously
-      fetch('/api/v1/auth/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatarUrl: result })
-      }).catch(() => {});
+        setAvatarPreview(finalDataUrl);
+        updateUserProfile({ avatarUrl: finalDataUrl });
 
-      setStatusMessage({ 
-        type: 'success', 
-        text: locale === 'ru' ? 'Аватар успешно обновлен' : locale === 'en' ? 'Avatar successfully updated' : "Profil rasmi muvaffaqiyatli yuklandi" 
-      });
-      setTimeout(() => setStatusMessage(null), 3000);
+        // Save to backend with Authorization token so all devices sync immediately
+        fetch('/api/v1/auth/profile', {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ avatarUrl: finalDataUrl })
+        })
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => {
+            if (data?.user) {
+              updateUserProfile(data.user);
+            }
+          })
+          .catch(() => {});
+
+        setStatusMessage({ 
+          type: 'success', 
+          text: locale === 'ru' ? 'Аватар успешно обновлен' : locale === 'en' ? 'Avatar successfully updated' : "Profil rasmi muvaffaqiyatli yuklandi" 
+        });
+        setTimeout(() => setStatusMessage(null), 3000);
+      };
+      img.src = rawDataUrl;
     };
     reader.readAsDataURL(file);
   };
@@ -112,27 +172,29 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
     }
 
     setIsSaving(true);
-    updateUserProfile({
+    const updatedPayload = {
       name: name.trim(),
       email: email.trim(),
       phone: phone.trim(),
       vehicleModel: vehicleModel.trim(),
       vehiclePlate: vehiclePlate.trim().toUpperCase(),
       avatarUrl: avatarPreview
-    });
+    };
+    updateUserProfile(updatedPayload);
 
-    // Send update to backend asynchronously
+    // Send update to backend with Authorization header
     fetch('/api/v1/auth/profile', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: name.trim(),
-        phone: phone.trim(),
-        vehicleModel: vehicleModel.trim(),
-        vehiclePlate: vehiclePlate.trim(),
-        avatarUrl: avatarPreview
+      headers: getAuthHeaders(),
+      body: JSON.stringify(updatedPayload)
+    })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (data?.user) {
+          updateUserProfile(data.user);
+        }
       })
-    }).catch(() => {});
+      .catch(() => {});
 
     setTimeout(() => {
       setIsSaving(false);
@@ -181,7 +243,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ onOpenLegalM
     try {
       const res = await fetch('/api/v1/auth/change-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           email: user.email,
           oldPassword,

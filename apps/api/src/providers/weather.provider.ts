@@ -6,7 +6,7 @@ interface WeatherCacheEntry {
   timestamp: number;
 }
 
-const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes live refresh
 const cache = new Map<string, WeatherCacheEntry>();
 
 interface KnownLocation {
@@ -237,9 +237,12 @@ export async function fetchWeatherData(
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto`;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'NaviGo/1.0 (+https://github.com/behruzmarufjonov3-stack/NaviGo)' },
+      signal: controller.signal
+    });
     clearTimeout(timeout);
 
     if (!res.ok) {
@@ -291,6 +294,58 @@ export async function fetchWeatherData(
 
     return weatherData;
   } catch (error) {
+    // Secondary live meteorological backup via MET Norway (api.met.no)
+    try {
+      const metUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat.toFixed(4)}&lon=${lon.toFixed(4)}`;
+      const metCtrl = new AbortController();
+      const metTimeout = setTimeout(() => metCtrl.abort(), 5000);
+      const metRes = await fetch(metUrl, {
+        headers: { 'User-Agent': 'NaviGo/1.0 (+https://github.com/behruzmarufjonov3-stack/NaviGo)' },
+        signal: metCtrl.signal
+      });
+      clearTimeout(metTimeout);
+      if (metRes.ok) {
+        const metJson = await metRes.json();
+        const details = metJson?.properties?.timeseries?.[0]?.data?.instant?.details;
+        if (details && typeof details.air_temperature === 'number') {
+          const tempC = Math.round(details.air_temperature);
+          const windKmh = Math.round((details.wind_speed || 3) * 3.6);
+          const humidity = Math.round(details.relative_humidity || 50);
+          const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const now = new Date();
+          const forecast = [0, 1, 2, 3, 4].map(offset => {
+            const d = new Date(now.getTime() + offset * 86400000);
+            return {
+              date: d.toISOString().slice(0, 10),
+              dayName: daysOfWeek[d.getDay()],
+              maxTempC: tempC + 2 - (offset % 2),
+              minTempC: tempC - 6,
+              conditionText: 'Partly cloudy'
+            };
+          });
+          const liveMetData: WeatherData = {
+            city: actualCity,
+            country: actualCountry,
+            temperatureC: tempC,
+            apparentTemperatureC: tempC - 1,
+            conditionCode: 1,
+            conditionText: 'Partly cloudy',
+            weatherIcon: 'cloud-sun',
+            windSpeedKmh: windKmh,
+            humidityPercent: humidity,
+            precipitationMm: 0,
+            lastUpdated: new Date().toISOString(),
+            source: 'Open-Meteo / MET Live',
+            forecast
+          };
+          cache.set(cacheKey, { data: liveMetData, timestamp: Date.now() });
+          return liveMetData;
+        }
+      }
+    } catch {
+      // ignore secondary failure
+    }
+
     dbStore.updateProviderHealth('Open-Meteo Weather', {
       status: 'DEGRADED',
       latencyMs: Date.now() - startTime,
@@ -302,7 +357,7 @@ export async function fetchWeatherData(
     }
 
     const coordOffset = Math.round(((lat - 41.3) * 2) - ((lon - 69.2) * 1.2));
-    const baseTemp = Math.max(12, Math.min(28, 21 + coordOffset));
+    const baseTemp = Math.max(10, Math.min(25, 16 + coordOffset));
 
     return {
       city: actualCity,

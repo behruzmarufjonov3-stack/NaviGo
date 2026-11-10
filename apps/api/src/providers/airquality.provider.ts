@@ -6,7 +6,7 @@ interface AirQualityCacheEntry {
   timestamp: number;
 }
 
-const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL_MS = 2 * 60 * 1000; // 2 minutes live refresh
 const cache = new Map<string, AirQualityCacheEntry>();
 
 function interpretEuropeanAqi(aqi: number): {
@@ -65,9 +65,12 @@ export async function fetchAirQualityData(
     const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi,pm10,pm2_5&timezone=auto`;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'NaviGo/1.0 (+https://github.com/behruzmarufjonov3-stack/NaviGo)' },
+      signal: controller.signal
+    });
     clearTimeout(timeout);
 
     if (!res.ok) {

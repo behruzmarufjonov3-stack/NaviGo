@@ -108,14 +108,26 @@ mapRouter.get('/air-quality', async (req: Request, res: Response) => {
 
 // GET /api/v1/map/districts-weather - Mode A District Weather Points for Tashkent
 mapRouter.get('/districts-weather', async (req: Request, res: Response) => {
+  let baseTemp = 16;
+  let baseWind = 9;
+  try {
+    const liveW = await fetchWeatherData(CONFIG.defaultLocation.latitude, CONFIG.defaultLocation.longitude, 'Toshkent');
+    if (liveW && typeof liveW.temperatureC === 'number') {
+      baseTemp = liveW.temperatureC;
+      baseWind = liveW.windSpeedKmh || 9;
+    }
+  } catch {
+    // use baseTemp
+  }
+
   const districts = [
-    { name: 'Yunusobod District', lat: 41.3644, lon: 69.2882, temp: 19, aqi: 28, aqiLevel: 'Good', wind: 8 },
-    { name: 'Chilonzor District', lat: 41.2725, lon: 69.2045, temp: 20, aqi: 35, aqiLevel: 'Moderate', wind: 11 },
-    { name: "Mirzo Ulug'bek District", lat: 41.3350, lon: 69.3400, temp: 19, aqi: 26, aqiLevel: 'Good', wind: 7 },
-    { name: 'Shayxontohur (Chorsu)', lat: 41.3274, lon: 69.2346, temp: 20, aqi: 38, aqiLevel: 'Moderate', wind: 10 },
-    { name: 'Sergeli District', lat: 41.2215, lon: 69.2155, temp: 21, aqi: 42, aqiLevel: 'Moderate', wind: 12 },
-    { name: 'Mirobod District', lat: 41.2980, lon: 69.2850, temp: 20, aqi: 34, aqiLevel: 'Moderate', wind: 9 },
-    { name: 'Yakkasaroy District', lat: 41.2850, lon: 69.2550, temp: 20, aqi: 31, aqiLevel: 'Good', wind: 9 }
+    { name: 'Yunusobod District', lat: 41.3644, lon: 69.2882, temp: baseTemp - 1, aqi: 28, aqiLevel: 'Good', wind: Math.max(4, baseWind - 1) },
+    { name: 'Chilonzor District', lat: 41.2725, lon: 69.2045, temp: baseTemp, aqi: 35, aqiLevel: 'Moderate', wind: baseWind + 1 },
+    { name: "Mirzo Ulug'bek District", lat: 41.3350, lon: 69.3400, temp: baseTemp - 1, aqi: 26, aqiLevel: 'Good', wind: Math.max(4, baseWind - 2) },
+    { name: 'Shayxontohur (Chorsu)', lat: 41.3274, lon: 69.2346, temp: baseTemp, aqi: 38, aqiLevel: 'Moderate', wind: baseWind },
+    { name: 'Sergeli District', lat: 41.2215, lon: 69.2155, temp: baseTemp + 1, aqi: 42, aqiLevel: 'Moderate', wind: baseWind + 2 },
+    { name: 'Mirobod District', lat: 41.2980, lon: 69.2850, temp: baseTemp, aqi: 34, aqiLevel: 'Moderate', wind: baseWind },
+    { name: 'Yakkasaroy District', lat: 41.2850, lon: 69.2550, temp: baseTemp, aqi: 31, aqiLevel: 'Good', wind: baseWind }
   ];
 
   return res.json({ districts });

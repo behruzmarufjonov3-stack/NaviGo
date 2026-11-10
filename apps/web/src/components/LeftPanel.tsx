@@ -285,8 +285,94 @@ export const LeftPanel: React.FC = () => {
     setIsGasLayerVisible,
     setSelectedGasStation,
     triggerDemoV2XAlert,
-    approachingAlert
+    approachingAlert,
+    refreshData
   } = useApp();
+
+  const getLocalizedWeatherCondition = (cond: string, loc: string): string => {
+    const c = (cond || '').toLowerCase();
+    if (loc === 'ru') {
+      if (c.includes('clear') || c.includes('sunny') || c.includes('ochiq')) return 'Ясно';
+      if (c.includes('partly') || c.includes('qisman')) return 'Переменная облачность';
+      if (c.includes('overcast') || c.includes('cloudy')) return 'Пасмурно';
+      if (c.includes('fog')) return 'Туман';
+      if (c.includes('drizzle')) return 'Морось';
+      if (c.includes('shower')) return 'Ливневый дождь';
+      if (c.includes('rain') || c.includes('yog')) return 'Дождь';
+      if (c.includes('snow')) return 'Снег';
+      if (c.includes('thunder')) return 'Гроза';
+      return 'Умеренная погода';
+    }
+    if (loc === 'uz') {
+      if (c.includes('clear') || c.includes('sunny') || c.includes('ochiq')) return 'Ochiq havo';
+      if (c.includes('partly') || c.includes('qisman')) return 'Qisman bulutli';
+      if (c.includes('overcast') || c.includes('cloudy')) return 'Bulutli';
+      if (c.includes('fog')) return 'Tumanli havo';
+      if (c.includes('drizzle')) return 'Mayda yomg‘ir';
+      if (c.includes('shower')) return 'Jala yomg‘ir';
+      if (c.includes('rain') || c.includes('yog')) return 'Yomg‘ir';
+      if (c.includes('snow')) return 'Qor yog‘moqda';
+      if (c.includes('thunder')) return 'Momaqaldiroq';
+      return 'Mo‘tadil ob-havo';
+    }
+    return cond || 'Clear sky';
+  };
+
+  const getLocalizedDayShort = (dayName: string, loc: string): string => {
+    const d = (dayName || '').toLowerCase().slice(0, 3);
+    if (loc === 'uz') {
+      const map: Record<string, string> = {
+        mon: 'DUSH',
+        tue: 'SESH',
+        wed: 'CHOR',
+        thu: 'PAY',
+        fri: 'JUM',
+        sat: 'SHAN',
+        sun: 'YAK'
+      };
+      return map[d] || dayName.slice(0, 3).toUpperCase();
+    }
+    if (loc === 'ru') {
+      const map: Record<string, string> = {
+        mon: 'ПН',
+        tue: 'ВТ',
+        wed: 'СР',
+        thu: 'ЧТ',
+        fri: 'ПТ',
+        sat: 'СБ',
+        sun: 'ВС'
+      };
+      return map[d] || dayName.slice(0, 3).toUpperCase();
+    }
+    return dayName.slice(0, 3).toUpperCase();
+  };
+
+  const getLocalizedAqiAdvice = (aqi: number, rawAdvice: string, loc: string): string => {
+    if (loc === 'uz') {
+      if (aqi <= 20) return "Havo sifati a'lo darajada. Sayr qilish va derazalarni ochish uchun qulay.";
+      if (aqi <= 40) return "Havo sifati me'yorida. Ochiq havoda erkin harakatlanish mumkin.";
+      if (aqi <= 60) return "Sezgir fuqarolar uzoq vaqt ochiq havoda jismoniy mashqlarni kamaytirishi tavsiya etiladi.";
+      return "Havo ifloslangan. Ko'chada himoya niqobidan foydalanish tavsiya etiladi.";
+    }
+    if (loc === 'ru') {
+      if (aqi <= 20) return 'Качество воздуха отличное. Идеально для прогулок и проветривания.';
+      if (aqi <= 40) return 'Качество воздуха в норме. Подходит для прогулок на свежем воздухе.';
+      if (aqi <= 60) return 'Чувствительным людям рекомендуется ограничить длительные нагрузки на улице.';
+      return 'Воздух загрязнен. Рекомендуется ограничить пребывание на улице.';
+    }
+    return rawAdvice;
+  };
+
+  const getUpdatedAgoLabel = (lastUpdatedIso?: string): string => {
+    if (!lastUpdatedIso) {
+      return locale === 'ru' ? 'Только что' : locale === 'en' ? 'Just now' : 'Hozirgina yangilandi';
+    }
+    const diffMin = Math.max(0, Math.floor((Date.now() - new Date(lastUpdatedIso).getTime()) / 60000));
+    if (diffMin <= 1) {
+      return locale === 'ru' ? 'Обновлено только что' : locale === 'en' ? 'Updated just now' : 'Hozirgina yangilandi';
+    }
+    return `${diffMin} ${t('weather.updatedMinutesAgo')}`;
+  };
 
   const [originQuery, setOriginQuery] = useState('');
   const [originText, setOriginText] = useState(() => originCoords?.name || '');
@@ -1222,7 +1308,7 @@ export const LeftPanel: React.FC = () => {
                     {activeRoute.destinationWeather.temperatureC > 0 ? '+' : ''}{activeRoute.destinationWeather.temperatureC}°C
                   </span>
                   <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">
-                    {activeRoute.destinationWeather.conditionText}
+                    {getLocalizedWeatherCondition(activeRoute.destinationWeather.conditionText, locale)}
                   </span>
                 </div>
                 {activeRoute.destinationAirQuality && (
@@ -1233,7 +1319,7 @@ export const LeftPanel: React.FC = () => {
               </div>
               {activeRoute.destinationAirQuality?.advice && (
                 <p className="text-[11px] text-textSecondary dark:text-darkTextSec mt-1.5 leading-snug">
-                  {activeRoute.destinationAirQuality.advice}
+                  {getLocalizedAqiAdvice(activeRoute.destinationAirQuality.aqi, activeRoute.destinationAirQuality.advice, locale)}
                 </p>
               )}
               {activeRoute.destinationWeather.forecast && activeRoute.destinationWeather.forecast.length > 0 && (
@@ -1241,7 +1327,7 @@ export const LeftPanel: React.FC = () => {
                   {activeRoute.destinationWeather.forecast.map((day) => (
                     <div key={day.date} className="flex flex-col items-center bg-white/80 dark:bg-gray-900/60 p-1.5 rounded-lg text-center border border-orange-100/60 dark:border-gray-700">
                       <span className="text-[9px] font-bold text-textSecondary dark:text-darkTextSec uppercase">
-                        {day.dayName.slice(0, 3)}
+                        {getLocalizedDayShort(day.dayName, locale)}
                       </span>
                       <span className="text-[11px] font-extrabold text-textPrimary dark:text-darkText my-0.5">
                         {day.maxTempC}°
@@ -1334,19 +1420,24 @@ export const LeftPanel: React.FC = () => {
                   {locationStatus === 'granted' ? 'GPS' : (locale === 'ru' ? 'Мой GPS' : locale === 'en' ? 'My GPS' : 'Mening hududim')}
                 </button>
               </div>
-              <span className="text-[11px] text-textSecondary dark:text-darkTextSec flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={() => refreshData()}
+                title={locale === 'ru' ? 'Обновить погоду сейчас' : locale === 'en' ? 'Refresh weather now' : 'Ob-havoni hozir yangilash'}
+                className="text-[11px] text-textSecondary dark:text-darkTextSec hover:text-accentOrange flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
+              >
                 <Clock className="w-3 h-3 text-accentOrange" />
-                10 {t('weather.updatedMinutesAgo')}
-              </span>
+                <span>{getUpdatedAgoLabel(weather?.lastUpdated)}</span>
+              </button>
             </div>
 
             <div className="flex items-center justify-between mt-3">
               <div>
                 <div className="text-4xl font-extrabold text-textPrimary dark:text-darkText tracking-tight">
-                  {weather ? `${weather.temperatureC > 0 ? '+' : ''}${weather.temperatureC}°C` : '+22°C'}
+                  {weather ? `${weather.temperatureC > 0 ? '+' : ''}${weather.temperatureC}°C` : '+16°C'}
                 </div>
                 <p className="text-sm font-medium text-textSecondary dark:text-darkTextSec mt-1">
-                  {weather ? weather.conditionText : 'Clear sky'}
+                  {getLocalizedWeatherCondition(weather ? weather.conditionText : 'Clear sky', locale)}
                 </p>
               </div>
               <div className="w-16 h-16 rounded-full bg-orangeTint dark:bg-opacity-20 flex items-center justify-center text-accentOrange shadow-inner">
@@ -1373,7 +1464,7 @@ export const LeftPanel: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-xs text-textSecondary dark:text-darkTextSec mt-1.5 leading-relaxed">
-                  {airQuality.advice}
+                  {getLocalizedAqiAdvice(airQuality.aqi, airQuality.advice, locale)}
                 </p>
               </div>
             )}
@@ -1383,7 +1474,7 @@ export const LeftPanel: React.FC = () => {
                 {weather.forecast.map((day) => (
                   <div key={day.date} className="flex flex-col items-center bg-innerSoftArea dark:bg-gray-800 p-2 rounded-xl text-center">
                     <span className="text-[10px] font-bold text-textSecondary dark:text-darkTextSec uppercase">
-                      {day.dayName.slice(0, 3)}
+                      {getLocalizedDayShort(day.dayName, locale)}
                     </span>
                     <span className="text-xs font-extrabold text-textPrimary dark:text-darkText my-1">
                       {day.maxTempC}°

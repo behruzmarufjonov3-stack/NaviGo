@@ -1,4 +1,8 @@
+import dns from 'dns';
 import express, { Request, Response, NextFunction } from 'express';
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
 import cors from 'cors';
 import { CONFIG } from './config';
 import { authMiddleware } from './middleware/auth.middleware';

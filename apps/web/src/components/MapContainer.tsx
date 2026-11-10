@@ -1144,7 +1144,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               <span>{trafficScoreInfo.statusLabel}</span>
             </div>
             <div className="text-[10px] font-bold text-textSecondary dark:text-darkTextSec">
-              {locale === 'ru' ? 'Средняя скорость' : locale === 'en' ? 'Avg city speed' : "O'rtacha tezlik"}: ~{trafficScoreInfo.avgSpeed} km/s
+              {locale === 'ru' ? 'Средняя скорость' : locale === 'en' ? 'Avg city speed' : "O'rtacha tezlik"}: ~{trafficScoreInfo.avgSpeed} {locale === 'ru' ? 'км/ч' : locale === 'en' ? 'km/h' : 'km/soat'}
             </div>
           </div>
         </div>
@@ -1508,7 +1508,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             {/* Digital Speedometer Circle */}
             <div className="w-16 h-16 rounded-full bg-slate-900/95 text-white border-2 border-blue-400 shadow-2xl flex flex-col items-center justify-center">
               <span className="text-xl font-black leading-none">{liveSpeedKmh}</span>
-              <span className="text-[9px] font-bold text-slate-300 uppercase mt-0.5">km/s</span>
+              <span className="text-[9px] font-bold text-slate-300 uppercase mt-0.5">{locale === 'ru' ? 'км/ч' : locale === 'en' ? 'km/h' : 'km/soat'}</span>
             </div>
             {/* Standard Road Speed Limit Sign (Red Border Circle) */}
             <div className="w-13 h-13 rounded-full bg-white text-slate-900 border-[4px] border-rose-600 shadow-2xl flex items-center justify-center font-black text-base">
