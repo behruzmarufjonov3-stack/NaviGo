@@ -289,6 +289,7 @@ export const LeftPanel: React.FC = () => {
   } = useApp();
 
   const [originQuery, setOriginQuery] = useState('');
+  const [originText, setOriginText] = useState(() => originCoords?.name || '');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeInput, setActiveInput] = useState<'origin' | 'destination'>('destination');
   const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -386,7 +387,7 @@ export const LeftPanel: React.FC = () => {
   }, []);
 
   // Current active query depending on which input is selected
-  const activeQuery = activeInput === 'origin' ? originQuery : searchQuery;
+  const activeQuery = activeInput === 'origin' ? (originText || originQuery) : searchQuery;
 
   // Filtered suggested places based on active query
   const filteredSuggestions = useMemo(() => {
@@ -418,6 +419,7 @@ export const LeftPanel: React.FC = () => {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       if (activeInput === 'origin') {
+        setOriginText(transcript);
         setOriginQuery(transcript);
         triggerSearch(transcript);
       } else {
@@ -430,7 +432,10 @@ export const LeftPanel: React.FC = () => {
   };
 
   const triggerSearch = async (query: string) => {
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
     setIsSearching(true);
     try {
       // 1. Try local gazetteer suggestions (instant feedback)
@@ -498,7 +503,8 @@ export const LeftPanel: React.FC = () => {
 
     if (activeInput === 'origin') {
       setOriginCoords(place);
-      setOriginQuery(place.name);
+      setOriginText(place.name);
+      setOriginQuery('');
       if (destinationCoords) {
         await requestRoute(destinationCoords.lat, destinationCoords.lon, travelMode, destinationCoords.name, place.lat, place.lon, place.name);
       } else {
@@ -544,6 +550,7 @@ export const LeftPanel: React.FC = () => {
       setDestinationCoords(currentOrigin);
       setSearchQuery(currentOrigin.name);
       setOriginCoords(null);
+      setOriginText('');
       setOriginQuery('');
       return;
     }
@@ -552,7 +559,8 @@ export const LeftPanel: React.FC = () => {
     const newDest = { ...currentOrigin };
 
     setOriginCoords(newOrigin);
-    setOriginQuery(newOrigin.name);
+    setOriginText(newOrigin.name);
+    setOriginQuery('');
     setDestinationCoords(newDest);
     setSearchQuery(newDest.name);
 
@@ -561,7 +569,8 @@ export const LeftPanel: React.FC = () => {
 
   const handleResetOriginToGps = async () => {
     const defaultName = locale === 'ru' ? 'Моё местоположение' : locale === 'en' ? 'My location' : 'Mening joylashuvim';
-    setOriginCoords(null);
+    setOriginCoords({ lat: userCoords.lat, lon: userCoords.lon, name: defaultName });
+    setOriginText(defaultName);
     setOriginQuery('');
     if (destinationCoords) {
       await requestRoute(destinationCoords.lat, destinationCoords.lon, travelMode, destinationCoords.name, userCoords.lat, userCoords.lon, defaultName);
@@ -675,42 +684,51 @@ export const LeftPanel: React.FC = () => {
             </span>
             <input
               type="text"
-              value={originQuery || (originCoords ? originCoords.name : '')}
+              value={originText}
               onFocus={() => {
                 setActiveInput('origin');
                 setIsSearchFocused(true);
               }}
               onChange={(e) => {
-                setOriginQuery(e.target.value);
-                triggerSearch(e.target.value);
+                const val = e.target.value;
+                setOriginText(val);
+                setOriginQuery(val);
+                if (val.trim() === '') {
+                  setOriginCoords(null);
+                }
+                triggerSearch(val);
               }}
-              placeholder={originCoords ? originCoords.name : `${t('navigation.from')}: ${t('navigation.myLocation')}`}
+              placeholder={
+                activeInput === 'origin' && isSearchFocused
+                  ? (locale === 'ru' ? 'Введите адрес или место (Точка А)...' : locale === 'en' ? 'Enter address or place (Point A)...' : 'A nuqta: Manzil yoki joy nomini kiriting...')
+                  : (originCoords ? originCoords.name : (locale === 'ru' ? 'Откуда: Моё местоположение' : locale === 'en' ? 'From: My location' : 'Qayerdan: Mening joylashuvim'))
+              }
               className="w-full bg-transparent text-textPrimary dark:text-darkText pl-9 pr-14 py-2 text-xs font-bold placeholder:text-textSecondary/70 focus:outline-none"
             />
             <div className="absolute right-2 flex items-center gap-1">
-              {originCoords ? (
+              {(originText || originCoords) && (
                 <button
                   type="button"
-                  onClick={handleResetOriginToGps}
-                  title={t('navigation.myLocation')}
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors"
+                  onClick={() => {
+                    setOriginText('');
+                    setOriginQuery('');
+                    setOriginCoords(null);
+                    triggerSearch('');
+                  }}
+                  title={t('common.cancel')}
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-textSecondary hover:text-textPrimary hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <LocateFixed className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <span className="text-[10px] font-black text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                  GPS
-                </span>
-              )}
-              {originQuery && (
-                <button
-                  type="button"
-                  onClick={() => { setOriginQuery(''); setOriginCoords(null); }}
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-textSecondary hover:text-textPrimary"
-                >
-                  <X className="w-3 h-3" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
+              <button
+                type="button"
+                onClick={handleResetOriginToGps}
+                title={t('navigation.myLocation')}
+                className="w-6 h-6 rounded-full flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                <LocateFixed className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 

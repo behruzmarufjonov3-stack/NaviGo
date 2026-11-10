@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { gasStationStore } from '../db/gasStation.store';
+import { fuelRatesService } from '../services/fuelRates.service';
 
 export const gasStationRouter = Router();
 
@@ -14,21 +15,17 @@ gasStationRouter.get('/', (req: Request, res: Response) => {
   res.json({ stations });
 });
 
-// GET /api/v1/gas-stations/rates/summary
-gasStationRouter.get('/rates/summary', (req: Request, res: Response) => {
-  res.json({
-    updatedDate: new Date().toISOString().split('T')[0],
-    source: "O'zbekiston tovar-xomashyo birjasi (UZEX) va AQS tarmoqlari monitoringi",
-    averages: {
-      ai80: 8200,
-      ai92: 9800,
-      ai95: 12500,
-      ai98: 15500,
-      diesel: 11800,
-      metan: 3800,
-      propan: 5200
-    }
-  });
+// GET /api/v1/gas-stations/rates/summary (Live synced from GoldenPages & Texnosmart)
+gasStationRouter.get('/rates/summary', async (req: Request, res: Response) => {
+  const forceSync = req.query.sync === 'true';
+  const rates = forceSync ? await fuelRatesService.syncRatesLive() : fuelRatesService.getRates();
+  res.json(rates);
+});
+
+// POST /api/v1/gas-stations/rates/sync (Explicit manual live re-sync)
+gasStationRouter.post('/rates/sync', async (req: Request, res: Response) => {
+  const rates = await fuelRatesService.syncRatesLive();
+  res.json({ success: true, rates });
 });
 
 // GET /api/v1/gas-stations/:id

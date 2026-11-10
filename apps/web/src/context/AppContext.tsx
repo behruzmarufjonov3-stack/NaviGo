@@ -562,7 +562,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const FALLBACK_GAS_STATIONS: (GasStation & { distanceKm?: number })[] = [
-    // BENZIN (AQS)
+    // BENZIN (AQS) - 2026 Golden Pages rasmiy narxlari asosida
     {
       id: 'petrol-ung-bunyodkor',
       name: 'UNG Petro AQS #15 (Bunyodkor)',
@@ -576,10 +576,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 3,
       waitMinutesEstimated: 4,
       pricePerUnit: { 
-        ai80: 8200, 
-        ai92: 9800, 
-        ai95: 12500, 
-        diesel: 11800 
+        ai80: 9100, 
+        ai92: 11900, 
+        ai95: 19500, 
+        diesel: 17500 
       },
       lastReportedMinutesAgo: 2,
       verifiedByDriversCount: 142,
@@ -598,10 +598,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 2,
       waitMinutesEstimated: 3,
       pricePerUnit: { 
-        ai80: 8200, 
-        ai92: 9800, 
-        ai95: 12500, 
-        diesel: 11800 
+        ai80: 9100, 
+        ai92: 11900, 
+        ai95: 19500, 
+        diesel: 17500 
       },
       lastReportedMinutesAgo: 3,
       verifiedByDriversCount: 98,
@@ -620,10 +620,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 4,
       waitMinutesEstimated: 5,
       pricePerUnit: { 
-        ai80: 8200, 
-        ai92: 9800, 
-        ai95: 12500, 
-        diesel: 11800 
+        ai80: 9100, 
+        ai92: 11900, 
+        ai95: 19500, 
+        diesel: 17500 
       },
       lastReportedMinutesAgo: 5,
       verifiedByDriversCount: 124,
@@ -642,10 +642,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 2,
       waitMinutesEstimated: 3,
       pricePerUnit: { 
-        ai92: 10200, 
-        ai95: 13200, 
-        ai98: 15800, 
-        diesel: 12400 
+        ai92: 13800, 
+        ai95: 21000, 
+        ai98: 28000, 
+        diesel: 18500 
       },
       lastReportedMinutesAgo: 4,
       verifiedByDriversCount: 185,
@@ -664,10 +664,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 3,
       waitMinutesEstimated: 4,
       pricePerUnit: { 
-        ai92: 10200, 
-        ai95: 13200, 
-        ai98: 15800, 
-        diesel: 12400 
+        ai92: 13800, 
+        ai95: 21000, 
+        ai98: 28000, 
+        diesel: 18500 
       },
       lastReportedMinutesAgo: 6,
       verifiedByDriversCount: 112,
@@ -686,10 +686,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 3,
       waitMinutesEstimated: 4,
       pricePerUnit: { 
-        ai92: 10100, 
-        ai95: 13000, 
-        ai98: 15500, 
-        diesel: 12200 
+        ai92: 13000, 
+        ai95: 21000, 
+        ai98: 27000, 
+        diesel: 18200 
       },
       lastReportedMinutesAgo: 5,
       verifiedByDriversCount: 160,
@@ -708,10 +708,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 2,
       waitMinutesEstimated: 3,
       pricePerUnit: { 
-        ai92: 10100, 
-        ai95: 13000, 
-        ai98: 15500, 
-        diesel: 12200 
+        ai92: 13000, 
+        ai95: 21000, 
+        ai98: 27000, 
+        diesel: 18200 
       },
       lastReportedMinutesAgo: 7,
       verifiedByDriversCount: 89,
@@ -730,10 +730,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 3,
       waitMinutesEstimated: 4,
       pricePerUnit: { 
-        ai80: 8300, 
-        ai92: 9800, 
-        ai95: 12400, 
-        diesel: 11900 
+        ai80: 9100, 
+        ai92: 11900, 
+        ai95: 19200, 
+        diesel: 17400 
       },
       lastReportedMinutesAgo: 8,
       verifiedByDriversCount: 76,
@@ -752,10 +752,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 4,
       waitMinutesEstimated: 5,
       pricePerUnit: { 
-        ai80: 8350, 
-        ai92: 9850, 
-        ai95: 12500, 
-        propan: 5200 
+        ai80: 9100, 
+        ai92: 11700, 
+        ai95: 20000, 
+        propan: 9500 
       },
       lastReportedMinutesAgo: 6,
       verifiedByDriversCount: 94,
@@ -774,17 +774,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       queueCarsCount: 1,
       waitMinutesEstimated: 2,
       pricePerUnit: { 
-        ai92: 10000, 
-        ai95: 12800, 
-        ai98: 15600, 
-        diesel: 12000 
+        ai92: 12500, 
+        ai95: 19500, 
+        ai98: 26000, 
+        diesel: 17800 
       },
       lastReportedMinutesAgo: 3,
       verifiedByDriversCount: 88,
       statusNote: "Shahar markazida navbatsiz premium benzin quyish imkoniyati."
     },
 
-    // METAN (CNG)
+    // METAN (CNG) - Texnosmart 2026 jonli narxlari (5 700 - 5 800 so'm/m³)
     {
       id: 'cng-tash-chilonzor',
       name: 'Mustaqillik Metan Gaz (Kichik Halqa)',
@@ -798,7 +798,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 205,
       queueCarsCount: 5,
       waitMinutesEstimated: 8,
-      pricePerUnit: { metan: 3800, propan: 5200 },
+      pricePerUnit: { metan: 5750, propan: 9500 },
       lastReportedMinutesAgo: 4,
       verifiedByDriversCount: 138,
       statusNote: "Bosim a'lo darajada (205 Bar). 8 ta kolonka ishlamoqda."
@@ -816,7 +816,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 215,
       queueCarsCount: 2,
       waitMinutesEstimated: 4,
-      pricePerUnit: { metan: 3750 },
+      pricePerUnit: { metan: 5700 },
       lastReportedMinutesAgo: 2,
       verifiedByDriversCount: 182,
       statusNote: "Navbat juda kam. Bosim 215 Bar. To'lov barcha usullarda."
@@ -834,7 +834,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 195,
       queueCarsCount: 8,
       waitMinutesEstimated: 12,
-      pricePerUnit: { metan: 3800, propan: 5150 },
+      pricePerUnit: { metan: 5800, propan: 9500 },
       lastReportedMinutesAgo: 5,
       verifiedByDriversCount: 94,
       statusNote: "Bosim barqaror (195 Bar). 6 ta kolonka to'liq quvvatda."
@@ -852,7 +852,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 185,
       queueCarsCount: 14,
       waitMinutesEstimated: 18,
-      pricePerUnit: { metan: 3800, propan: 5300 },
+      pricePerUnit: { metan: 5750, propan: 9800 },
       lastReportedMinutesAgo: 7,
       verifiedByDriversCount: 129,
       statusNote: "Vodiy yo'nalishidagi mashinalar ko'p. Bosim 185 Bar."
@@ -870,7 +870,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 200,
       queueCarsCount: 6,
       waitMinutesEstimated: 9,
-      pricePerUnit: { metan: 3800, propan: 5200 },
+      pricePerUnit: { metan: 5750, propan: 9500 },
       lastReportedMinutesAgo: 5,
       verifiedByDriversCount: 101,
       statusNote: "Trassa bo'yida bosim yuqori (200 Bar), yengil mashinalar tez to'ldiriladi."
@@ -888,13 +888,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       pressureBar: 215,
       queueCarsCount: 12,
       waitMinutesEstimated: 16,
-      pricePerUnit: { metan: 3800 },
+      pricePerUnit: { metan: 5800 },
       lastReportedMinutesAgo: 6,
       verifiedByDriversCount: 155,
       statusNote: "Dovonga chiqishdan oldin to'ldirib olish tavsiya etiladi (215 Bar)."
     },
 
-    // PROPAN (LPG)
+    // PROPAN (LPG) - Texnosmart 2026 jonli narxlari (8 000 - 11 000 so'm/L)
     {
       id: 'propan-tash-mustang',
       name: 'Mustang Propan Servis (Chilonzor)',
@@ -907,10 +907,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isOpen: true,
       queueCarsCount: 3,
       waitMinutesEstimated: 4,
-      pricePerUnit: { propan: 5200 },
+      pricePerUnit: { propan: 9500 },
       lastReportedMinutesAgo: 4,
       verifiedByDriversCount: 78,
-      statusNote: "Toza suyuqlashtirilgan gaz (LPG). 1 litr 5,200 so'm."
+      statusNote: "Toza suyuqlashtirilgan gaz (LPG). 1 litr 9,500 so'm."
     },
     {
       id: 'propan-tash-rohat-lpg',
@@ -924,10 +924,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isOpen: true,
       queueCarsCount: 5,
       waitMinutesEstimated: 6,
-      pricePerUnit: { propan: 5300 },
+      pricePerUnit: { propan: 9800 },
       lastReportedMinutesAgo: 6,
       verifiedByDriversCount: 64,
-      statusNote: "Vodiy yo'lidagi propan quyish nuqtasi. 1 litr 5,300 so'm."
+      statusNote: "Vodiy yo'lidagi propan quyish nuqtasi. 1 litr 9,800 so'm."
     },
     {
       id: 'propan-tash-sergeli-lpg',
@@ -941,7 +941,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isOpen: true,
       queueCarsCount: 2,
       waitMinutesEstimated: 3,
-      pricePerUnit: { propan: 5200 },
+      pricePerUnit: { propan: 9500 },
       lastReportedMinutesAgo: 5,
       verifiedByDriversCount: 52,
       statusNote: "Sifatli propan, navbatsiz xizmat."

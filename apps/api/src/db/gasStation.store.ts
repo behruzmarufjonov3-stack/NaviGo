@@ -546,6 +546,42 @@ class GasStationStore {
     this.stations.set(id, station);
     return station;
   }
+
+  public updateGlobalRates(rates: {
+    metan: number;
+    propan: number;
+    ai80: number;
+    ai92: number;
+    ai95: number;
+    ai98: number;
+    diesel: number;
+  }) {
+    for (const [id, station] of this.stations.entries()) {
+      if (station.fuels.includes('metan') && station.pricePerUnit?.metan !== undefined) {
+        station.pricePerUnit.metan = rates.metan;
+        if (station.prices) station.prices.metan = rates.metan;
+      }
+      if (station.fuels.includes('propan') && station.pricePerUnit?.propan !== undefined) {
+        station.pricePerUnit.propan = rates.propan;
+        if (station.prices) station.prices.propan = rates.propan;
+      }
+      if (station.fuels.includes('petrol') && station.pricePerUnit) {
+        if (station.pricePerUnit.ai80) station.pricePerUnit.ai80 = rates.ai80;
+        if (station.pricePerUnit.ai92) {
+          if (station.brand === 'Lukoil') station.pricePerUnit.ai92 = 13800;
+          else if (station.brand === 'Tatneft') station.pricePerUnit.ai92 = 13000;
+          else station.pricePerUnit.ai92 = rates.ai92;
+        }
+        if (station.pricePerUnit.ai95) {
+          if (station.brand === 'Lukoil') station.pricePerUnit.ai95 = 21000;
+          else if (station.brand === 'Tatneft') station.pricePerUnit.ai95 = 21000;
+          else station.pricePerUnit.ai95 = rates.ai95;
+        }
+        if (station.pricePerUnit.diesel) station.pricePerUnit.diesel = rates.diesel;
+        station.prices = { ...station.pricePerUnit };
+      }
+    }
+  }
 }
 
 export const gasStationStore = new GasStationStore();
