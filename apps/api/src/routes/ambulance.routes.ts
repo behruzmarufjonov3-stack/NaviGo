@@ -103,6 +103,7 @@ const createRequestSchema = z.object({
 
 ambulanceRouter.post(
   '/requests',
+  requireAuth,
   emergencyLimiter,
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
@@ -112,8 +113,8 @@ ambulanceRouter.post(
 
       const parsed = createRequestSchema.parse(req.body);
 
-      const citizenId = req.user ? req.user.id : (parsed.citizenId || 'usr-citizen-demo');
-      const citizenName = req.user ? req.user.name : (parsed.citizenName || 'Fuqaro (Demo)');
+      const citizenId = req.user!.id;
+      const citizenName = req.user!.name;
 
       const serviceType = parsed.serviceType || '103';
       let desc = (parsed.description || '').trim();
