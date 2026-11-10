@@ -1995,7 +1995,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             </div>
           </div>
 
-          {/* Fuel Types & Pricing Badges */}
+          {/* Fuel Types & Pricing Badges (Golden Pages & Texnosmart jonli narxlari) */}
           <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
             {(selectedGasStation.prices?.metan || selectedGasStation.pricePerUnit?.metan) && (
               <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">
@@ -2004,15 +2004,39 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               </div>
             )}
             {(selectedGasStation.prices?.propan || selectedGasStation.pricePerUnit?.propan) && (
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold">
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold">
                 <span>Propan:</span>
                 <span className="font-extrabold">{(selectedGasStation.prices?.propan || selectedGasStation.pricePerUnit?.propan)?.toLocaleString()} so'm/L</span>
               </div>
             )}
-            {(selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92) && (
-              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold">
+            {(selectedGasStation.prices?.ai80 || selectedGasStation.pricePerUnit?.ai80) && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                <span>AI-80:</span>
+                <span className="font-extrabold">{(selectedGasStation.prices?.ai80 || selectedGasStation.pricePerUnit?.ai80)?.toLocaleString()} so'm</span>
+              </div>
+            )}
+            {(selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92) && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold">
                 <span>AI-92:</span>
-                <span className="font-extrabold">{(selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92)?.toLocaleString()} so'm</span>
+                <span className="font-extrabold">{(selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92)?.toLocaleString()} so'm</span>
+              </div>
+            )}
+            {(selectedGasStation.prices?.ai95 || selectedGasStation.pricePerUnit?.ai95) && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold">
+                <span>AI-95:</span>
+                <span className="font-extrabold">{(selectedGasStation.prices?.ai95 || selectedGasStation.pricePerUnit?.ai95)?.toLocaleString()} so'm</span>
+              </div>
+            )}
+            {(selectedGasStation.prices?.ai98 || selectedGasStation.pricePerUnit?.ai98) && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold">
+                <span>AI-98:</span>
+                <span className="font-extrabold">{(selectedGasStation.prices?.ai98 || selectedGasStation.pricePerUnit?.ai98)?.toLocaleString()} so'm</span>
+              </div>
+            )}
+            {(selectedGasStation.prices?.diesel || selectedGasStation.pricePerUnit?.diesel) && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs font-bold">
+                <span>Dizel:</span>
+                <span className="font-extrabold">{(selectedGasStation.prices?.diesel || selectedGasStation.pricePerUnit?.diesel)?.toLocaleString()} so'm</span>
               </div>
             )}
           </div>

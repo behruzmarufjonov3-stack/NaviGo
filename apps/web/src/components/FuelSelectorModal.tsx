@@ -566,6 +566,12 @@ export const FuelSelectorModal: React.FC = () => {
                         </span>
                       )}
 
+                      {hasMetan && (station.pricePerUnit?.metan || station.prices?.metan) && (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                          Metan: {(station.pricePerUnit?.metan || station.prices?.metan || 5750).toLocaleString()} so'm/m³
+                        </span>
+                      )}
+
                       {hasPetrol && station.pricePerUnit && (
                         <div className="flex flex-wrap items-center gap-1">
                           {station.pricePerUnit.ai80 && (
@@ -575,7 +581,7 @@ export const FuelSelectorModal: React.FC = () => {
                           )}
                           {(station.pricePerUnit.ai92 || station.pricePerUnit.petrolAi92) && (
                             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                              AI-92: {(station.pricePerUnit.ai92 || station.pricePerUnit.petrolAi92 || 9800).toLocaleString()} so'm
+                              AI-92: {(station.pricePerUnit.ai92 || station.pricePerUnit.petrolAi92 || 11900).toLocaleString()} so'm
                             </span>
                           )}
                           {station.pricePerUnit.ai95 && (
@@ -596,9 +602,9 @@ export const FuelSelectorModal: React.FC = () => {
                         </div>
                       )}
 
-                      {hasPropan && station.pricePerUnit?.propan && (
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
-                          Propan: {station.pricePerUnit.propan.toLocaleString()} so'm
+                      {hasPropan && (station.pricePerUnit?.propan || station.prices?.propan) && (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                          Propan: {(station.pricePerUnit?.propan || station.prices?.propan || 9500).toLocaleString()} so'm
                         </span>
                       )}
 

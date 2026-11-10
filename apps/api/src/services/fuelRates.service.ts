@@ -285,3 +285,11 @@ export const fuelRatesService = {
     }
   }
 };
+
+// Immediately apply initial default live rates to store and schedule live refresh
+try {
+  gasStationStore.updateGlobalRates(defaultRates.averages);
+  setTimeout(() => {
+    fuelRatesService.syncRatesLive().catch(() => {});
+  }, 1000);
+} catch {}
