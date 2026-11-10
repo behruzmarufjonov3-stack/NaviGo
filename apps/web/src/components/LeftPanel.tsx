@@ -1536,11 +1536,25 @@ export const LeftPanel: React.FC = () => {
                           <Car className="w-3.5 h-3.5 text-blue-500" />
                           <span>Navbat: <strong className="text-textPrimary dark:text-darkText">{station.queueCarsCount} ta</strong> (~{station.estimatedWaitMinutes || station.waitMinutesEstimated || 5} daq)</span>
                         </span>
-                        {(station.prices?.metan || station.pricePerUnit?.metan) && (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                            {(station.prices?.metan || station.pricePerUnit?.metan)?.toLocaleString()} so'm
-                          </span>
-                        )}
+                        {(() => {
+                          const mPrice = (station.prices?.metan && station.prices.metan >= 5000) ? station.prices.metan : (station.pricePerUnit?.metan && station.pricePerUnit.metan >= 5000) ? station.pricePerUnit.metan : station.fuels.includes('metan') ? 5750 : null;
+                          const pPrice = (station.prices?.propan && station.prices.propan >= 7000) ? station.prices.propan : (station.pricePerUnit?.propan && station.pricePerUnit.propan >= 7000) ? station.pricePerUnit.propan : station.fuels.includes('propan') ? 9500 : null;
+                          if (mPrice) {
+                            return (
+                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                                {mPrice.toLocaleString()} so'm/m³
+                              </span>
+                            );
+                          }
+                          if (pPrice) {
+                            return (
+                              <span className="text-amber-600 dark:text-amber-400 font-bold">
+                                {pPrice.toLocaleString()} so'm/L
+                              </span>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
 
                       {/* Action buttons */}

@@ -948,6 +948,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   ];
 
+  const sanitizeStationRates = (station: GasStation & { distanceKm?: number }): GasStation & { distanceKm?: number } => {
+    const p = { ...(station.pricePerUnit || {}) };
+
+    // Guarantee 2026 Texnosmart Metan rates (never allow obsolete 3800)
+    if (station.fuels.includes('metan')) {
+      if (!p.metan || p.metan < 5000) {
+        p.metan = station.name.includes('Yunusobod') || station.name.includes('Angren') ? 5800 : station.name.includes('Sergeli') ? 5700 : 5750;
+      }
+    }
+
+    // Guarantee 2026 Texnosmart Propan rates (never allow obsolete 5200)
+    if (station.fuels.includes('propan')) {
+      if (!p.propan || p.propan < 7000) {
+        p.propan = station.name.includes('Rohat') ? 9800 : 9500;
+      }
+    }
+
+    // Guarantee 2026 Golden Pages Petrol rates (never allow obsolete 8200, 9800, 12500)
+    if (station.fuels.includes('petrol') || p.ai92 || p.ai80 || p.ai95) {
+      if (!p.ai80 || p.ai80 < 8500) p.ai80 = 9100;
+      if (!p.ai92 || p.ai92 < 11000) {
+        p.ai92 = station.brand === 'Lukoil' ? 13800 : station.brand === 'Tatneft' ? 13000 : 11900;
+      }
+      if (!p.ai95 || p.ai95 < 16000) {
+        p.ai95 = station.brand === 'Lukoil' || station.brand === 'Tatneft' ? 21000 : 19500;
+      }
+      if (p.ai98 && p.ai98 < 20000) {
+        p.ai98 = station.brand === 'Lukoil' ? 28000 : 27000;
+      }
+      if (p.diesel && p.diesel < 14000) {
+        p.diesel = station.brand === 'Lukoil' ? 18500 : station.brand === 'Tatneft' ? 18200 : 17500;
+      }
+    }
+
+    return {
+      ...station,
+      pricePerUnit: p,
+      prices: { ...p }
+    };
+  };
+
   const fetchGasStations = async () => {
     try {
       const url = `/api/v1/gas-stations?fuel=${gasFilter}&lat=${userCoords.lat}&lon=${userCoords.lon}`;
@@ -955,7 +996,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (res.ok) {
         const data = await res.json();
         if (data.stations && data.stations.length > 0) {
-          setGasStations(data.stations);
+          const sanitized = data.stations.map(sanitizeStationRates);
+          setGasStations(sanitized);
           return;
         }
       }
@@ -967,7 +1009,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const filtered = gasFilter === 'all'
       ? FALLBACK_GAS_STATIONS
       : FALLBACK_GAS_STATIONS.filter(s => s.fuels.includes(gasFilter));
-    setGasStations(filtered);
+    setGasStations(filtered.map(sanitizeStationRates));
   };
 
   const reportGasStationUpdate = async (stationId: string, payload: GasStationUpdatePayload) => {
