@@ -50,6 +50,10 @@ export interface UserSavedPlaces {
   work: SavedPlaceData | null;
 }
 
+export const isValidPlace = (p: any): p is SavedPlaceData => 
+  Boolean(p && typeof p === 'object' && typeof p.address === 'string' && p.address.trim().length > 0 && !isNaN(Number(p.lat)) && !isNaN(Number(p.lon)));
+
+
 const POPULAR_PLACES: PopularPlace[] = [
   // Restoranlar & Kafelar
   {
@@ -279,7 +283,25 @@ export const LeftDock: React.FC = () => {
   const [savedPlaces, setSavedPlaces] = useState<UserSavedPlaces>(() => {
     try {
       const raw = localStorage.getItem('navigo_saved_places');
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          return {
+            home: isValidPlace(parsed.home) ? {
+              address: parsed.home.address,
+              lat: Number(parsed.home.lat),
+              lon: Number(parsed.home.lon),
+              updatedAt: parsed.home.updatedAt ? String(parsed.home.updatedAt) : undefined
+            } : null,
+            work: isValidPlace(parsed.work) ? {
+              address: parsed.work.address,
+              lat: Number(parsed.work.lat),
+              lon: Number(parsed.work.lon),
+              updatedAt: parsed.work.updatedAt ? String(parsed.work.updatedAt) : undefined
+            } : null
+          };
+        }
+      }
     } catch (e) {
       console.error('Failed to parse saved places', e);
     }
@@ -381,9 +403,9 @@ export const LeftDock: React.FC = () => {
     setActiveCategory(null);
     setActiveAddressType(type);
     const existing = savedPlaces[type];
-    if (existing) {
-      setAddressInput(existing.address);
-      setAddressCoords({ lat: existing.lat, lon: existing.lon });
+    if (existing && isValidPlace(existing)) {
+      setAddressInput(existing.address || '');
+      setAddressCoords({ lat: Number(existing.lat) || 41.2995, lon: Number(existing.lon) || 69.2401 });
       setIsEditingAddress(false);
     } else {
       setAddressInput('');
@@ -395,8 +417,10 @@ export const LeftDock: React.FC = () => {
   const handleSaveAddress = () => {
     if (!activeAddressType || !addressInput.trim()) return;
 
-    const lat = addressCoords?.lat ?? (userCoords.lat || 41.2995);
-    const lon = addressCoords?.lon ?? (userCoords.lon || 69.2401);
+    const latRaw = addressCoords?.lat ?? (userCoords?.lat || 41.2995);
+    const lonRaw = addressCoords?.lon ?? (userCoords?.lon || 69.2401);
+    const lat = isNaN(Number(latRaw)) ? 41.2995 : Number(latRaw);
+    const lon = isNaN(Number(lonRaw)) ? 69.2401 : Number(lonRaw);
 
     const updated: UserSavedPlaces = {
       ...savedPlaces,
@@ -438,7 +462,7 @@ export const LeftDock: React.FC = () => {
 
   const handleRouteToSavedPlace = async (type: 'home' | 'work') => {
     const place = savedPlaces[type];
-    if (!place) return;
+    if (!place || !isValidPlace(place)) return;
     setActiveAddressType(null);
     setDestinationCoords({ lat: place.lat, lon: place.lon, name: place.address });
     setFocusedLocation({ lat: place.lat, lon: place.lon });
@@ -455,7 +479,7 @@ export const LeftDock: React.FC = () => {
 
   const handleViewSavedOnMap = (type: 'home' | 'work') => {
     const place = savedPlaces[type];
-    if (!place) return;
+    if (!place || !isValidPlace(place)) return;
     setActiveAddressType(null);
     setFocusedLocation({ lat: place.lat, lon: place.lon });
   };
@@ -533,7 +557,7 @@ export const LeftDock: React.FC = () => {
           {/* UY (Home) Manzili Tugmasi (Formal Sleek Style) */}
           <button
             onClick={() => handleOpenAddressModal('home')}
-            title={savedPlaces.home ? `Uy manzili: ${savedPlaces.home.address}` : "Uy manzilini kiritish / Marshrut"}
+            title={savedPlaces.home && isValidPlace(savedPlaces.home) ? `Uy manzili: ${savedPlaces.home.address}` : "Uy manzilini kiritish / Marshrut"}
             className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeAddressType === 'home' ? 'scale-105' : ''}`}
           >
             <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
@@ -542,7 +566,7 @@ export const LeftDock: React.FC = () => {
                 : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
               <Home className="w-5 h-5" />
-              {savedPlaces.home && (
+              {savedPlaces.home && isValidPlace(savedPlaces.home) && (
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
@@ -554,7 +578,7 @@ export const LeftDock: React.FC = () => {
           {/* ISH (Work) Manzili Tugmasi (Formal Sleek Style) */}
           <button
             onClick={() => handleOpenAddressModal('work')}
-            title={savedPlaces.work ? `Ishxona manzili: ${savedPlaces.work.address}` : "Ishxona manzilini kiritish / Marshrut"}
+            title={savedPlaces.work && isValidPlace(savedPlaces.work) ? `Ishxona manzili: ${savedPlaces.work.address}` : "Ishxona manzilini kiritish / Marshrut"}
             className={`relative flex flex-col items-center gap-1 group transition-all spring-btn active:scale-95 ${activeAddressType === 'work' ? 'scale-105' : ''}`}
           >
             <div className={`relative w-11 h-11 rounded-2xl flex items-center justify-center shadow-2xs transition-all duration-200 ${
@@ -563,7 +587,7 @@ export const LeftDock: React.FC = () => {
                 : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'
             }`}>
               <Briefcase className="w-5 h-5" />
-              {savedPlaces.work && (
+              {savedPlaces.work && isValidPlace(savedPlaces.work) && (
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
@@ -734,7 +758,7 @@ export const LeftDock: React.FC = () => {
           )}
 
           {/* VIEW MODE: If address already saved and not in edit mode */}
-          {!isEditingAddress && savedPlaces[activeAddressType] ? (
+          {!isEditingAddress && savedPlaces[activeAddressType] && isValidPlace(savedPlaces[activeAddressType]) ? (
             <div className="flex-1 overflow-y-auto space-y-4 my-3 pr-1">
               {/* Saved Address Info Card */}
               <div className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 flex flex-col gap-3">
@@ -752,7 +776,7 @@ export const LeftDock: React.FC = () => {
                     <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-600 dark:text-gray-300 font-medium">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-mono font-bold">
                         <MapPin className="w-2.5 h-2.5" />
-                        {savedPlaces[activeAddressType]?.lat.toFixed(4)}, {savedPlaces[activeAddressType]?.lon.toFixed(4)}
+                        {(Number(savedPlaces[activeAddressType]?.lat) || 41.2995).toFixed(4)}, {(Number(savedPlaces[activeAddressType]?.lon) || 69.2401).toFixed(4)}
                       </span>
                       {savedPlaces[activeAddressType]?.updatedAt && (
                         <span>Yangilandi: {savedPlaces[activeAddressType]?.updatedAt}</span>
@@ -912,7 +936,7 @@ export const LeftDock: React.FC = () => {
 
               {/* Action Buttons: Save & Cancel (Formal Sleek Style) */}
               <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-800">
-                {savedPlaces[activeAddressType] && (
+                {savedPlaces[activeAddressType] && isValidPlace(savedPlaces[activeAddressType]) && (
                   <button
                     type="button"
                     onClick={() => {

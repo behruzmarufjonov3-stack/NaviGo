@@ -21,6 +21,7 @@ import { FuelSelectorModal } from './components/FuelSelectorModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { LegalModal } from './components/LegalModal';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export const MainLayout: React.FC = () => {
   const [legalModalState, setLegalModalState] = React.useState<{ isOpen: boolean; tab: 'privacy' | 'terms' | 'steps' }>({
@@ -103,9 +104,11 @@ export function App() {
   ].includes(route);
 
   return (
-    <AppProvider>
-      {isEmergencyRoute ? <AmbulanceApp /> : <MainLayout />}
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        {isEmergencyRoute ? <AmbulanceApp /> : <MainLayout />}
+      </AppProvider>
+    </ErrorBoundary>
   );
 }
 
