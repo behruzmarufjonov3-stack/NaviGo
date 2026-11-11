@@ -28,25 +28,24 @@ authRouter.post('/register', async (req, res: Response) => {
 
     const email = parsed.data.email.trim().toLowerCase();
     const { name, password } = parsed.data;
-    let user = dbStore.getUserByEmail(email);
+    const existingUser = dbStore.getUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(409).json({ 
+        error: "Bu email allaqachon ro'yxatdan o'tgan", 
+        message: "Ushbu email bilan hisob allaqachon mavjud. Iltimos, «Kirish» bo'limida parolingizni kiriting." 
+      });
+    }
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    if (user) {
-      // Update existing user with updated password/name instead of rejecting with 409
-      user = dbStore.updateUser(user.id, {
-        name,
-        passwordHash
-      }) || user;
-    } else {
-      user = dbStore.createUser({
-        email,
-        name,
-        passwordHash,
-        role: 'USER'
-      });
-    }
+    const user = dbStore.createUser({
+      email,
+      name,
+      passwordHash,
+      role: 'USER'
+    });
 
     const token = jwt.sign(
       { userId: user.id, role: user.role, email: user.email, name: user.name },
@@ -70,29 +69,22 @@ authRouter.post('/login', async (req, res: Response) => {
 
     const email = parsed.data.email.trim().toLowerCase();
     const { password } = parsed.data;
-    let user = dbStore.getUserByEmail(email);
+    const user = dbStore.getUserByEmail(email);
 
     if (!user) {
-      // Ephemeral Cloud Auto-Recovery: If server container restarted, auto-register on the fly
-      const salt = await bcrypt.genSalt(10);
-      const passwordHash = await bcrypt.hash(password, salt);
-      const nameFromEmail = email.split('@')[0];
-      user = dbStore.createUser({
-        email,
-        name: nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1),
-        passwordHash,
-        role: 'USER'
+      return res.status(401).json({ 
+        error: "Foydalanuvchi topilmadi", 
+        message: "Bu email bilan ro'yxatdan o'tilmagan. Iltimos, avval «Ro'yxatdan o'tish» bo'limida hisob yarating." 
       });
-    } else {
-      // Verify password
-      const matches = await bcrypt.compare(password, user.passwordHash);
-      if (!matches) {
-        // If password does not match, allow updating if requested or return friendly error
-        return res.status(401).json({ 
-          error: 'Parol noto‘g‘ri kiritildi', 
-          message: 'Agar parolni unutgan bo‘lsangiz, «Ro‘yxatdan o‘tish» bo‘limida yangilashingiz mumkin.' 
-        });
-      }
+    }
+
+    // Verify password
+    const matches = await bcrypt.compare(password, user.passwordHash);
+    if (!matches) {
+      return res.status(401).json({ 
+        error: "Parol noto'g'ri kiritildi", 
+        message: "Kiritilgan parol noto'g'ri. Iltimos, tekshirib qaytadan urinib ko'ring." 
+      });
     }
 
     const token = jwt.sign(

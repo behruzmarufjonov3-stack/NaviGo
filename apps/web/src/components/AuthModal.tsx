@@ -131,9 +131,9 @@ export const AuthModal: React.FC = () => {
         ) : (
           <>
             {errorMsg && (
-              <div className="mt-4 p-3 rounded-xl bg-statusDangerBg text-statusDanger text-xs font-semibold flex flex-col gap-1.5 animate-scale-up">
+              <div className="mt-4 p-3 rounded-xl bg-orangeTint text-accentOrange border border-orange-200 dark:border-orange-800 text-xs font-semibold flex flex-col gap-1.5 animate-scale-up">
                 <span>{errorMsg}</span>
-                {!isRegister && (
+                {!isRegister && (errorMsg.includes("ro'yxatdan") || errorMsg.includes("topilmadi")) && (
                   <button
                     type="button"
                     onClick={() => {
@@ -142,7 +142,19 @@ export const AuthModal: React.FC = () => {
                     }}
                     className="text-left font-bold text-accentOrange hover:underline text-[11px]"
                   >
-                    → Ushbu email bilan qayta ro‘yxatdan o‘tish yoki parolni yangilash
+                    → «Ro'yxatdan o'tish» bo'limiga o'tish
+                  </button>
+                )}
+                {isRegister && (errorMsg.includes("allaqachon") || errorMsg.includes("mavjud")) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRegister(false);
+                      setErrorMsg('');
+                    }}
+                    className="text-left font-bold text-accentOrange hover:underline text-[11px]"
+                  >
+                    → «Kirish» bo'limiga o'tish
                   </button>
                 )}
               </div>

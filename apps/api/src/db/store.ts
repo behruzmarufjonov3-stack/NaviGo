@@ -59,7 +59,10 @@ class ResilientDataStore {
   private supportMessages: Map<string, SupportMessage[]> = new Map();
   private providerHealthStatus: Map<string, ProviderHealth> = new Map();
 
-  private usersFilePath: string = path.join(os.tmpdir(), 'navigo_users_v1.json');
+  private candidatePaths: string[] = [
+    path.join(process.cwd(), 'navigo_users_v1.json'),
+    path.join(os.tmpdir(), 'navigo_users_v1.json')
+  ];
 
   constructor() {
     this.seedInitialData();
@@ -67,29 +70,34 @@ class ResilientDataStore {
   }
 
   private loadPersistedUsers() {
-    try {
-      if (fs.existsSync(this.usersFilePath)) {
-        const raw = fs.readFileSync(this.usersFilePath, 'utf-8');
-        const list: UserEntity[] = JSON.parse(raw);
-        if (Array.isArray(list)) {
-          list.forEach(u => {
-            if (u && u.id) {
-              this.users.set(u.id, u);
-            }
-          });
+    for (const filePath of this.candidatePaths) {
+      try {
+        if (fs.existsSync(filePath)) {
+          const raw = fs.readFileSync(filePath, 'utf-8');
+          const list: UserEntity[] = JSON.parse(raw);
+          if (Array.isArray(list) && list.length > 0) {
+            list.forEach(u => {
+              if (u && u.id) {
+                this.users.set(u.id, u);
+              }
+            });
+            break;
+          }
         }
+      } catch {
+        // ignore read errors
       }
-    } catch {
-      // ignore read errors
     }
   }
 
   private savePersistedUsers() {
-    try {
-      const list = Array.from(this.users.values());
-      fs.writeFileSync(this.usersFilePath, JSON.stringify(list), 'utf-8');
-    } catch {
-      // ignore write errors
+    const list = Array.from(this.users.values());
+    for (const filePath of this.candidatePaths) {
+      try {
+        fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf-8');
+      } catch {
+        // ignore write errors
+      }
     }
   }
 
