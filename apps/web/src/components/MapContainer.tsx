@@ -138,7 +138,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
     const trafficCount = relevant.filter(f => f.featureType === 'traffic' || f.featureType === 'accident' || f.featureType === 'closure').length;
     const score = Math.min(10, Math.max(2, 2 + trafficCount * 2));
     const avgSpeed = Math.max(16, 58 - score * 4);
-    const colorClass = score <= 3 ? 'bg-emerald-500' : score <= 6 ? 'bg-amber-500' : 'bg-rose-600';
+    const colorClass = score <= 3 ? 'bg-blackPill' : score <= 6 ? 'bg-blackPill' : 'bg-accentOrange';
     const statusLabel = score <= 3
       ? (locale === 'ru' ? 'Дороги свободны' : locale === 'en' ? 'Roads clear' : "Yo'llar ochiq")
       : score <= 6
@@ -519,14 +519,14 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         el.className = 'cursor-pointer transform hover:scale-110 transition-transform select-none';
 
         const aqiBg = district.aqiLevel === 'Good' 
-          ? 'bg-emerald-600 text-white' 
+          ? 'bg-blackPill text-white' 
           : district.aqiLevel === 'Moderate'
-          ? 'bg-amber-600 text-white'
-          : 'bg-rose-600 text-white';
+          ? 'bg-blackPill text-accentOrange'
+          : 'bg-accentOrange text-white';
 
         el.innerHTML = `
           <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-darkCard shadow-md text-xs font-bold border border-slate-200 dark:border-darkBorder">
-            <svg class="w-3.5 h-3.5 text-amber-500 fill-current" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="5"/>
               <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/>
             </svg>
@@ -565,27 +565,33 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         const el = document.createElement('div');
         el.className = 'cursor-pointer select-none';
 
-        let badgeBg = 'bg-rose-600';
+        let badgeBg = 'bg-accentOrange';
+        let pinIconColor = 'text-white';
         let svgHtml = '';
 
         if (feature.featureType === 'traffic') {
-          badgeBg = 'bg-amber-500';
-          // Formal Car SVG
-          svgHtml = `<svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`;
+          badgeBg = 'bg-[#151218]';
+          pinIconColor = 'text-accentOrange';
+          // Formal Car SVG with orange accent
+          svgHtml = `<svg class="w-4 h-4 text-accentOrange fill-current" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`;
         } else if (feature.featureType === 'roadwork') {
-          badgeBg = 'bg-amber-600';
-          // Formal Roadwork Cone SVG
-          svgHtml = `<svg class="w-4 h-4 text-white fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l4 14H8l4-14zm-7 18h14M8 12h8m-6 4h4"/></svg>`;
+          badgeBg = 'bg-[#151218]';
+          pinIconColor = 'text-accentOrange';
+          // Formal Roadwork Cone SVG with orange accent
+          svgHtml = `<svg class="w-4 h-4 text-accentOrange fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l4 14H8l4-14zm-7 18h14M8 12h8m-6 4h4"/></svg>`;
         } else if (feature.featureType === 'closure') {
-          badgeBg = 'bg-red-700';
+          badgeBg = 'bg-accentOrange';
+          pinIconColor = 'text-white';
           // Formal Road Closed No-Entry SVG
           svgHtml = `<svg class="w-4 h-4 text-white fill-none stroke-current stroke-2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M8 12h8"/></svg>`;
         } else if (feature.featureType === 'accident') {
-          badgeBg = 'bg-rose-600';
+          badgeBg = 'bg-accentOrange';
+          pinIconColor = 'text-white';
           // Formal Accident Alert SVG
           svgHtml = `<svg class="w-4 h-4 text-white fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
         } else {
-          badgeBg = 'bg-amber-500';
+          badgeBg = 'bg-accentOrange';
+          pinIconColor = 'text-white';
           // Formal Hazard Warning SVG
           svgHtml = `<svg class="w-4 h-4 text-white fill-none stroke-current stroke-2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>`;
         }
@@ -594,7 +600,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         el.title = feature.title;
         el.innerHTML = `
           <div class="relative flex flex-col items-center group cursor-pointer select-none" title="${feature.title}">
-            <div class="w-8 h-8 rounded-full ${badgeBg} text-white shadow-md border-2 border-white flex items-center justify-center transition-transform hover:scale-110">
+            <div class="w-8 h-8 rounded-full ${badgeBg} ${pinIconColor} shadow-md border-2 border-white flex items-center justify-center transition-transform hover:scale-110">
               ${svgHtml}
             </div>
             <div class="w-2 h-2 ${badgeBg} rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
@@ -614,18 +620,18 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         markersRef.current.push(marker);
       });
 
-      // 4. User's Own Submitted Reports as Distinct Purple Pin (Formal, NO text label/emoji)
+      // 4. User's Own Submitted Reports as Distinct NaviGo Pin (Formal, NO text label/emoji)
       userReports.forEach((rep) => {
         const repEl = document.createElement('div');
         repEl.className = 'cursor-pointer select-none';
         repEl.innerHTML = `
           <div class="relative flex flex-col items-center group cursor-pointer select-none">
-            <div class="w-8 h-8 rounded-full bg-purple-600 text-white shadow-md border-2 border-white flex items-center justify-center transition-transform hover:scale-110">
-              <svg class="w-4 h-4 text-white fill-current" viewBox="0 0 24 24">
+            <div class="w-8 h-8 rounded-full bg-[#151218] text-accentOrange shadow-md border-2 border-white flex items-center justify-center transition-transform hover:scale-110">
+              <svg class="w-4 h-4 text-accentOrange fill-current" viewBox="0 0 24 24">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
               </svg>
             </div>
-            <div class="w-2 h-2 bg-purple-600 rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
+            <div class="w-2 h-2 bg-[#151218] rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
           </div>
         `;
 
@@ -642,7 +648,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         markersRef.current.push(repMarker);
       });
 
-      // 5. Metan & Propan Gas Station Pins (Idea 1 - Real-time CNG/LPG Pressure & Queue)
+      // 5. Metan & Propan Gas Station Pins (Unified 3-Color Brand Pill)
       if (variant !== 'bare' && isGasLayerVisible) {
         gasStations.forEach((station) => {
           const el = document.createElement('div');
@@ -651,16 +657,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           const isMetan = station.fuels.includes('metan');
           const isPropan = station.fuels.includes('propan');
           const pressure = station.pressureBar ?? 0;
-          const isGoodPressure = pressure >= 185;
           const isClosed = !station.isOpen;
-
-          const badgeBg = isClosed
-            ? 'bg-slate-700'
-            : isGoodPressure
-            ? 'bg-emerald-600'
-            : pressure > 0
-            ? 'bg-amber-600'
-            : 'bg-blue-600';
 
           const badgeLabel = isClosed
             ? 'Yopiq'
@@ -672,11 +669,11 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
           el.innerHTML = `
             <div class="relative flex flex-col items-center group cursor-pointer select-none hover:scale-110 transition-transform">
-              <div class="flex items-center gap-1 px-2.5 py-1 rounded-full ${badgeBg} text-white shadow-md border-2 border-white text-[10px] font-black tracking-tight whitespace-nowrap">
-                <svg class="w-3.5 h-3.5 text-white fill-current" viewBox="0 0 24 24"><path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
-                <span>${badgeLabel}</span>
+              <div class="flex items-center gap-1 px-2.5 py-1 rounded-full ${isClosed ? 'bg-[#151218]/75 text-white/70' : 'bg-[#151218] text-white'} shadow-md border-2 border-white text-[10px] font-black tracking-tight whitespace-nowrap">
+                <svg class="w-3.5 h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24"><path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+                <span class="${isMetan && pressure > 0 ? 'text-accentOrange' : 'text-white'}">${badgeLabel}</span>
               </div>
-              <div class="w-2 h-2 ${badgeBg} rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
+              <div class="w-2 h-2 bg-[#151218] rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
             </div>
           `;
 
@@ -1253,7 +1250,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             title="2D / 3D Perspektiva"
             className={`w-11 h-11 rounded-2xl shadow-float border text-xs font-black transition-all flex items-center justify-center ${
               is3DView
-                ? 'bg-blue-600 text-white border-blue-400'
+                ? 'bg-blackPill text-white border-blackPill'
                 : 'bg-white dark:bg-darkCard text-textPrimary dark:text-darkText border-yolBorder dark:border-darkBorder hover:border-accentOrange'
             }`}
           >
@@ -1289,7 +1286,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             <button
               onClick={() => setIsQuickHazardOpen(!isQuickHazardOpen)}
               title={locale === 'ru' ? 'Быстрое сообщение' : locale === 'en' ? 'Quick Report' : 'Tezkor xabar'}
-              className="w-11 h-11 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all"
+              className="w-11 h-11 rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all"
             >
               <AlertTriangle className="w-5 h-5" />
             </button>
@@ -1301,30 +1298,30 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                 </div>
                 <button
                   onClick={() => handleQuickHazardReport('traffic', 'Tirbandlik')}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-orange-50 dark:hover:bg-gray-800 text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-orangeTint text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
                 >
-                  <Car className="w-4 h-4 text-orange-500 shrink-0" />
+                  <Car className="w-4 h-4 text-accentOrange shrink-0" />
                   <span>{locale === 'ru' ? 'Пробка' : locale === 'en' ? 'Traffic' : 'Tirbandlik'}</span>
                 </button>
                 <button
                   onClick={() => handleQuickHazardReport('accident', 'YTH / Avariya')}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-gray-800 text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-orangeTint text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
                 >
-                  <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 text-accentOrange shrink-0" />
                   <span>{locale === 'ru' ? 'ДТП' : locale === 'en' ? 'Accident' : 'YTH / Avariya'}</span>
                 </button>
                 <button
                   onClick={() => handleQuickHazardReport('roadwork', "Yo'l ta'miri")}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-amber-50 dark:hover:bg-gray-800 text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-orangeTint text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
                 >
-                  <Cone className="w-4 h-4 text-amber-500 shrink-0" />
+                  <Cone className="w-4 h-4 text-accentOrange shrink-0" />
                   <span>{locale === 'ru' ? 'Ремонт дороги' : locale === 'en' ? 'Roadwork' : "Yo'l ta'miri"}</span>
                 </button>
                 <button
                   onClick={() => handleQuickHazardReport('hazard', 'Radar / Kamera')}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
+                  className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-orangeTint text-xs font-bold text-textPrimary dark:text-darkText transition-colors"
                 >
-                  <Camera className="w-4 h-4 text-blue-500 shrink-0" />
+                  <Camera className="w-4 h-4 text-accentOrange shrink-0" />
                   <span>{locale === 'ru' ? 'Камера' : locale === 'en' ? 'Speed Camera' : 'Radar / Kamera'}</span>
                 </button>
               </div>
@@ -1337,8 +1334,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             title={isGasLayerVisible ? "Metan/Propan zapravkalarini yashirish" : "Metan & Propan zapravkalarini ko'rsatish"}
             className={`w-11 h-11 rounded-2xl shadow-float border text-xs font-black transition-all flex items-center justify-center ${
               isGasLayerVisible
-                ? 'bg-emerald-600 text-white border-emerald-400 shadow-md'
-                : 'bg-white dark:bg-darkCard text-textPrimary dark:text-darkText border-yolBorder dark:border-darkBorder hover:border-emerald-500'
+                ? 'bg-accentOrange text-white border-accentOrange shadow-md'
+                : 'bg-white dark:bg-darkCard text-textPrimary dark:text-darkText border-yolBorder dark:border-darkBorder hover:border-accentOrange'
             }`}
           >
             <Fuel className="w-5 h-5" />
@@ -1348,24 +1345,24 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           <button
             onClick={() => triggerDemoV2XAlert('103')}
             title="V2X Yashil Yo'lak (Tez Yordam sirenasi sinovi)"
-            className="w-11 h-11 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white shadow-float border-2 border-white flex items-center justify-center transition-all active:scale-95 group relative"
+            className="w-11 h-11 rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all active:scale-95 group relative"
           >
             <Siren className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-ping"></span>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full animate-ping"></span>
           </button>
         </div>
       )}
 
       {/* 2C. Yandex Maps / Waze Click-on-Map Quick Action Bar */}
       {clickedMapPoint && !isNavigating && variant !== 'bare' && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 bg-slate-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-pop-in">
-          <div className="flex items-center gap-1.5 pr-2 border-r border-slate-700 max-w-[200px]">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 bg-blackPill/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-gray-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-pop-in">
+          <div className="flex items-center gap-1.5 pr-2 border-r border-gray-700 max-w-[200px]">
             <MapPin className="w-4 h-4 text-accentOrange shrink-0" />
             <div className="truncate">
               <span className="text-xs font-bold block truncate">
                 {clickedMapPoint.name || `${clickedMapPoint.lat.toFixed(4)}, ${clickedMapPoint.lon.toFixed(4)}`}
               </span>
-              <span className="text-[10px] text-slate-400 block font-mono">
+              <span className="text-[10px] text-gray-400 block font-mono">
                 {clickedMapPoint.lat.toFixed(4)}, {clickedMapPoint.lon.toFixed(4)}
               </span>
             </div>
@@ -1381,7 +1378,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                 pt.name || (locale === 'ru' ? 'Точка на карте' : locale === 'en' ? 'Pinned Location' : 'Xaritadagi nuqta')
               );
             }}
-            className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all spring-btn active:scale-90"
+            className="px-3 py-1.5 rounded-xl bg-accentOrange hover:bg-orange-600 text-white text-xs font-black flex items-center gap-1.5 shadow-sm transition-all spring-btn active:scale-90"
           >
             <Flag className="w-3.5 h-3.5" />
             <span>{locale === 'ru' ? 'Сюда (Б)' : locale === 'en' ? 'Route Here (B)' : 'Bu yerga ketish (B)'}</span>
@@ -1839,14 +1836,14 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 9. Selected User Report Popup */}
       {selectedUserReport && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-purple-400 animate-fade-in">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+              <div className="w-10 h-10 rounded-full bg-orangeTint text-accentOrange flex items-center justify-center">
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-purple-600 uppercase">
+                <span className="text-[10px] font-bold text-accentOrange uppercase">
                   {t('map.yourReport')} ({selectedUserReport.id})
                 </span>
                 <h3 className="font-bold text-base text-textPrimary dark:text-darkText leading-tight">
@@ -1868,7 +1865,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
           <div className="mt-3 p-2 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-xs flex justify-between items-center">
             <span>Status:</span>
-            <span className="font-bold text-purple-600 uppercase">
+            <span className="font-bold text-accentOrange uppercase">
               {t(`myReports.statuses.${selectedUserReport.status}`) || selectedUserReport.status}
             </span>
           </div>
@@ -1902,32 +1899,26 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         );
 
         return (
-          <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border ${
-            hasMetan ? 'border-emerald-500/40' : 'border-blue-500/40'
-          } animate-fade-in`}>
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
             {/* Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
                   !selectedGasStation.isOpen
-                    ? 'bg-slate-200 text-slate-500 dark:bg-slate-800'
-                    : hasMetan
-                    ? (selectedGasStation.pressureBar ?? 0) >= 185
-                      ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400'
-                      : 'bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400'
-                    : 'bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                    ? 'bg-innerSoftArea text-textSecondary dark:bg-gray-800'
+                    : 'bg-orangeTint text-accentOrange dark:bg-orange-950/60'
                 }`}>
                   <Fuel className="w-6 h-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText">
                       {selectedGasStation.brand}
                     </span>
                     <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
                       selectedGasStation.isOpen
-                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
-                        : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700'
+                        ? 'bg-blackPill text-white border border-blackPill'
+                        : 'bg-innerSoftArea text-textSecondary border border-yolBorder'
                     }`}>
                       {selectedGasStation.isOpen ? "Ochiq (24/7)" : "Vaqtincha yopiq"}
                     </span>
@@ -1942,7 +1933,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               </div>
               <button
                 onClick={() => setSelectedGasStation(null)}
-                className="text-textSecondary hover:text-textPrimary p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="text-textSecondary hover:text-textPrimary p-1.5 rounded-full hover:bg-innerSoftArea dark:hover:bg-gray-800 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1955,15 +1946,13 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                 <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
                   <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
                     <span className="flex items-center gap-1">
-                      <Gauge className="w-3.5 h-3.5 text-emerald-500" />
+                      <Gauge className="w-3.5 h-3.5 text-accentOrange" />
                       Metan Bosimi
                     </span>
                     <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
                       (selectedGasStation.pressureBar ?? 0) >= 190
-                        ? 'bg-emerald-500 text-white'
-                        : (selectedGasStation.pressureBar ?? 0) >= 170
-                        ? 'bg-amber-500 text-white'
-                        : 'bg-rose-500 text-white'
+                        ? 'bg-blackPill text-white'
+                        : 'bg-accentOrange text-white'
                     }`}>
                       {(selectedGasStation.pressureBar ?? 0) >= 190 ? "A'lo" : (selectedGasStation.pressureBar ?? 0) >= 170 ? "O'rtacha" : "Past"}
                     </span>
@@ -1975,15 +1964,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                     <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">Bar</span>
                   </div>
                   {/* Pressure Bar Visual Gauge */}
-                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
+                  <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mt-2">
                     <div 
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        (selectedGasStation.pressureBar ?? 0) >= 190
-                          ? 'bg-emerald-500'
-                          : (selectedGasStation.pressureBar ?? 0) >= 170
-                          ? 'bg-amber-500'
-                          : 'bg-rose-500'
-                      }`}
+                      className="h-full rounded-full transition-all duration-500 bg-accentOrange"
                       style={{ width: `${Math.min(100, Math.max(10, ((selectedGasStation.pressureBar ?? 0) / 240) * 100))}%` }}
                     />
                   </div>
@@ -1993,10 +1976,10 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                 <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
                   <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
                     <span className="flex items-center gap-1">
-                      <Fuel className="w-3.5 h-3.5 text-blue-500" />
+                      <Fuel className="w-3.5 h-3.5 text-accentOrange" />
                       Benzin Holati
                     </span>
-                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-emerald-500 text-white">
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-blackPill text-white">
                       Mavjud
                     </span>
                   </div>
@@ -2005,8 +1988,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                       AI-92 / AI-95
                     </span>
                   </div>
-                  <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                  <div className="text-[10px] font-bold text-accentOrange mt-2 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-accentOrange shrink-0" />
                     <span className="truncate">{selectedGasStation.statusNote ? "Sifat kafolatlangan" : "Zaxirada to'liq"}</span>
                   </div>
                 </div>
@@ -2016,10 +1999,10 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
                   <span className="flex items-center gap-1">
-                    <Car className="w-3.5 h-3.5 text-blue-500" />
+                    <Car className="w-3.5 h-3.5 text-accentOrange" />
                     Jonli Navbat
                   </span>
-                  <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">
+                  <span className="text-[10px] font-bold text-accentOrange">
                     ~{selectedGasStation.estimatedWaitMinutes || selectedGasStation.waitMinutesEstimated || 5} daqiqa
                   </span>
                 </div>
@@ -2030,7 +2013,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                   <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">ta mashina</span>
                 </div>
                 <div className="text-[10px] text-textSecondary dark:text-darkTextSec mt-2 flex items-center gap-1">
-                  <Activity className="w-3 h-3 text-emerald-500 animate-pulse" />
+                  <Activity className="w-3 h-3 text-accentOrange animate-pulse" />
                   <span>Yangilandi: {selectedGasStation.updatedAt ? new Date(selectedGasStation.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : `${selectedGasStation.lastReportedMinutesAgo || 3} daqiqa oldin`}</span>
                 </div>
               </div>
@@ -2062,43 +2045,43 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               return (
                 <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
                   {hasMetan && metanPrice && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-orangeTint dark:bg-orange-950/40 text-accentOrange border border-orange-200 dark:border-orange-800 text-xs font-bold">
                       <span>Metan:</span>
                       <span className="font-extrabold">{metanPrice.toLocaleString()} so'm/m³</span>
                     </div>
                   )}
                   {propanPrice && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>Propan:</span>
                       <span className="font-extrabold">{propanPrice.toLocaleString()} so'm/L</span>
                     </div>
                   )}
                   {ai80Price && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>AI-80:</span>
                       <span className="font-extrabold">{ai80Price.toLocaleString()} so'm</span>
                     </div>
                   )}
                   {ai92Price && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>AI-92:</span>
                       <span className="font-extrabold">{ai92Price.toLocaleString()} so'm</span>
                     </div>
                   )}
                   {ai95Price && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>AI-95:</span>
                       <span className="font-extrabold">{ai95Price.toLocaleString()} so'm</span>
                     </div>
                   )}
                   {ai98Price && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>AI-98:</span>
                       <span className="font-extrabold">{ai98Price.toLocaleString()} so'm</span>
                     </div>
                   )}
                   {dieselPrice && (
-                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs font-bold">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold">
                       <span>Dizel:</span>
                       <span className="font-extrabold">{dieselPrice.toLocaleString()} so'm</span>
                     </div>
@@ -2108,12 +2091,12 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             })()}
 
             {/* Driver 1-Tap Telemetry Feedback (Crowdsource) */}
-            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 mb-3.5">
+            <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800/80 border border-yolBorder dark:border-gray-700 mb-3.5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-extrabold text-textPrimary dark:text-darkText uppercase tracking-wider">
                   Haydovchilar tasdiqlashi (1-Tap):
                 </span>
-                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="text-[10px] font-bold text-accentOrange">
                   +{selectedGasStation.communityVotes?.goodPressure || 0} ovoz
                 </span>
               </div>
@@ -2130,7 +2113,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                       });
                       setIsUpdatingGasStation(false);
                     }}
-                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 border border-slate-200 dark:border-slate-600 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-darkCard hover:bg-orangeTint text-accentOrange border border-yolBorder dark:border-gray-700 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
                     <span className="text-[10px] leading-tight font-extrabold">Bosim a'lo (200+)</span>
@@ -2146,7 +2129,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                       });
                       setIsUpdatingGasStation(false);
                     }}
-                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-slate-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-darkCard hover:bg-orangeTint text-accentOrange border border-yolBorder dark:border-gray-700 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
                   >
                     <ThumbsUp className="w-3.5 h-3.5" />
                     <span className="text-[10px] leading-tight font-extrabold">Yoqilg'i bor</span>
@@ -2164,7 +2147,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                     });
                     setIsUpdatingGasStation(false);
                   }}
-                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-slate-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-darkCard hover:bg-innerSoftArea text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
                 >
                   <Car className="w-3.5 h-3.5" />
                   <span className="text-[10px] leading-tight font-extrabold">Navbat kam (2-5)</span>
@@ -2181,7 +2164,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                     });
                     setIsUpdatingGasStation(false);
                   }}
-                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-amber-50 dark:hover:bg-amber-950/50 border border-slate-200 dark:border-slate-600 text-amber-600 dark:text-amber-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-darkCard hover:bg-orangeTint text-accentOrange border border-yolBorder dark:border-gray-700 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
                   <span className="text-[10px] leading-tight font-extrabold">Navbat ko'p (15+)</span>
@@ -2209,15 +2192,15 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
                   );
                   setSelectedGasStation(null);
                 }}
-                className="flex-1 py-2.5 px-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-98"
+                className="flex-1 py-2.5 px-4 rounded-full bg-blackPill hover:bg-blackPillHover text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-98"
               >
-                <Navigation className="w-4 h-4 fill-current" />
+                <Navigation className="w-4 h-4 fill-current text-accentOrange" />
                 <span>Yo'nalish olish (B nuqta)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedGasStation(null)}
-                className="py-2.5 px-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-textPrimary dark:text-darkText text-xs font-bold transition-colors"
+                className="py-2.5 px-4 rounded-full bg-innerSoftArea hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-textPrimary dark:text-darkText text-xs font-bold transition-colors border border-yolBorder dark:border-gray-700"
               >
                 Yopish
               </button>

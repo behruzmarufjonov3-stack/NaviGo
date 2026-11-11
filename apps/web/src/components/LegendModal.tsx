@@ -39,7 +39,7 @@ export const LegendModal: React.FC = () => {
           </h3>
           <div className="grid grid-cols-1 gap-2.5">
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700">
-              <div className="w-9 h-9 rounded-full bg-red-100 dark:bg-red-950/70 text-red-600 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-full bg-orangeTint dark:bg-orange-950/70 text-accentOrange flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <div>
@@ -49,8 +49,8 @@ export const LegendModal: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700">
-              <div className="w-9 h-9 rounded-full bg-orange-100 dark:bg-orange-950/70 text-accentOrange flex items-center justify-center shrink-0">
-                <Car className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-full bg-blackPill/10 dark:bg-white/10 text-textPrimary dark:text-darkText flex items-center justify-center shrink-0">
+                <Car className="w-5 h-5 text-accentOrange" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-textPrimary dark:text-darkText">{t('legend.trafficTitle')}</h4>
@@ -59,8 +59,8 @@ export const LegendModal: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700">
-              <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-600 flex items-center justify-center shrink-0">
-                <Wrench className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-full bg-blackPill/10 dark:bg-white/10 text-textPrimary dark:text-darkText flex items-center justify-center shrink-0">
+                <Wrench className="w-5 h-5 text-accentOrange" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-textPrimary dark:text-darkText">{t('legend.roadWorkTitle')}</h4>
@@ -69,7 +69,7 @@ export const LegendModal: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-3 p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700">
-              <div className="w-9 h-9 rounded-full bg-red-200 dark:bg-red-900/60 text-red-700 dark:text-red-300 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-full bg-orangeTint dark:bg-orange-950/70 text-accentOrange flex items-center justify-center shrink-0">
                 <Ban className="w-5 h-5" />
               </div>
               <div>
@@ -88,7 +88,7 @@ export const LegendModal: React.FC = () => {
                 <span className="font-bold text-xs text-textPrimary dark:text-darkText">{t('legend.sourceLiveTitle')}</span>
                 <p className="text-xs text-textSecondary dark:text-darkTextSec">{t('legend.sourceLiveDesc')}</p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">{t('roads.sourceLive')}</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blackPill text-white border border-blackPill">{t('roads.sourceLive')}</span>
             </div>
 
             <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex items-center justify-between">
@@ -96,7 +96,7 @@ export const LegendModal: React.FC = () => {
                 <span className="font-bold text-xs text-textPrimary dark:text-darkText">{t('legend.sourceCommunityTitle')}</span>
                 <p className="text-xs text-textSecondary dark:text-darkTextSec">{t('legend.sourceCommunityDesc')}</p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">{t('roads.sourceCommunity')}</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orangeTint dark:bg-orange-950/40 text-accentOrange border border-orange-200 dark:border-orange-900/50">{t('roads.sourceCommunity')}</span>
             </div>
 
             <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex items-center justify-between">
@@ -104,7 +104,7 @@ export const LegendModal: React.FC = () => {
                 <span className="font-bold text-xs text-textPrimary dark:text-darkText">{t('legend.sourceOfficialTitle')}</span>
                 <p className="text-xs text-textSecondary dark:text-darkTextSec">{t('legend.sourceOfficialDesc')}</p>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">{t('roads.sourceOfficial')}</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700">{t('roads.sourceOfficial')}</span>
             </div>
           </div>
         </div>

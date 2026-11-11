@@ -532,10 +532,10 @@ export const LeftDock: React.FC = () => {
             title="Favqulodda Xizmatlar (103, 102, 101, 104, 1050)"
             className="flex flex-col items-center gap-1 group transition-transform active:scale-95"
           >
-            <div className="w-11 h-11 rounded-2xl bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xs transition-colors">
+            <div className="w-11 h-11 rounded-2xl bg-accentOrange hover:bg-orange-600 text-white flex items-center justify-center shadow-xs transition-colors">
               <Truck className="w-5 h-5 text-white" />
             </div>
-            <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-tight">
+            <span className="text-[10px] font-black text-accentOrange uppercase tracking-tight">
               SOS
             </span>
           </a>
@@ -567,7 +567,7 @@ export const LeftDock: React.FC = () => {
             }`}>
               <Home className="w-5 h-5" />
               {savedPlaces.home && isValidPlace(savedPlaces.home) && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accentOrange ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
             <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight">
@@ -588,7 +588,7 @@ export const LeftDock: React.FC = () => {
             }`}>
               <Briefcase className="w-5 h-5" />
               {savedPlaces.work && isValidPlace(savedPlaces.work) && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-900"></span>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accentOrange ring-2 ring-white dark:ring-gray-900"></span>
               )}
             </div>
             <span className="text-[10px] font-bold text-gray-700 dark:text-gray-300 tracking-tight">
@@ -749,8 +749,8 @@ export const LeftDock: React.FC = () => {
 
           {/* Success Toast Banner */}
           {saveSuccessMsg && (
-            <div className="mt-3 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center gap-2 animate-scale-up">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="mt-3 p-2.5 rounded-xl bg-orangeTint dark:bg-orange-950/60 border border-orange-200 dark:border-orange-800 text-accentOrange text-xs font-bold flex items-center gap-2 animate-scale-up">
+              <Check className="w-4 h-4 text-accentOrange shrink-0" />
               <span>
                 {activeAddressType === 'home' ? 'Uy manzili' : 'Ishxona manzili'} muvaffaqiyatli saqlandi!
               </span>

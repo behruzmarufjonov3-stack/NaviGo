@@ -882,8 +882,8 @@ export const LeftPanel: React.FC = () => {
             }}
             className={`px-2.5 py-1 rounded-full text-xs font-black whitespace-nowrap transition-all shadow-xs active:scale-95 flex items-center gap-1 shrink-0 ${
               isGasLayerVisible || activeFilter === 'gas'
-                ? 'bg-emerald-600 text-white shadow-emerald-500/30 shadow-md ring-1 ring-emerald-400'
-                : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                ? 'bg-accentOrange text-white shadow-orange-500/30 shadow-md ring-1 ring-accentOrange'
+                : 'bg-orangeTint dark:bg-orange-950/40 text-accentOrange border border-orange-200 dark:border-orange-800'
             }`}
           >
             <Fuel className="w-3.5 h-3.5" />
@@ -1144,17 +1144,17 @@ export const LeftPanel: React.FC = () => {
               onClick={() => handleSelectRouteVariant('fastest')}
               className={`p-3 rounded-2xl border text-left transition-all ${
                 selectedRouteVariant === 'fastest'
-                  ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-500 ring-1 ring-blue-500/40 shadow-xs'
+                  ? 'bg-orangeTint dark:bg-orange-950/40 border-accentOrange ring-1 ring-accentOrange/40 shadow-xs'
                   : 'bg-innerSoftArea dark:bg-gray-800 border-yolBorder dark:border-gray-700 opacity-80 hover:opacity-100'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 dark:text-blue-300 flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-blue-600" />
+                <span className="text-[10px] font-black uppercase tracking-wider text-accentOrange flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-accentOrange" />
                   <span>{locale === 'ru' ? 'Быстрый' : locale === 'en' ? 'Fastest' : 'Eng tez yo\'l'}</span>
                 </span>
                 {selectedRouteVariant === 'fastest' && (
-                  <span className="w-2 h-2 rounded-full bg-blue-600" />
+                  <span className="w-2 h-2 rounded-full bg-accentOrange" />
                 )}
               </div>
               <div className="text-base font-black text-textPrimary dark:text-darkText mt-1">
@@ -1170,23 +1170,23 @@ export const LeftPanel: React.FC = () => {
               onClick={() => handleSelectRouteVariant('bypass')}
               className={`p-3 rounded-2xl border text-left transition-all ${
                 selectedRouteVariant === 'bypass'
-                  ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-500 ring-1 ring-emerald-500/40 shadow-xs'
+                  ? 'bg-blackPill/10 dark:bg-white/10 border-blackPill dark:border-white ring-1 ring-blackPill/40 shadow-xs'
                   : 'bg-innerSoftArea dark:bg-gray-800 border-yolBorder dark:border-gray-700 opacity-80 hover:opacity-100'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
-                  <NavIcon className="w-3 h-3 text-emerald-600" />
+                <span className="text-[10px] font-black uppercase tracking-wider text-textPrimary dark:text-darkText flex items-center gap-1">
+                  <NavIcon className="w-3 h-3 text-accentOrange" />
                   <span>{locale === 'ru' ? 'Объезд' : locale === 'en' ? 'Bypass' : 'Aylanma yo\'l'}</span>
                 </span>
                 {selectedRouteVariant === 'bypass' && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                  <span className="w-2 h-2 rounded-full bg-blackPill dark:bg-white" />
                 )}
               </div>
               <div className="text-base font-black text-textPrimary dark:text-darkText mt-1">
                 {formatDurationText((baseRouteStatsRef.current?.duration ?? activeRoute.durationMinutes) + 3)}
               </div>
-              <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+              <div className="text-[11px] font-bold text-textSecondary dark:text-darkTextSec">
                 {(((baseRouteStatsRef.current?.distance ?? activeRoute.distanceMeters) * 1.14) / 1000).toFixed(1)} km • Tirbandliksiz
               </div>
             </button>
@@ -1524,8 +1524,8 @@ export const LeftPanel: React.FC = () => {
                 }}
                 className={`px-2.5 py-1 rounded-full text-xs font-black transition-all shrink-0 flex items-center gap-1 ${
                   activeFilter === 'gas'
-                    ? 'bg-emerald-600 text-white shadow-emerald-500/30 shadow-md ring-1 ring-emerald-400'
-                    : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                    ? 'bg-accentOrange text-white shadow-orange-500/30 shadow-md ring-1 ring-accentOrange'
+                    : 'bg-orangeTint dark:bg-orange-950/40 text-accentOrange border border-orange-200 dark:border-orange-800'
                 }`}
               >
                 <Fuel className="w-3 h-3" />
@@ -1576,25 +1576,23 @@ export const LeftPanel: React.FC = () => {
                   sortedGasStations.map((station) => (
                     <div 
                       key={station.id}
-                      className="p-3.5 rounded-2xl bg-innerSoftArea dark:bg-gray-800 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/20 transition-colors border border-emerald-500/20 flex flex-col gap-2"
+                      className="p-3.5 rounded-2xl bg-innerSoftArea dark:bg-gray-800 hover:bg-orangeTint/20 transition-colors border border-yolBorder dark:border-gray-700 flex flex-col gap-2"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2.5">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                             !station.isOpen
-                              ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-                              : (station.pressureBar ?? 0) >= 185
-                              ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400'
-                              : 'bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400'
+                              ? 'bg-innerSoftArea text-textSecondary dark:bg-gray-700'
+                              : 'bg-orangeTint text-accentOrange dark:bg-orange-950 dark:text-accentOrange'
                           }`}>
                             <Fuel className="w-4 h-4" />
                           </div>
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded">
+                              <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 bg-white dark:bg-gray-700 text-textPrimary dark:text-darkText rounded">
                                 {station.brand}
                               </span>
-                              <span className={`text-[10px] font-bold ${station.isOpen ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}`}>
+                              <span className={`text-[10px] font-bold ${station.isOpen ? 'text-blackPill dark:text-white font-extrabold' : 'text-accentOrange'}`}>
                                 {station.isOpen ? "Ochiq" : "Yopiq"}
                               </span>
                             </div>
@@ -1606,13 +1604,7 @@ export const LeftPanel: React.FC = () => {
 
                         {/* Pressure Badge */}
                         <div className="text-right shrink-0">
-                          <span className={`text-xs font-black px-2 py-0.5 rounded-full inline-block ${
-                            (station.pressureBar ?? 0) >= 190
-                              ? 'bg-emerald-500 text-white'
-                              : (station.pressureBar ?? 0) >= 170
-                              ? 'bg-amber-500 text-white'
-                              : 'bg-rose-500 text-white'
-                          }`}>
+                          <span className="text-xs font-black px-2 py-0.5 rounded-full inline-block bg-accentOrange text-white">
                             {station.pressureBar ?? 0} Bar
                           </span>
                           <div className="text-[10px] font-bold text-textSecondary dark:text-darkTextSec mt-0.5">
@@ -1624,7 +1616,7 @@ export const LeftPanel: React.FC = () => {
                       {/* Queue & Price Row */}
                       <div className="flex items-center justify-between text-xs font-medium text-textSecondary dark:text-darkTextSec pt-1 border-t border-gray-200 dark:border-gray-700">
                         <span className="flex items-center gap-1">
-                          <Car className="w-3.5 h-3.5 text-blue-500" />
+                          <Car className="w-3.5 h-3.5 text-accentOrange" />
                           <span>Navbat: <strong className="text-textPrimary dark:text-darkText">{station.queueCarsCount} ta</strong> (~{station.estimatedWaitMinutes || station.waitMinutesEstimated || 5} daq)</span>
                         </span>
                         {(() => {
@@ -1632,14 +1624,14 @@ export const LeftPanel: React.FC = () => {
                           const pPrice = (station.prices?.propan && station.prices.propan >= 7000) ? station.prices.propan : (station.pricePerUnit?.propan && station.pricePerUnit.propan >= 7000) ? station.pricePerUnit.propan : station.fuels.includes('propan') ? 9500 : null;
                           if (mPrice) {
                             return (
-                              <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                              <span className="text-accentOrange font-bold">
                                 {mPrice.toLocaleString()} so'm/m³
                               </span>
                             );
                           }
                           if (pPrice) {
                             return (
-                              <span className="text-amber-600 dark:text-amber-400 font-bold">
+                              <span className="text-accentOrange font-bold">
                                 {pPrice.toLocaleString()} so'm/L
                               </span>
                             );
@@ -1657,7 +1649,7 @@ export const LeftPanel: React.FC = () => {
                             setFocusedLocation({ lat: station.latitude, lon: station.longitude });
                             setSelectedGasStation(station);
                           }}
-                          className="px-2.5 py-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                          className="px-2.5 py-1 rounded-full text-xs font-bold text-textPrimary dark:text-darkText hover:bg-gray-200 dark:hover:bg-gray-700"
                         >
                           Xaritada ko'rish
                         </button>
@@ -1670,9 +1662,9 @@ export const LeftPanel: React.FC = () => {
                             setDestinationCoords({ lat: station.latitude, lon: station.longitude, name: station.name });
                             requestRoute(station.latitude, station.longitude, 'car', station.name, sLat, sLon, sName);
                           }}
-                          className="px-3 py-1 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1 shadow-xs"
+                          className="px-3 py-1 rounded-full bg-blackPill hover:bg-blackPillHover text-white text-xs font-bold flex items-center gap-1 shadow-xs"
                         >
-                          <NavIcon className="w-3 h-3 fill-current" />
+                          <NavIcon className="w-3 h-3 fill-current text-accentOrange" />
                           <span>Yo'nalish</span>
                         </button>
                       </div>
@@ -1689,10 +1681,10 @@ export const LeftPanel: React.FC = () => {
                       <div className="flex items-center gap-2.5">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                           item.featureType === 'accident'
-                            ? 'bg-statusDangerBg text-statusDanger'
+                            ? 'bg-orangeTint text-accentOrange'
                             : item.featureType === 'traffic'
-                            ? 'bg-orange-100 text-orange-600'
-                            : 'bg-yellow-100 text-yellow-700'
+                            ? 'bg-orangeTint/70 text-accentOrange'
+                            : 'bg-innerSoftArea text-textPrimary dark:bg-gray-700 dark:text-darkText'
                         }`}>
                           {item.featureType === 'accident' ? (
                             <AlertTriangle className="w-4 h-4" />
@@ -1714,10 +1706,10 @@ export const LeftPanel: React.FC = () => {
 
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
                         item.source === 'Live'
-                          ? 'bg-blue-100 text-blue-700'
+                          ? 'bg-blackPill text-white border border-blackPill'
                           : item.source === 'Official'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-purple-100 text-purple-700'
+                          ? 'bg-innerSoftArea dark:bg-gray-800 text-textPrimary dark:text-darkText border border-yolBorder dark:border-gray-700'
+                          : 'bg-orangeTint dark:bg-orange-950/40 text-accentOrange font-extrabold border border-orange-200 dark:border-orange-900/50'
                       }`}>
                         {item.source === 'Live' ? t('roads.sourceLive') : item.source === 'Official' ? t('roads.sourceOfficial') : t('roads.sourceCommunity')}
                       </span>
