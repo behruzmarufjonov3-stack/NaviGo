@@ -41,6 +41,7 @@ import {
   Siren,
   Radio,
   Check,
+  CheckCircle2,
   Activity
 } from 'lucide-react';
 import { MapFeature, Report, GasStation } from '@yol/shared';
@@ -1887,286 +1888,343 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         </div>
       )}
 
-      {/* 10. Selected Gas Station Modal / Card (Idea 1 - Real-time CNG/LPG Pressure & Queue) */}
-      {selectedGasStation && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-emerald-500/40 animate-fade-in">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
-                !selectedGasStation.isOpen
-                  ? 'bg-slate-200 text-slate-500 dark:bg-slate-800'
-                  : (selectedGasStation.pressureBar ?? 0) >= 185
-                  ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400'
-                  : 'bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400'
-              }`}>
-                <Fuel className="w-6 h-6" />
+      {/* 10. Selected Gas Station Modal / Card (Real-time Fuel Telemetry & Queue) */}
+      {selectedGasStation && (() => {
+        const hasMetan = selectedGasStation.fuels.includes('metan') && Boolean(
+          (selectedGasStation.pressureBar && selectedGasStation.pressureBar > 0) || 
+          selectedGasStation.pricePerUnit?.metan || 
+          selectedGasStation.prices?.metan
+        );
+        const hasPetrol = selectedGasStation.fuels.includes('petrol') || Boolean(
+          selectedGasStation.pricePerUnit?.ai92 || 
+          selectedGasStation.pricePerUnit?.ai80 || 
+          selectedGasStation.prices?.ai92
+        );
+
+        return (
+          <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border ${
+            hasMetan ? 'border-emerald-500/40' : 'border-blue-500/40'
+          } animate-fade-in`}>
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${
+                  !selectedGasStation.isOpen
+                    ? 'bg-slate-200 text-slate-500 dark:bg-slate-800'
+                    : hasMetan
+                    ? (selectedGasStation.pressureBar ?? 0) >= 185
+                      ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400'
+                      : 'bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400'
+                    : 'bg-blue-100 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                }`}>
+                  <Fuel className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {selectedGasStation.brand}
+                    </span>
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+                      selectedGasStation.isOpen
+                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
+                        : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700'
+                    }`}>
+                      {selectedGasStation.isOpen ? "Ochiq (24/7)" : "Vaqtincha yopiq"}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-base text-textPrimary dark:text-darkText leading-tight mt-1">
+                    {selectedGasStation.name}
+                  </h3>
+                  <p className="text-xs text-textSecondary dark:text-darkTextSec line-clamp-1">
+                    {selectedGasStation.address}
+                  </p>
+                </div>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    {selectedGasStation.brand}
+              <button
+                onClick={() => setSelectedGasStation(null)}
+                className="text-textSecondary hover:text-textPrimary p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Telemetry Row: Live Metan Pressure OR Benzin Status & Live Queue */}
+            <div className="grid grid-cols-2 gap-2.5 my-3.5">
+              {hasMetan ? (
+                /* Metan Pressure Meter */
+                <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
+                    <span className="flex items-center gap-1">
+                      <Gauge className="w-3.5 h-3.5 text-emerald-500" />
+                      Metan Bosimi
+                    </span>
+                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
+                      (selectedGasStation.pressureBar ?? 0) >= 190
+                        ? 'bg-emerald-500 text-white'
+                        : (selectedGasStation.pressureBar ?? 0) >= 170
+                        ? 'bg-amber-500 text-white'
+                        : 'bg-rose-500 text-white'
+                    }`}>
+                      {(selectedGasStation.pressureBar ?? 0) >= 190 ? "A'lo" : (selectedGasStation.pressureBar ?? 0) >= 170 ? "O'rtacha" : "Past"}
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-baseline gap-1">
+                    <span className="text-2xl font-black text-textPrimary dark:text-darkText">
+                      {selectedGasStation.pressureBar ?? 0}
+                    </span>
+                    <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">Bar</span>
+                  </div>
+                  {/* Pressure Bar Visual Gauge */}
+                  <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        (selectedGasStation.pressureBar ?? 0) >= 190
+                          ? 'bg-emerald-500'
+                          : (selectedGasStation.pressureBar ?? 0) >= 170
+                          ? 'bg-amber-500'
+                          : 'bg-rose-500'
+                      }`}
+                      style={{ width: `${Math.min(100, Math.max(10, ((selectedGasStation.pressureBar ?? 0) / 240) * 100))}%` }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* Benzin / AQS Status Box (NO Metan shown) */
+                <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
+                  <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
+                    <span className="flex items-center gap-1">
+                      <Fuel className="w-3.5 h-3.5 text-blue-500" />
+                      Benzin Holati
+                    </span>
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-emerald-500 text-white">
+                      Mavjud
+                    </span>
+                  </div>
+                  <div className="mt-1.5 flex items-baseline gap-1">
+                    <span className="text-base font-black text-textPrimary dark:text-darkText">
+                      AI-92 / AI-95
+                    </span>
+                  </div>
+                  <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                    <span className="truncate">{selectedGasStation.statusNote ? "Sifat kafolatlangan" : "Zaxirada to'liq"}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Live Queue & Waiting Time */}
+              <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
+                <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
+                  <span className="flex items-center gap-1">
+                    <Car className="w-3.5 h-3.5 text-blue-500" />
+                    Jonli Navbat
                   </span>
-                  <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                    selectedGasStation.isOpen
-                      ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700'
-                      : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700'
-                  }`}>
-                    {selectedGasStation.isOpen ? "Ochiq (24/7)" : "Vaqtincha yopiq"}
+                  <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">
+                    ~{selectedGasStation.estimatedWaitMinutes || selectedGasStation.waitMinutesEstimated || 5} daqiqa
                   </span>
                 </div>
-                <h3 className="font-extrabold text-base text-textPrimary dark:text-darkText leading-tight mt-1">
-                  {selectedGasStation.name}
-                </h3>
-                <p className="text-xs text-textSecondary dark:text-darkTextSec line-clamp-1">
-                  {selectedGasStation.address}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedGasStation(null)}
-              className="text-textSecondary hover:text-textPrimary p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Telemetry Row: Live Pressure & Live Queue */}
-          <div className="grid grid-cols-2 gap-2.5 my-3.5">
-            {/* Metan Pressure Meter */}
-            <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
-                <span className="flex items-center gap-1">
-                  <Gauge className="w-3.5 h-3.5 text-emerald-500" />
-                  Metan Bosimi
-                </span>
-                <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
-                  (selectedGasStation.pressureBar ?? 0) >= 190
-                    ? 'bg-emerald-500 text-white'
-                    : (selectedGasStation.pressureBar ?? 0) >= 170
-                    ? 'bg-amber-500 text-white'
-                    : 'bg-rose-500 text-white'
-                }`}>
-                  {(selectedGasStation.pressureBar ?? 0) >= 190 ? "A'lo" : (selectedGasStation.pressureBar ?? 0) >= 170 ? "O'rtacha" : "Past"}
-                </span>
-              </div>
-              <div className="mt-1.5 flex items-baseline gap-1">
-                <span className="text-2xl font-black text-textPrimary dark:text-darkText">
-                  {selectedGasStation.pressureBar ?? 0}
-                </span>
-                <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">Bar</span>
-              </div>
-              {/* Pressure Bar Visual Gauge */}
-              <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mt-2">
-                <div 
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    (selectedGasStation.pressureBar ?? 0) >= 190
-                      ? 'bg-emerald-500'
-                      : (selectedGasStation.pressureBar ?? 0) >= 170
-                      ? 'bg-amber-500'
-                      : 'bg-rose-500'
-                  }`}
-                  style={{ width: `${Math.min(100, Math.max(10, ((selectedGasStation.pressureBar ?? 0) / 240) * 100))}%` }}
-                />
+                <div className="mt-1.5 flex items-baseline gap-1">
+                  <span className="text-2xl font-black text-textPrimary dark:text-darkText">
+                    {selectedGasStation.queueCarsCount}
+                  </span>
+                  <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">ta mashina</span>
+                </div>
+                <div className="text-[10px] text-textSecondary dark:text-darkTextSec mt-2 flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-emerald-500 animate-pulse" />
+                  <span>Yangilandi: {selectedGasStation.updatedAt ? new Date(selectedGasStation.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : `${selectedGasStation.lastReportedMinutesAgo || 3} daqiqa oldin`}</span>
+                </div>
               </div>
             </div>
 
-            {/* Live Queue & Waiting Time */}
-            <div className="p-3 rounded-2xl bg-innerSoftArea dark:bg-gray-800 border border-yolBorder dark:border-gray-700 flex flex-col justify-between">
-              <div className="flex items-center justify-between text-xs font-bold text-textSecondary dark:text-darkTextSec">
-                <span className="flex items-center gap-1">
-                  <Car className="w-3.5 h-3.5 text-blue-500" />
-                  Jonli Navbat
+            {/* Fuel Types & Pricing Badges */}
+            {(() => {
+              const rawMetan = selectedGasStation.prices?.metan || selectedGasStation.pricePerUnit?.metan;
+              const metanPrice = hasMetan ? ((rawMetan && rawMetan >= 5000) ? rawMetan : (selectedGasStation.fuels.includes('metan') ? 5750 : null)) : null;
+
+              const rawPropan = selectedGasStation.prices?.propan || selectedGasStation.pricePerUnit?.propan;
+              const propanPrice = (rawPropan && rawPropan >= 7000) ? rawPropan : (selectedGasStation.fuels.includes('propan') ? 9500 : null);
+
+              const rawAi80 = selectedGasStation.prices?.ai80 || selectedGasStation.pricePerUnit?.ai80;
+              const ai80Price = (rawAi80 && rawAi80 >= 8500) ? rawAi80 : (['UNG Petro', 'Saneg', 'Mustang', 'Poytaxt Oil'].includes(selectedGasStation.brand) ? 9100 : null);
+
+              const rawAi92 = selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92;
+              const ai92Price = (rawAi92 && rawAi92 >= 10500) ? rawAi92 : (hasPetrol ? (selectedGasStation.brand === 'Lukoil' ? 13800 : selectedGasStation.brand === 'Tatneft' ? 13000 : 11900) : null);
+
+              const rawAi95 = selectedGasStation.prices?.ai95 || selectedGasStation.pricePerUnit?.ai95;
+              const ai95Price = (rawAi95 && rawAi95 >= 15000) ? rawAi95 : (hasPetrol ? (['Lukoil', 'Tatneft'].includes(selectedGasStation.brand) ? 21000 : 19500) : null);
+
+              const rawAi98 = selectedGasStation.prices?.ai98 || selectedGasStation.pricePerUnit?.ai98;
+              const ai98Price = (rawAi98 && rawAi98 >= 20000) ? rawAi98 : (selectedGasStation.brand === 'Lukoil' ? 28000 : selectedGasStation.brand === 'Tatneft' ? 27000 : null);
+
+              const rawDiesel = selectedGasStation.prices?.diesel || selectedGasStation.pricePerUnit?.diesel;
+              const dieselPrice = (rawDiesel && rawDiesel >= 14000) ? rawDiesel : (hasPetrol && ['UNG Petro', 'Lukoil', 'Tatneft', 'Saneg'].includes(selectedGasStation.brand) ? (selectedGasStation.brand === 'Lukoil' ? 18500 : 17500) : null);
+
+              return (
+                <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
+                  {hasMetan && metanPrice && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">
+                      <span>Metan:</span>
+                      <span className="font-extrabold">{metanPrice.toLocaleString()} so'm/m³</span>
+                    </div>
+                  )}
+                  {propanPrice && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold">
+                      <span>Propan:</span>
+                      <span className="font-extrabold">{propanPrice.toLocaleString()} so'm/L</span>
+                    </div>
+                  )}
+                  {ai80Price && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
+                      <span>AI-80:</span>
+                      <span className="font-extrabold">{ai80Price.toLocaleString()} so'm</span>
+                    </div>
+                  )}
+                  {ai92Price && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold">
+                      <span>AI-92:</span>
+                      <span className="font-extrabold">{ai92Price.toLocaleString()} so'm</span>
+                    </div>
+                  )}
+                  {ai95Price && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold">
+                      <span>AI-95:</span>
+                      <span className="font-extrabold">{ai95Price.toLocaleString()} so'm</span>
+                    </div>
+                  )}
+                  {ai98Price && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold">
+                      <span>AI-98:</span>
+                      <span className="font-extrabold">{ai98Price.toLocaleString()} so'm</span>
+                    </div>
+                  )}
+                  {dieselPrice && (
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs font-bold">
+                      <span>Dizel:</span>
+                      <span className="font-extrabold">{dieselPrice.toLocaleString()} so'm</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Driver 1-Tap Telemetry Feedback (Crowdsource) */}
+            <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 mb-3.5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-extrabold text-textPrimary dark:text-darkText uppercase tracking-wider">
+                  Haydovchilar tasdiqlashi (1-Tap):
                 </span>
-                <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">
-                  ~{selectedGasStation.estimatedWaitMinutes || selectedGasStation.waitMinutesEstimated || 5} daqiqa
+                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                  +{selectedGasStation.communityVotes?.goodPressure || 0} ovoz
                 </span>
               </div>
-              <div className="mt-1.5 flex items-baseline gap-1">
-                <span className="text-2xl font-black text-textPrimary dark:text-darkText">
-                  {selectedGasStation.queueCarsCount}
-                </span>
-                <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">ta mashina</span>
-              </div>
-              <div className="text-[10px] text-textSecondary dark:text-darkTextSec mt-2 flex items-center gap-1">
-                <Activity className="w-3 h-3 text-emerald-500 animate-pulse" />
-                <span>Yangilandi: {selectedGasStation.updatedAt ? new Date(selectedGasStation.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : `${selectedGasStation.lastReportedMinutesAgo || 3} daqiqa oldin`}</span>
+              <div className="grid grid-cols-3 gap-1.5">
+                {hasMetan ? (
+                  <button
+                    type="button"
+                    disabled={isUpdatingGasStation}
+                    onClick={async () => {
+                      setIsUpdatingGasStation(true);
+                      await reportGasStationUpdate(selectedGasStation.id, {
+                        pressureBar: 205,
+                        voteType: 'good_pressure'
+                      });
+                      setIsUpdatingGasStation(false);
+                    }}
+                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 border border-slate-200 dark:border-slate-600 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                  >
+                    <ThumbsUp className="w-3.5 h-3.5" />
+                    <span className="text-[10px] leading-tight font-extrabold">Bosim a'lo (200+)</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={isUpdatingGasStation}
+                    onClick={async () => {
+                      setIsUpdatingGasStation(true);
+                      await reportGasStationUpdate(selectedGasStation.id, {
+                        voteType: 'good_pressure'
+                      });
+                      setIsUpdatingGasStation(false);
+                    }}
+                    className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-slate-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                  >
+                    <ThumbsUp className="w-3.5 h-3.5" />
+                    <span className="text-[10px] leading-tight font-extrabold">Yoqilg'i bor</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  disabled={isUpdatingGasStation}
+                  onClick={async () => {
+                    setIsUpdatingGasStation(true);
+                    await reportGasStationUpdate(selectedGasStation.id, {
+                      queueCarsCount: Math.max(1, selectedGasStation.queueCarsCount - 3),
+                      voteType: 'low_queue'
+                    });
+                    setIsUpdatingGasStation(false);
+                  }}
+                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-slate-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                >
+                  <Car className="w-3.5 h-3.5" />
+                  <span className="text-[10px] leading-tight font-extrabold">Navbat kam (2-5)</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isUpdatingGasStation}
+                  onClick={async () => {
+                    setIsUpdatingGasStation(true);
+                    await reportGasStationUpdate(selectedGasStation.id, {
+                      queueCarsCount: selectedGasStation.queueCarsCount + 5,
+                      voteType: 'high_queue'
+                    });
+                    setIsUpdatingGasStation(false);
+                  }}
+                  className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-amber-50 dark:hover:bg-amber-950/50 border border-slate-200 dark:border-slate-600 text-amber-600 dark:text-amber-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span className="text-[10px] leading-tight font-extrabold">Navbat ko'p (15+)</span>
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Fuel Types & Pricing Badges (Golden Pages & Texnosmart jonli narxlari) */}
-          {(() => {
-            const rawMetan = selectedGasStation.prices?.metan || selectedGasStation.pricePerUnit?.metan;
-            const metanPrice = (rawMetan && rawMetan >= 5000) ? rawMetan : (selectedGasStation.fuels.includes('metan') ? 5750 : null);
-
-            const rawPropan = selectedGasStation.prices?.propan || selectedGasStation.pricePerUnit?.propan;
-            const propanPrice = (rawPropan && rawPropan >= 7000) ? rawPropan : (selectedGasStation.fuels.includes('propan') ? 9500 : null);
-
-            const hasPetrol = selectedGasStation.fuels.includes('petrol') || Boolean(selectedGasStation.pricePerUnit?.ai92 || selectedGasStation.pricePerUnit?.ai80);
-
-            const rawAi80 = selectedGasStation.prices?.ai80 || selectedGasStation.pricePerUnit?.ai80;
-            const ai80Price = (rawAi80 && rawAi80 >= 8500) ? rawAi80 : (['UNG Petro', 'Saneg', 'Mustang', 'Poytaxt Oil'].includes(selectedGasStation.brand) ? 9100 : null);
-
-            const rawAi92 = selectedGasStation.prices?.ai92 || selectedGasStation.pricePerUnit?.ai92 || selectedGasStation.pricePerUnit?.petrolAi92;
-            const ai92Price = (rawAi92 && rawAi92 >= 10500) ? rawAi92 : (hasPetrol ? (selectedGasStation.brand === 'Lukoil' ? 13800 : selectedGasStation.brand === 'Tatneft' ? 13000 : 11900) : null);
-
-            const rawAi95 = selectedGasStation.prices?.ai95 || selectedGasStation.pricePerUnit?.ai95;
-            const ai95Price = (rawAi95 && rawAi95 >= 15000) ? rawAi95 : (hasPetrol ? (['Lukoil', 'Tatneft'].includes(selectedGasStation.brand) ? 21000 : 19500) : null);
-
-            const rawAi98 = selectedGasStation.prices?.ai98 || selectedGasStation.pricePerUnit?.ai98;
-            const ai98Price = (rawAi98 && rawAi98 >= 20000) ? rawAi98 : (selectedGasStation.brand === 'Lukoil' ? 28000 : selectedGasStation.brand === 'Tatneft' ? 27000 : null);
-
-            const rawDiesel = selectedGasStation.prices?.diesel || selectedGasStation.pricePerUnit?.diesel;
-            const dieselPrice = (rawDiesel && rawDiesel >= 14000) ? rawDiesel : (hasPetrol && ['UNG Petro', 'Lukoil', 'Tatneft', 'Saneg'].includes(selectedGasStation.brand) ? (selectedGasStation.brand === 'Lukoil' ? 18500 : 17500) : null);
-
-            return (
-              <div className="flex flex-wrap items-center gap-1.5 mb-3.5">
-                {metanPrice && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">
-                    <span>Metan:</span>
-                    <span className="font-extrabold">{metanPrice.toLocaleString()} so'm/m³</span>
-                  </div>
-                )}
-                {propanPrice && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold">
-                    <span>Propan:</span>
-                    <span className="font-extrabold">{propanPrice.toLocaleString()} so'm/L</span>
-                  </div>
-                )}
-                {ai80Price && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
-                    <span>AI-80:</span>
-                    <span className="font-extrabold">{ai80Price.toLocaleString()} so'm</span>
-                  </div>
-                )}
-                {ai92Price && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold">
-                    <span>AI-92:</span>
-                    <span className="font-extrabold">{ai92Price.toLocaleString()} so'm</span>
-                  </div>
-                )}
-                {ai95Price && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold">
-                    <span>AI-95:</span>
-                    <span className="font-extrabold">{ai95Price.toLocaleString()} so'm</span>
-                  </div>
-                )}
-                {ai98Price && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold">
-                    <span>AI-98:</span>
-                    <span className="font-extrabold">{ai98Price.toLocaleString()} so'm</span>
-                  </div>
-                )}
-                {dieselPrice && (
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 text-xs font-bold">
-                    <span>Dizel:</span>
-                    <span className="font-extrabold">{dieselPrice.toLocaleString()} so'm</span>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
-
-          {/* Driver 1-Tap Telemetry Feedback (Crowdsource) */}
-          <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 mb-3.5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-extrabold text-textPrimary dark:text-darkText uppercase tracking-wider">
-                Haydovchilar tasdiqlashi (1-Tap):
-              </span>
-              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                +{selectedGasStation.communityVotes?.goodPressure || 0} ovoz
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-1.5">
+            {/* Action Button: Route to Gas Station */}
+            <div className="flex items-center gap-2">
               <button
                 type="button"
-                disabled={isUpdatingGasStation}
-                onClick={async () => {
-                  setIsUpdatingGasStation(true);
-                  await reportGasStationUpdate(selectedGasStation.id, {
-                    pressureBar: 205,
-                    voteType: 'good_pressure'
-                  });
-                  setIsUpdatingGasStation(false);
+                onClick={() => {
+                  const sLat = originCoords ? originCoords.lat : userCoords.lat;
+                  const sLon = originCoords ? originCoords.lon : userCoords.lon;
+                  const sName = originCoords ? originCoords.name : 'Mening joylashuvim';
+                  setDestinationCoords({ lat: selectedGasStation.latitude, lon: selectedGasStation.longitude, name: selectedGasStation.name });
+                  requestRoute(
+                    selectedGasStation.latitude,
+                    selectedGasStation.longitude,
+                    'car',
+                    selectedGasStation.name,
+                    sLat,
+                    sLon,
+                    sName
+                  );
+                  setSelectedGasStation(null);
                 }}
-                className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 border border-slate-200 dark:border-slate-600 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                className="flex-1 py-2.5 px-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-98"
               >
-                <ThumbsUp className="w-3.5 h-3.5" />
-                <span className="text-[10px] leading-tight font-extrabold">Bosim a'lo (200+)</span>
+                <Navigation className="w-4 h-4 fill-current" />
+                <span>Yo'nalish olish (B nuqta)</span>
               </button>
-
               <button
                 type="button"
-                disabled={isUpdatingGasStation}
-                onClick={async () => {
-                  setIsUpdatingGasStation(true);
-                  await reportGasStationUpdate(selectedGasStation.id, {
-                    queueCarsCount: Math.max(1, selectedGasStation.queueCarsCount - 3),
-                    voteType: 'low_queue'
-                  });
-                  setIsUpdatingGasStation(false);
-                }}
-                className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-blue-50 dark:hover:bg-blue-950/50 border border-slate-200 dark:border-slate-600 text-blue-600 dark:text-blue-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
+                onClick={() => setSelectedGasStation(null)}
+                className="py-2.5 px-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-textPrimary dark:text-darkText text-xs font-bold transition-colors"
               >
-                <Car className="w-3.5 h-3.5" />
-                <span className="text-[10px] leading-tight font-extrabold">Navbat kam (2-5)</span>
-              </button>
-
-              <button
-                type="button"
-                disabled={isUpdatingGasStation}
-                onClick={async () => {
-                  setIsUpdatingGasStation(true);
-                  await reportGasStationUpdate(selectedGasStation.id, {
-                    queueCarsCount: selectedGasStation.queueCarsCount + 5,
-                    voteType: 'high_queue'
-                  });
-                  setIsUpdatingGasStation(false);
-                }}
-                className="py-1.5 px-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-amber-50 dark:hover:bg-amber-950/50 border border-slate-200 dark:border-slate-600 text-amber-600 dark:text-amber-400 text-xs font-bold flex flex-col items-center gap-0.5 transition-all active:scale-95"
-              >
-                <AlertTriangle className="w-3.5 h-3.5" />
-                <span className="text-[10px] leading-tight font-extrabold">Navbat ko'p (15+)</span>
+                Yopish
               </button>
             </div>
           </div>
-
-          {/* Action Button: Route to Gas Station */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                const sLat = originCoords ? originCoords.lat : userCoords.lat;
-                const sLon = originCoords ? originCoords.lon : userCoords.lon;
-                const sName = originCoords ? originCoords.name : 'Mening joylashuvim';
-                setDestinationCoords({ lat: selectedGasStation.latitude, lon: selectedGasStation.longitude, name: selectedGasStation.name });
-                requestRoute(
-                  selectedGasStation.latitude,
-                  selectedGasStation.longitude,
-                  'car',
-                  selectedGasStation.name,
-                  sLat,
-                  sLon,
-                  sName
-                );
-                setSelectedGasStation(null);
-              }}
-              className="flex-1 py-2.5 px-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all active:scale-98"
-            >
-              <Navigation className="w-4 h-4 fill-current" />
-              <span>Yo'nalish olish (B nuqta)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedGasStation(null)}
-              className="py-2.5 px-4 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-textPrimary dark:text-darkText text-xs font-bold transition-colors"
-            >
-              Yopish
-            </button>
-          </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 };
