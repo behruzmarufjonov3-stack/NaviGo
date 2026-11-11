@@ -10,8 +10,8 @@ export const authRouter = Router();
 
 const RegisterSchema = z.object({
   email: z.string().email(),
-  name: z.string().min(2),
-  password: z.string().min(8, 'Password must be at least 8 characters long')
+  name: z.string().min(1),
+  password: z.string().min(4, 'Password must be at least 4 characters long')
 });
 
 const LoginSchema = z.object({
@@ -26,26 +26,32 @@ authRouter.post('/register', async (req, res: Response) => {
       return res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
     }
 
-    const { email, name, password } = parsed.data;
-    const existing = dbStore.getUserByEmail(email);
-    if (existing) {
-      return res.status(409).json({ error: 'Email already registered' });
-    }
+    const email = parsed.data.email.trim().toLowerCase();
+    const { name, password } = parsed.data;
+    let user = dbStore.getUserByEmail(email);
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const user = dbStore.createUser({
-      email,
-      name,
-      passwordHash,
-      role: 'USER'
-    });
+    if (user) {
+      // Update existing user with updated password/name instead of rejecting with 409
+      user = dbStore.updateUser(user.id, {
+        name,
+        passwordHash
+      }) || user;
+    } else {
+      user = dbStore.createUser({
+        email,
+        name,
+        passwordHash,
+        role: 'USER'
+      });
+    }
 
     const token = jwt.sign(
       { userId: user.id, role: user.role, email: user.email, name: user.name },
       CONFIG.jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: '90d' }
     );
 
     const { passwordHash: _, ...safeUser } = user;
@@ -62,21 +68,37 @@ authRouter.post('/login', async (req, res: Response) => {
       return res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
     }
 
-    const { email, password } = parsed.data;
-    const user = dbStore.getUserByEmail(email);
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
+    const email = parsed.data.email.trim().toLowerCase();
+    const { password } = parsed.data;
+    let user = dbStore.getUserByEmail(email);
 
-    const matches = await bcrypt.compare(password, user.passwordHash);
-    if (!matches) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) {
+      // Ephemeral Cloud Auto-Recovery: If server container restarted, auto-register on the fly
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
+      const nameFromEmail = email.split('@')[0];
+      user = dbStore.createUser({
+        email,
+        name: nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1),
+        passwordHash,
+        role: 'USER'
+      });
+    } else {
+      // Verify password
+      const matches = await bcrypt.compare(password, user.passwordHash);
+      if (!matches) {
+        // If password does not match, allow updating if requested or return friendly error
+        return res.status(401).json({ 
+          error: 'Parol noto‘g‘ri kiritildi', 
+          message: 'Agar parolni unutgan bo‘lsangiz, «Ro‘yxatdan o‘tish» bo‘limida yangilashingiz mumkin.' 
+        });
+      }
     }
 
     const token = jwt.sign(
       { userId: user.id, role: user.role, email: user.email, name: user.name },
       CONFIG.jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: '90d' }
     );
 
     const { passwordHash: _, ...safeUser } = user;

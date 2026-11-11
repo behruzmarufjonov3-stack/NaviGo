@@ -6,7 +6,7 @@ import { UserRole } from '@yol/shared';
 export const AuthModal: React.FC = () => {
   const { isAuthOpen, setIsAuthOpen, loginAs, user, logout, t } = useApp();
   const [isRegister, setIsRegister] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => localStorage.getItem('yol_last_email') || '');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +20,9 @@ export const AuthModal: React.FC = () => {
     setErrorMsg('');
     setIsLoading(true);
 
+    const cleanEmail = email.trim().toLowerCase();
     const endpoint = isRegister ? '/api/v1/auth/register' : '/api/v1/auth/login';
-    const payload = isRegister ? { email, name, password } : { email, password };
+    const payload = isRegister ? { email: cleanEmail, name: name.trim() || cleanEmail.split('@')[0], password } : { email: cleanEmail, password };
 
     try {
       const res = await fetch(endpoint, {
@@ -32,14 +33,15 @@ export const AuthModal: React.FC = () => {
 
       const data = await res.json();
       if (res.ok) {
+        localStorage.setItem('yol_last_email', cleanEmail);
         loginAs(data.user, data.token);
         setIsAuthOpen(false);
       } else {
-        const msg = data.details?.[0]?.message || data.error || 'Authentication failed';
+        const msg = data.details?.[0]?.message || data.error || data.message || 'Kirishda xatolik yuz berdi';
         setErrorMsg(msg);
       }
     } catch (err: any) {
-      setErrorMsg('Network error. Please try again.');
+      setErrorMsg('Tarmoq xatosi. Qaytadan urinib ko‘ring.');
     } finally {
       setIsLoading(false);
     }
@@ -129,8 +131,20 @@ export const AuthModal: React.FC = () => {
         ) : (
           <>
             {errorMsg && (
-              <div className="mt-4 p-3 rounded-xl bg-statusDangerBg text-statusDanger text-xs font-semibold">
-                {errorMsg}
+              <div className="mt-4 p-3 rounded-xl bg-statusDangerBg text-statusDanger text-xs font-semibold flex flex-col gap-1.5 animate-scale-up">
+                <span>{errorMsg}</span>
+                {!isRegister && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsRegister(true);
+                      setErrorMsg('');
+                    }}
+                    className="text-left font-bold text-accentOrange hover:underline text-[11px]"
+                  >
+                    → Ushbu email bilan qayta ro‘yxatdan o‘tish yoki parolni yangilash
+                  </button>
+                )}
               </div>
             )}
 
