@@ -70,14 +70,14 @@ export const Header: React.FC = () => {
   }, [locale]);
 
   return (
-    <header className="w-full flex items-center justify-between px-3 md:px-6 py-2.5 z-30 select-none gap-2 xl:gap-4">
+    <header className="w-full flex items-center justify-between px-2.5 sm:px-3 md:px-6 py-2 md:py-2.5 z-30 select-none gap-1.5 sm:gap-2 xl:gap-4">
       {/* 1. Left Brand Pill */}
       <div 
         onClick={() => setActiveTab('map')}
-        className="flex items-center gap-2.5 bg-white dark:bg-darkCard px-3.5 py-1.5 md:py-2 rounded-full shadow-soft cursor-pointer spring-btn border border-yolBorder dark:border-darkBorder group shrink-0"
+        className="flex items-center gap-1.5 md:gap-2.5 bg-white dark:bg-darkCard px-2.5 py-1 md:px-3.5 md:py-2 rounded-full shadow-soft cursor-pointer spring-btn border border-yolBorder dark:border-darkBorder group shrink-0"
       >
-        <NaviGoLogo className="w-8 h-8 md:w-9 md:h-9 group-hover:scale-105 transition-transform shrink-0 drop-shadow-sm" />
-        <span className="font-black text-xl tracking-tight text-textPrimary dark:text-darkText block leading-tight pr-1">
+        <NaviGoLogo className="w-7 h-7 md:w-9 md:h-9 group-hover:scale-105 transition-transform shrink-0 drop-shadow-sm" />
+        <span className="font-black text-base sm:text-lg md:text-xl tracking-tight text-textPrimary dark:text-darkText block leading-tight pr-0.5 md:pr-1">
           Navi<span className="text-accentOrange">Go</span>
         </span>
       </div>
@@ -198,14 +198,14 @@ export const Header: React.FC = () => {
       </nav>
 
       {/* 3. Right Action Controls */}
-      <div className="flex items-center gap-2 xl:gap-2.5 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 shrink-0">
         {/* Language Switcher with Animated Sliding Pill */}
         <div 
           ref={langRef}
-          className="flex items-center relative bg-white dark:bg-darkCard p-1 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder shrink-0 overflow-hidden"
+          className="flex items-center relative bg-white dark:bg-darkCard p-0.5 md:p-1 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder shrink-0 overflow-hidden"
         >
           <div
-            className="sliding-pill-indicator absolute top-1 bottom-1 bg-blackPill rounded-full shadow-sm pointer-events-none"
+            className="sliding-pill-indicator absolute top-0.5 bottom-0.5 md:top-1 md:bottom-1 bg-blackPill rounded-full shadow-sm pointer-events-none"
             style={{
               transform: `translateX(${langPill.left}px)`,
               width: `${langPill.width}px`,
@@ -217,7 +217,7 @@ export const Header: React.FC = () => {
               key={l}
               data-lang-id={l}
               onClick={() => setLocale(l)}
-              className={`relative z-10 px-2.5 py-1 md:px-3 md:py-1.5 text-[11px] md:text-xs font-bold rounded-full transition-colors duration-200 uppercase active:scale-90 ${
+              className={`relative z-10 px-2 py-1 md:px-3 md:py-1.5 text-[10px] md:text-xs font-bold rounded-full transition-colors duration-200 uppercase active:scale-90 ${
                 locale === l
                   ? 'text-white'
                   : 'text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
@@ -233,11 +233,11 @@ export const Header: React.FC = () => {
           <button 
             onClick={() => setIsNotificationsOpen(true)}
             aria-label={t('topBar.notifications')}
-            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white dark:bg-darkCard flex items-center justify-center shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText relative"
+            className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-white dark:bg-darkCard flex items-center justify-center shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText relative"
           >
             <Bell className="w-4 h-4 md:w-5 md:h-5 text-accentOrange" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[18px] h-4.5 px-1 bg-accentOrange text-white text-[9px] md:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-darkCard animate-pulse">
+              <span className="absolute -top-1 -right-1 min-w-[16px] md:min-w-[18px] h-4 md:h-4.5 px-1 bg-accentOrange text-white text-[9px] md:text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-darkCard animate-pulse">
                 {unreadCount}
               </span>
             )}
@@ -250,7 +250,7 @@ export const Header: React.FC = () => {
             onClick={() => setIsProfileModalOpen(true)}
             title={`Foydalanuvchi profili: ${user.name} (${user.role})`}
             aria-label={`Foydalanuvchi profili: ${user.name}`}
-            className="w-9 h-9 md:w-10 md:h-10 rounded-full p-0.5 bg-white dark:bg-darkCard border-2 border-accentOrange shadow-soft flex items-center justify-center spring-btn relative shrink-0 overflow-hidden active:scale-90 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accentOrange/50"
+            className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full p-0.5 bg-white dark:bg-darkCard border-2 border-accentOrange shadow-soft flex items-center justify-center spring-btn relative shrink-0 overflow-hidden active:scale-90 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accentOrange/50"
           >
             {user.avatarUrl ? (
               <img 
@@ -264,7 +264,7 @@ export const Header: React.FC = () => {
               </div>
             )}
             <span 
-              className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-darkCard rounded-full shadow-xs" 
+              className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-accentOrange border-2 border-white dark:border-darkCard rounded-full shadow-xs" 
               title="Online"
             />
           </button>
@@ -272,12 +272,12 @@ export const Header: React.FC = () => {
           <button
             onClick={() => setIsAuthOpen(true)}
             title={t('topBar.login')}
-            className="flex items-center gap-1.5 md:gap-2 bg-white dark:bg-darkCard px-3 py-1.5 md:px-3.5 md:py-2 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText shrink-0 text-xs md:text-sm font-semibold hover:border-accentOrange"
+            className="flex items-center justify-center gap-1.5 md:gap-2 bg-white dark:bg-darkCard w-8 h-8 sm:w-auto sm:h-auto sm:px-3 sm:py-1.5 md:px-3.5 md:py-2 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder spring-btn text-textPrimary dark:text-darkText shrink-0 text-xs md:text-sm font-semibold hover:border-accentOrange"
           >
             <div className="w-5 h-5 md:w-6 md:h-6 rounded-full bg-innerSoftArea dark:bg-gray-800 flex items-center justify-center text-accentOrange shrink-0">
               <UserIcon className="w-3.5 h-3.5" />
             </div>
-            <span>{t('topBar.login')}</span>
+            <span className="hidden sm:inline">{t('topBar.login')}</span>
           </button>
         )}
       </div>

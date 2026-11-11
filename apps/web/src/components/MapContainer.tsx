@@ -525,13 +525,13 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           : 'bg-accentOrange text-white';
 
         el.innerHTML = `
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white dark:bg-darkCard shadow-md text-xs font-bold border border-slate-200 dark:border-darkBorder">
-            <svg class="w-3.5 h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24">
+          <div class="flex items-center gap-1 md:gap-1.5 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-white dark:bg-darkCard shadow-md text-[10px] md:text-xs font-bold border border-slate-200 dark:border-darkBorder">
+            <svg class="w-3 h-3 md:w-3.5 md:h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="5"/>
               <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/>
             </svg>
             <span class="text-textPrimary dark:text-darkText font-black">${district.temp}°</span>
-            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${aqiBg}">AQI ${district.aqi}</span>
+            <span class="px-1 md:px-1.5 py-0.5 rounded text-[9px] md:text-[10px] font-bold ${aqiBg}">AQI ${district.aqi}</span>
           </div>
         `;
 
@@ -669,8 +669,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
           el.innerHTML = `
             <div class="relative flex flex-col items-center group cursor-pointer select-none hover:scale-110 transition-transform">
-              <div class="flex items-center gap-1 px-2.5 py-1 rounded-full ${isClosed ? 'bg-[#151218]/75 text-white/70' : 'bg-[#151218] text-white'} shadow-md border-2 border-white text-[10px] font-black tracking-tight whitespace-nowrap">
-                <svg class="w-3.5 h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24"><path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+              <div class="flex items-center gap-1 px-2 py-0.5 md:px-2.5 md:py-1 rounded-full ${isClosed ? 'bg-[#151218]/75 text-white/70' : 'bg-[#151218] text-white'} shadow-md border-2 border-white text-[9px] md:text-[10px] font-black tracking-tight whitespace-nowrap">
+                <svg class="w-3 h-3 md:w-3.5 md:h-3.5 text-accentOrange fill-current" viewBox="0 0 24 24"><path d="M19.77 7.23l.01-.01-3.72-3.72L15 4.56l2.11 2.11c-.94.36-1.61 1.26-1.61 2.33 0 1.38 1.12 2.5 2.5 2.5.36 0 .69-.08 1-.21v7.21c0 .55-.45 1-1 1s-1-.45-1-1V14c0-1.1-.9-2-2-2h-1V5c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2v16h10v-7.5h1.5v5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V9c0-.69-.28-1.32-.73-1.77zM12 10H6V5h6v5zm6 0c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
                 <span class="${isMetan && pressure > 0 ? 'text-accentOrange' : 'text-white'}">${badgeLabel}</span>
               </div>
               <div class="w-2 h-2 bg-[#151218] rotate-45 -mt-1 border-r border-b border-white shadow-xs"></div>
@@ -1131,17 +1131,17 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 1B. Yandex Maps Style 1–10 Ball Live Traffic Indicator (Top-Left) */}
       {variant !== 'bare' && !isNavigating && (
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-2.5 bg-white/95 dark:bg-darkCard/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-float border border-yolBorder dark:border-darkBorder">
-          <div className={`w-7 h-7 rounded-full ${trafficScoreInfo.colorClass} text-white font-black text-xs flex items-center justify-center shadow-sm`}>
+        <div className="absolute top-14 left-2.5 md:top-4 md:left-4 z-10 flex items-center gap-2 md:gap-2.5 bg-white/95 dark:bg-darkCard/95 backdrop-blur-md px-2.5 py-1.5 md:px-3.5 md:py-2 rounded-full shadow-float border border-yolBorder dark:border-darkBorder">
+          <div className={`w-6 h-6 md:w-7 md:h-7 rounded-full ${trafficScoreInfo.colorClass} text-white font-black text-[11px] md:text-xs flex items-center justify-center shadow-sm shrink-0`}>
             {trafficScoreInfo.score}
           </div>
           <div className="leading-tight pr-1">
-            <div className="text-xs font-extrabold text-textPrimary dark:text-darkText flex items-center gap-1.5">
+            <div className="text-[11px] md:text-xs font-extrabold text-textPrimary dark:text-darkText flex items-center gap-1 md:gap-1.5 whitespace-nowrap">
               <span>{trafficScoreInfo.score} ball</span>
               <span className="text-gray-300 dark:text-gray-600">•</span>
               <span>{trafficScoreInfo.statusLabel}</span>
             </div>
-            <div className="text-[10px] font-bold text-textSecondary dark:text-darkTextSec">
+            <div className="hidden sm:block text-[10px] font-bold text-textSecondary dark:text-darkTextSec">
               {locale === 'ru' ? 'Средняя скорость' : locale === 'en' ? 'Avg city speed' : "O'rtacha tezlik"}: ~{trafficScoreInfo.avgSpeed} {locale === 'ru' ? 'км/ч' : locale === 'en' ? 'km/h' : 'km/soat'}
             </div>
           </div>
@@ -1150,8 +1150,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* Quick Hazard Reported Toast */}
       {quickHazardToast && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-emerald-600 text-white px-5 py-2.5 rounded-full shadow-2xl text-xs font-black flex items-center gap-2 animate-bounce">
-          <ShieldCheck className="w-4 h-4" />
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 bg-blackPill text-white border border-accentOrange px-5 py-2.5 rounded-full shadow-2xl text-xs font-black flex items-center gap-2 animate-bounce whitespace-nowrap">
+          <ShieldCheck className="w-4 h-4 text-accentOrange" />
           <span>{quickHazardToast}</span>
         </div>
       )}
@@ -1194,19 +1194,19 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 2. Top-Right Map Mode Pill Switcher */}
       {variant !== 'bare' && (
-        <div className="absolute top-4 right-4 z-10 flex items-center bg-white dark:bg-darkCard p-1.5 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder">
+        <div className="absolute top-2.5 left-2.5 right-2.5 md:left-auto md:top-4 md:right-4 z-10 flex items-center justify-between md:justify-start bg-white dark:bg-darkCard p-1 md:p-1.5 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder">
           <button
             onClick={() => {
               setMapMode('combined');
               setSelectedDistrict(null);
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`flex-1 md:flex-initial flex items-center justify-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-[11px] md:text-xs font-semibold whitespace-nowrap transition-all ${
               mapMode === 'combined'
                 ? 'bg-blackPill text-white'
                 : 'text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" />
+            <Layers className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
             <span>{t('map.modeCombined')}</span>
           </button>
 
@@ -1215,13 +1215,13 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               setMapMode('weather');
               setSelectedFeature(null);
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`flex-1 md:flex-initial flex items-center justify-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-[11px] md:text-xs font-semibold whitespace-nowrap transition-all ${
               mapMode === 'weather'
                 ? 'bg-blackPill text-white'
                 : 'text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
             }`}
           >
-            <CloudSun className="w-3.5 h-3.5 text-accentOrange" />
+            <CloudSun className="w-3 h-3 md:w-3.5 md:h-3.5 text-accentOrange shrink-0" />
             <span>{t('map.modeA')}</span>
           </button>
 
@@ -1230,13 +1230,13 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
               setMapMode('roads');
               setSelectedDistrict(null);
             }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+            className={`flex-1 md:flex-initial flex items-center justify-center gap-1 md:gap-1.5 px-2 py-1 md:px-3 md:py-1.5 rounded-full text-[11px] md:text-xs font-semibold whitespace-nowrap transition-all ${
               mapMode === 'roads'
                 ? 'bg-blackPill text-white'
                 : 'text-textSecondary dark:text-darkTextSec hover:text-textPrimary'
             }`}
           >
-            <Car className="w-3.5 h-3.5 text-accentOrange" />
+            <Car className="w-3 h-3 md:w-3.5 md:h-3.5 text-accentOrange shrink-0" />
             <span>{t('map.modeB')}</span>
           </button>
         </div>
@@ -1244,11 +1244,11 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 2B. Right-Side Yandex / Waze Professional Map Controls (2D/3D, Zoom +/-, Compass, Waze 1-Tap Hazard) */}
       {variant !== 'bare' && (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex flex-col gap-2">
+        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 md:right-4 z-10 flex flex-col gap-1.5 md:gap-2">
           <button
             onClick={toggle3DView}
             title="2D / 3D Perspektiva"
-            className={`w-11 h-11 rounded-2xl shadow-float border text-xs font-black transition-all flex items-center justify-center ${
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl shadow-float border text-[11px] md:text-xs font-black transition-all flex items-center justify-center ${
               is3DView
                 ? 'bg-blackPill text-white border-blackPill'
                 : 'bg-white dark:bg-darkCard text-textPrimary dark:text-darkText border-yolBorder dark:border-darkBorder hover:border-accentOrange'
@@ -1260,7 +1260,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           <button
             onClick={handleZoomIn}
             title="Yaqinlashtirish (+)"
-            className="w-11 h-11 rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange flex items-center justify-center transition-all"
+            className="hidden md:flex w-11 h-11 rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange items-center justify-center transition-all"
           >
             <ZoomIn className="w-5 h-5" />
           </button>
@@ -1268,7 +1268,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           <button
             onClick={handleZoomOut}
             title="Uzoqlashtirish (-)"
-            className="w-11 h-11 rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange flex items-center justify-center transition-all"
+            className="hidden md:flex w-11 h-11 rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange items-center justify-center transition-all"
           >
             <ZoomOut className="w-5 h-5" />
           </button>
@@ -1276,9 +1276,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           <button
             onClick={handleResetCompass}
             title="Shimolga tekislash (Kompas)"
-            className="w-11 h-11 rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange flex items-center justify-center transition-all"
+            className="w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:text-accentOrange flex items-center justify-center transition-all"
           >
-            <Compass className="w-5 h-5 text-accentOrange" />
+            <Compass className="w-4 h-4 md:w-5 md:h-5 text-accentOrange" />
           </button>
 
           {/* Waze 1-Tap Hazard Quick Report Trigger */}
@@ -1286,13 +1286,13 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
             <button
               onClick={() => setIsQuickHazardOpen(!isQuickHazardOpen)}
               title={locale === 'ru' ? 'Быстрое сообщение' : locale === 'en' ? 'Quick Report' : 'Tezkor xabar'}
-              className="w-11 h-11 rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all"
+              className="w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all"
             >
-              <AlertTriangle className="w-5 h-5" />
+              <AlertTriangle className="w-4 h-4 md:w-5 md:h-5" />
             </button>
 
             {isQuickHazardOpen && (
-              <div className="absolute right-14 bottom-0 bg-white dark:bg-darkCard p-2.5 rounded-2xl shadow-2xl border border-yolBorder dark:border-darkBorder w-48 space-y-1.5 animate-fade-in z-30">
+              <div className="absolute right-12 md:right-14 bottom-0 bg-white dark:bg-darkCard p-2.5 rounded-2xl shadow-2xl border border-yolBorder dark:border-darkBorder w-48 space-y-1.5 animate-fade-in z-30">
                 <div className="text-[10px] font-black uppercase tracking-wider text-textSecondary dark:text-darkTextSec px-1">
                   {locale === 'ru' ? 'Быстрое сообщение' : locale === 'en' ? 'Quick Report' : 'Tezkor xabar'}
                 </div>
@@ -1332,30 +1332,40 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
           <button
             onClick={() => setIsGasLayerVisible(!isGasLayerVisible)}
             title={isGasLayerVisible ? "Metan/Propan zapravkalarini yashirish" : "Metan & Propan zapravkalarini ko'rsatish"}
-            className={`w-11 h-11 rounded-2xl shadow-float border text-xs font-black transition-all flex items-center justify-center ${
+            className={`w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl shadow-float border text-xs font-black transition-all flex items-center justify-center ${
               isGasLayerVisible
                 ? 'bg-accentOrange text-white border-accentOrange shadow-md'
                 : 'bg-white dark:bg-darkCard text-textPrimary dark:text-darkText border-yolBorder dark:border-darkBorder hover:border-accentOrange'
             }`}
           >
-            <Fuel className="w-5 h-5" />
+            <Fuel className="w-4 h-4 md:w-5 md:h-5" />
           </button>
 
           {/* V2X Green Corridor Emergency Siren Demo Button (Idea 2) */}
           <button
             onClick={() => triggerDemoV2XAlert('103')}
             title="V2X Yashil Yo'lak (Tez Yordam sirenasi sinovi)"
-            className="w-11 h-11 rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all active:scale-95 group relative"
+            className="w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-accentOrange hover:bg-orange-600 text-white shadow-float border-2 border-white flex items-center justify-center transition-all active:scale-95 group relative"
           >
-            <Siren className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full animate-ping"></span>
+            <Siren className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 md:w-3 md:h-3 bg-white rounded-full animate-ping"></span>
+          </button>
+
+          {/* Mobile-only Recenter Button inside right stack so it is never hidden behind bottom sheet */}
+          <button
+            onClick={handleRecenter}
+            aria-label={t('map.myLocation')}
+            title={t('map.myLocation')}
+            className="md:hidden w-9 h-9 rounded-xl bg-white dark:bg-darkCard shadow-float border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText flex items-center justify-center active:scale-95"
+          >
+            <Navigation className="w-4 h-4 text-accentOrange" />
           </button>
         </div>
       )}
 
       {/* 2C. Yandex Maps / Waze Click-on-Map Quick Action Bar */}
       {clickedMapPoint && !isNavigating && variant !== 'bare' && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 bg-blackPill/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-gray-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-pop-in">
+        <div className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 z-20 bg-blackPill/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-gray-700 flex flex-wrap items-center gap-2.5 max-w-lg animate-pop-in">
           <div className="flex items-center gap-1.5 pr-2 border-r border-gray-700 max-w-[200px]">
             <MapPin className="w-4 h-4 text-accentOrange shrink-0" />
             <div className="truncate">
@@ -1540,9 +1550,9 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         </div>
       )}
 
-      {/* 5. Bottom-Left Controls: Legend & List Alternative */}
+      {/* 5. Bottom-Left Controls: Legend & List Alternative (Desktop) */}
       {variant !== 'bare' && (
-        <div className="absolute bottom-6 left-6 z-10 flex items-center gap-2">
+        <div className="hidden md:flex absolute bottom-6 left-6 z-10 items-center gap-2">
           <button
             onClick={() => setIsLegendOpen(true)}
             className="flex items-center gap-2 bg-white dark:bg-darkCard px-4 py-2.5 rounded-full shadow-soft border border-yolBorder dark:border-darkBorder text-textPrimary dark:text-darkText hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-semibold transition-all"
@@ -1553,8 +1563,8 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         </div>
       )}
 
-      {/* 6. Bottom-Right Controls: Recenter & Formal Round Report FAB (Never covers background buttons) */}
-      <div className="absolute bottom-6 right-6 z-10 flex items-center gap-3">
+      {/* 6. Bottom-Right Controls: Recenter & Formal Round Report FAB (Desktop) */}
+      <div className="hidden md:flex absolute bottom-6 right-6 z-10 items-center gap-3">
         <button
           onClick={handleRecenter}
           aria-label={t('map.myLocation')}
@@ -1578,7 +1588,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 7. Selected District Weather Popover Card (Mode A Fix) */}
       {selectedDistrict && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-sm bg-white dark:bg-darkCard p-5 rounded-card shadow-float border-2 border-accentOrange animate-fade-in">
+        <div className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-sm bg-white dark:bg-darkCard p-4 md:p-5 rounded-card shadow-float border-2 border-accentOrange animate-fade-in">
           <div className="flex items-start justify-between">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-accentOrange">
@@ -1639,7 +1649,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 8. Selected Incident Modal Popup */}
       {selectedFeature && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
+        <div className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md max-h-[60vh] md:max-h-none overflow-y-auto bg-white dark:bg-darkCard p-4 md:p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-orangeTint flex items-center justify-center text-accentOrange shrink-0">
@@ -1836,7 +1846,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
 
       {/* 9. Selected User Report Popup */}
       {selectedUserReport && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
+        <div className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md max-h-[60vh] md:max-h-none overflow-y-auto bg-white dark:bg-darkCard p-4 md:p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-orangeTint text-accentOrange flex items-center justify-center">
@@ -1899,7 +1909,7 @@ export const MapContainer: React.FC<{ variant?: 'default' | 'bare' }> = ({ varia
         );
 
         return (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md bg-white dark:bg-darkCard p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
+          <div className="absolute bottom-12 md:bottom-24 left-1/2 -translate-x-1/2 z-20 w-11/12 max-w-md max-h-[60vh] md:max-h-none overflow-y-auto bg-white dark:bg-darkCard p-4 md:p-5 rounded-card shadow-float border border-yolBorder dark:border-darkBorder animate-fade-in">
             {/* Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">

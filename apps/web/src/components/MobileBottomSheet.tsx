@@ -3,15 +3,13 @@ import { useApp } from '../context/AppContext';
 import { 
   ChevronUp, 
   ChevronDown, 
-  AlertTriangle, 
-  Car, 
-  Cone, 
   MapPin, 
   FileText, 
   HelpCircle, 
   Settings, 
   Plus,
-  Truck 
+  Truck,
+  Fuel
 } from 'lucide-react';
 
 export const MobileBottomSheet: React.FC = () => {
@@ -24,7 +22,8 @@ export const MobileBottomSheet: React.FC = () => {
     setFocusedLocation,
     activeTab, 
     setActiveTab, 
-    setIsReportingOpen, 
+    setIsReportingOpen,
+    setIsFuelModalOpen,
     t 
   } = useApp();
 
@@ -39,53 +38,63 @@ export const MobileBottomSheet: React.FC = () => {
       );
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center">
-      {/* Floating Buttons on Mobile: 103 Ambulance & Report Problem */}
-      <div className="mb-3 flex items-center gap-2">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center pointer-events-none">
+      {/* Compact Floating Action Pills on Mobile: SOS, Zapravka & Report */}
+      <div className="mb-2 px-3 w-full flex items-center justify-center gap-2 pointer-events-auto">
         <a
           href="#/ambulance"
-          className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-3 rounded-full shadow-float font-extrabold text-sm border border-red-700 active:scale-95 transition-all"
+          className="flex items-center gap-1.5 bg-accentOrange hover:bg-orange-600 text-white px-3 py-1.5 rounded-full shadow-md font-extrabold text-[11px] border border-white/40 whitespace-nowrap active:scale-95 transition-all"
         >
-          <Truck className="w-4 h-4 text-white" />
-          <span>Favqulodda Xizmatlar (SOS)</span>
+          <Truck className="w-3.5 h-3.5 text-white shrink-0" />
+          <span>SOS (103)</span>
         </a>
 
         <button
-          onClick={() => setIsReportingOpen(true)}
-          className="flex items-center gap-2 bg-blackPill text-white px-4 py-3 rounded-full shadow-float font-bold text-sm border border-gray-700 active:scale-95 transition-all"
+          onClick={() => setIsFuelModalOpen(true)}
+          className="flex items-center gap-1.5 bg-white dark:bg-darkCard text-textPrimary dark:text-darkText px-3 py-1.5 rounded-full shadow-md font-extrabold text-[11px] border border-yolBorder dark:border-darkBorder whitespace-nowrap active:scale-95 transition-all"
         >
-          <div className="w-5 h-5 rounded-full bg-accentOrange flex items-center justify-center text-white">
-            <Plus className="w-4 h-4 stroke-[3]" />
+          <Fuel className="w-3.5 h-3.5 text-accentOrange shrink-0" />
+          <span>Zapravka</span>
+        </button>
+
+        <button
+          onClick={() => setIsReportingOpen(true)}
+          className="flex items-center gap-1.5 bg-blackPill text-white px-3 py-1.5 rounded-full shadow-md font-bold text-[11px] border border-white/20 whitespace-nowrap active:scale-95 transition-all"
+        >
+          <div className="w-4 h-4 rounded-full bg-accentOrange flex items-center justify-center text-white shrink-0">
+            <Plus className="w-3 h-3 stroke-[3]" />
           </div>
-          <span>{t('map.reportProblem')}</span>
+          <span>Xabar berish</span>
         </button>
       </div>
 
       {/* Bottom Sheet Card */}
-      <div className="w-full bg-white dark:bg-darkCard rounded-t-[28px] shadow-float border-t border-yolBorder dark:border-darkBorder transition-all duration-300">
+      <div className="w-full bg-white dark:bg-darkCard rounded-t-[24px] shadow-float border-t border-yolBorder dark:border-darkBorder transition-all duration-300 pointer-events-auto">
         {/* Drag Handle & Summary Header */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full pt-3 pb-2 px-5 flex flex-col items-center justify-center text-center cursor-pointer"
+          className="w-full pt-2.5 pb-2 px-4 flex flex-col items-center justify-center text-center cursor-pointer"
         >
-          <div className="w-12 h-1.5 rounded-full bg-gray-300 dark:bg-gray-700 mb-2"></div>
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2 text-left">
-              <span className="w-2.5 h-2.5 rounded-full bg-accentOrange animate-ping"></span>
-              <span className="text-xs font-bold text-textPrimary dark:text-darkText">
+          <div className="w-10 h-1 rounded-full bg-gray-300 dark:bg-gray-700 mb-1.5"></div>
+          <div className="flex items-center justify-between w-full gap-2">
+            <div className="flex items-center gap-1.5 text-left min-w-0">
+              <span className="w-2 h-2 rounded-full bg-accentOrange animate-ping shrink-0"></span>
+              <span className="text-xs font-extrabold text-textPrimary dark:text-darkText truncate">
                 {displayedFeatures.length} {t('roads.summarySuffix')}
               </span>
             </div>
-            {activeWeather && (
-              <span className="text-xs font-bold text-textSecondary dark:text-darkTextSec">
-                {activeWeather.city}: {activeWeather.temperatureC > 0 ? '+' : ''}{activeWeather.temperatureC}°C • {activeWeather.conditionText}
-              </span>
-            )}
-            {isExpanded ? (
-              <ChevronDown className="w-5 h-5 text-textSecondary" />
-            ) : (
-              <ChevronUp className="w-5 h-5 text-textSecondary" />
-            )}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {activeWeather && (
+                <span className="text-[11px] font-bold text-textSecondary dark:text-darkTextSec whitespace-nowrap">
+                  {activeWeather.city}: {activeWeather.temperatureC > 0 ? '+' : ''}{activeWeather.temperatureC}°C
+                </span>
+              )}
+              {isExpanded ? (
+                <ChevronDown className="w-4 h-4 text-textSecondary shrink-0" />
+              ) : (
+                <ChevronUp className="w-4 h-4 text-textSecondary shrink-0" />
+              )}
+            </div>
           </div>
         </button>
 

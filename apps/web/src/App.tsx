@@ -33,14 +33,14 @@ export const MainLayout: React.FC = () => {
     setLegalModalState({ isOpen: true, tab });
   };
   return (
-    <div className="w-screen h-screen overflow-hidden flex flex-col bg-outerBg dark:bg-darkOuter p-2 sm:p-4">
+    <div className="w-screen h-dvh overflow-hidden flex flex-col bg-outerBg dark:bg-darkOuter p-1.5 sm:p-4">
       {/* Outer App Panel Container with 32px radius (Part 4.1) */}
-      <div className="w-full h-full flex flex-col bg-appPanel dark:bg-darkPanel rounded-panel shadow-float border border-yolBorder dark:border-darkBorder overflow-hidden">
+      <div className="w-full h-full flex flex-col bg-appPanel dark:bg-darkPanel rounded-[24px] sm:rounded-panel shadow-float border border-yolBorder dark:border-darkBorder overflow-hidden">
         {/* Top Header */}
         <Header />
 
         {/* Workspace Body Area */}
-        <div className="flex-1 flex overflow-hidden p-2 sm:p-4 gap-4 relative">
+        <div className="flex-1 flex overflow-hidden p-1.5 pb-[92px] sm:p-4 md:pb-4 gap-4 relative">
           {/* Desktop Left Rail Dock */}
           <LeftDock />
 
